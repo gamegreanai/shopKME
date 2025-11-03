@@ -137,7 +137,7 @@ def address_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "บันทึกที่อยู่เรียบร้อยแล้ว ✅")
-            return redirect("address")  # ตั้งให้ชี้ชื่อ urlpattern ของหน้านี้
+            return redirect("account:address")  # ตั้งให้ชี้ชื่อ urlpattern ของหน้านี้
         else:
             messages.error(request, "กรุณาตรวจสอบข้อมูลที่กรอก")
     else:
