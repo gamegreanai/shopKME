@@ -114,7 +114,7 @@ def profile_view(request):
             uform.save()
             pform.save()
             messages.success(request, "บันทึกข้อมูลสำเร็จแล้ว ✅")
-            return redirect("profile")
+            return redirect("account:profile")
         else:
             messages.error(request, "กรุณาตรวจสอบข้อมูลที่กรอก")
     else:
