@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+{% block title %}จัดการแต้มผู้ใช้{% endblock %}
+{% block content %}
+
+<div class="container-fluid p-4 bg-light">
+  <h4 class="fw-bold text-success mb-4">
+    <i class="fa fa-coins me-2"></i> จัดการแต้มของผู้ใช้
+  </h4>
+
+  <table class="table table-bordered text-center align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>เบอร์โทร</th>
+        <th>ชื่อ</th>
+        <th>แต้มปัจจุบัน</th>
+        <th>จัดการแต้ม</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in profiles %}
+      <tr>
+        <td>{{ p.user.phone }}</td>
+        <td>{{ p.user.first_name }} {{ p.user.last_name }}</td>
+        <td>{{ p.points }}</td>
+        <td>
+          <form method="post" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ p.user.id }}">
+            <input type="hidden" name="action" value="add">
+            <input type="number" name="points" value="100" class="form-control d-inline w-25">
+            <button class="btn btn-success btn-sm">+ เพิ่ม</button>
+          </form>
+
+          <form method="post" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ p.user.id }}">
+            <input type="hidden" name="action" value="subtract">
+            <input type="number" name="points" value="100" class="form-control d-inline w-25">
+            <button class="btn btn-danger btn-sm">- ลบ</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-muted">ยังไม่มีผู้ใช้</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

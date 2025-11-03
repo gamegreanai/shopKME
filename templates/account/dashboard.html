@@ -1,0 +1,146 @@
+{% extends 'base/base.html' %}
+{% block title %}แก้ไขชื่อและที่อยู่ | shopKME{% endblock %}
+{% block content %}
+
+<div class="container-fluid p-4 bg-light">
+   {# ----- แถบ Points & Level ----- #}
+  <div class="card shadow-sm border-0 mb-3">
+    <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+      <div class="mb-3 mb-md-0">
+        <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
+          ระดับสมาชิก: {{ meter.level }}
+        </span>
+        <span class="ms-2 text-muted">แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts</span>
+      </div>
+      <div class="w-100 w-md-50" style="max-width:520px;">
+        <div class="d-flex justify-content-between small mb-1">
+          <span>
+            {% if meter.level == "Silver" %} Silver {% elif meter.level == "Gold" %} Gold {% else %} Premium {% endif %}
+          </span>
+          <span>{{ meter.progress_pct }}%</span>
+        </div>
+        <div class="progress" role="progressbar" aria-valuenow="{{ meter.progress_pct }}" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar" style="width: {{ meter.progress_pct }}%"></div>
+        </div>
+        <div class="small text-muted mt-1">
+          {% if meter.next_level_name %}
+            อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong>
+          {% else %}
+            อยู่ระดับสูงสุดแล้ว 🎉
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+   {% if user.first_name and user.last_name and user.email and profile.title and profile.gender and profile.house_no and profile.moo and profile.street and profile.subdistrict and profile.district and profile.province and profile.postal_code %}
+
+        <div class="row g-3">
+          <div class="col-md-3"><strong>คำนำหน้าชื่อ</strong><div>{{ profile.title }}</div></div>
+          <div class="col-md-4"><strong>ชื่อ</strong><div>{{ user.first_name }}</div></div>
+          <div class="col-md-5"><strong>นามสกุล</strong><div>{{ user.last_name }}</div></div>
+          <div class="col-md-3"><strong>เพศ</strong><div>{{ profile.gender }}</div></div>
+          <div class="col-md-6"><strong>อีเมล</strong><div>{{ user.email }}</div></div>
+          <div class="col-md-6"><strong>เบอร์โทรศัพท์</strong><div>{{ user.phone }}</div></div>
+          <div class="col-12"><hr></div>
+          <div class="col-md-3"><strong>เลขที่บ้าน</strong><div>{{ profile.house_no }}</div></div>
+          <div class="col-md-2"><strong>หมู่</strong><div>{{ profile.moo }}</div></div>
+          <div class="col-md-7"><strong>ถนน</strong><div>{{ profile.street }}</div></div>
+          <div class="col-md-6"><strong>แขวง/ตำบล</strong><div>{{ profile.subdistrict }}</div></div>
+          <div class="col-md-6"><strong>เขต/อำเภอ</strong><div>{{ profile.district }}</div></div>
+          <div class="col-md-6"><strong>จังหวัด</strong><div>{{ profile.province }}</div></div>
+          <div class="col-md-6"><strong>รหัสไปรษณีย์</strong><div>{{ profile.postal_code }}</div></div>
+        </div>
+
+  {% else %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <!-- การ์ด: ข้อมูลผู้ใช้ -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">
+          <i class="fa fa-id-card me-2"></i> กรอกชื่อและข้อมูลติดต่อ
+        </h5>
+
+        <div class="row g-3">
+          <div class="col-md-2">
+            <label class="form-label" for="{{ form.title.id_for_label }}">คำนำหน้าชื่อ</label>
+            {{ form.title }}
+          </div>
+          <div class="col-md-5">
+            <label class="form-label" for="{{ form.first_name.id_for_label }}">ชื่อ</label>
+            {{ form.first_name }}
+          </div>
+          <div class="col-md-5">
+            <label class="form-label" for="{{ form.last_name.id_for_label }}">นามสกุล</label>
+            {{ form.last_name }}
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label" for="{{ form.gender.id_for_label }}">เพศ</label>
+            {{ form.gender }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="{{ form.email.id_for_label }}">อีเมล</label>
+            {{ form.email }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="{{ form.phone.id_for_label }}">เบอร์โทรศัพท์</label>
+            {{ form.phone }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- การ์ด: ที่อยู่ -->
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">
+          <i class="fa fa-home me-2"></i> ที่อยู่สำหรับติดต่อ/จัดส่ง
+        </h5>
+
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label" for="{{ form.house_no.id_for_label }}">เลขที่บ้าน</label>
+            {{ form.house_no }}
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="{{ form.moo.id_for_label }}">หมู่</label>
+            {{ form.moo }}
+          </div>
+          <div class="col-md-7">
+            <label class="form-label" for="{{ form.street.id_for_label }}">ถนน</label>
+            {{ form.street }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.subdistrict.id_for_label }}">แขวง/ตำบล</label>
+            {{ form.subdistrict }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.district.id_for_label }}">เขต/อำเภอ</label>
+            {{ form.district }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.province.id_for_label }}">จังหวัด</label>
+            {{ form.province }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.postal_code.id_for_label }}">รหัสไปรษณีย์</label>
+            {{ form.postal_code }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success">
+        <i class="fa fa-save me-1"></i> บันทึก
+      </button>
+    </div>
+  </form>
+{% endif %}
+</div>
+
+{% endblock %}

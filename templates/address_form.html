@@ -1,0 +1,6 @@
+<h2>ที่อยู่จัดส่ง</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">บันทึกที่อยู่</button>
+</form>

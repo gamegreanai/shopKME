@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h4 class="fw-bold text-success mb-3">คูปองของฉัน</h4>
+  {% if my_coupons %}
+    <div class="list-group">
+      {% for r in my_coupons %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">{{ r.coupon.name }}</div>
+            <div class="small text-muted">{{ r.coupon.description }}</div>
+          </div>
+          <span class="badge {% if r.status == 'unused' %}bg-success{% elif r.status == 'used' %}bg-secondary{% else %}bg-danger{% endif %}">
+            {{ r.get_status_display }}
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">ยังไม่มีคูปองที่แลกไว้</p>
+  {% endif %}
+</div>
+{% endblock %}

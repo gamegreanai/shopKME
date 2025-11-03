@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h3 class="fw-bold text-success mb-4">
+    <i class="fa fa-coins me-2"></i> จัดการแต้มผู้ใช้
+  </h3>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <table class="table table-striped align-middle">
+        <thead class="table-success">
+          <tr>
+            <th>ชื่อผู้ใช้</th>
+            <th>เบอร์โทรศัพท์</th>
+            <th>แต้มปัจจุบัน</th>
+            <th>เพิ่ม/ลดแต้ม</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in profiles %}
+          <tr>
+            <td>{{ p.user.first_name|default:"-" }} {{ p.user.last_name|default:"-" }}</td>
+            <td>{{ p.user.phone }}</td>
+            <td><span class="badge bg-success fs-6">{{ p.points }}</span></td>
+            <td>
+              <form method="post" class="d-flex">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ p.user.id }}">
+                <input type="text" name="points_change" class="form-control form-control-sm me-2"
+                       placeholder="+500 หรือ -200" style="max-width: 120px;">
+                <button type="submit" class="btn btn-success btn-sm">
+                  <i class="fa fa-check"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

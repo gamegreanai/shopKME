@@ -1,0 +1,127 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h4 class="fw-bold text-success mb-3">จัดการคูปอง (Staff)</h4>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">เพิ่มคูปองใหม่</h5>
+      <form method="post" class="row g-3" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create">
+        <div class="col-md-4">
+          <label class="form-label">ชื่อคูปอง</label>
+          <input class="form-control" name="name" required>
+        </div>
+          <div class="col-md-4">
+          <label class="form-label">รหัสคูปอง</label>
+          <input class="form-control" name="code" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">แต้มที่ต้องใช้</label>
+          <input class="form-control" type="number" name="required_points" min="0" value="0" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">วันหมดอายุ</label>
+          <input class="form-control" type="datetime-local" name="expires_at" required>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">รายละเอียด</label>
+          <textarea class="form-control" rows="2" name="description"></textarea>
+        </div>
+      
+        <div class="col-md-4">
+          <label class="form-label">รูปคูปอง</label>
+          <input class="form-control" type="file" name="image" accept="image/*">
+          <div class="form-text">รองรับ jpg, png, webp ขนาดไม่เกิน 2MB</div>
+        </div>
+        <div class="col-12 text-end">
+          <button class="btn btn-success">บันทึกคูปอง</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">รายการคูปอง</h5>
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th style="width:120px;">รูป</th>
+              <th>ชื่อ</th>
+              <th>รหัส</th>
+              <th>แต้ม</th>
+              <th>หมดอายุ</th>
+              <th>สถานะ</th>
+              <th class="text-end">การจัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in coupons %}
+            <tr>
+              <td>
+                {% if c.image %}
+                  <img src="{{ c.image.url }}" alt="coupon" class="img-thumbnail" style="width:100px;height:auto;">
+                {% else %}
+                  <span class="text-muted">ไม่มีรูป</span>
+                {% endif %}
+              </td>
+               <td>{{ c.name }}</td>
+              <td>{{ c.code }}</td>
+              <td>
+                {% if c.required_points is not None %}
+                  {{ c.required_points }}
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td>{{ c.expires_at }}</td>
+              <td>
+                {% if c.is_active %}
+                  <span class="badge bg-success">ใช้งาน</span>
+                {% else %}
+                  <span class="badge bg-secondary">ปิด</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="d-flex gap-2 justify-content-end flex-wrap">
+                  <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle">
+                    <input type="hidden" name="coupon_id" value="{{ c.id }}">
+                    <button class="btn btn-outline-primary btn-sm">สลับสถานะ</button>
+                  </form>
+
+                  <form method="post" enctype="multipart/form-data" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="set_image">
+                    <input type="hidden" name="coupon_id" value="{{ c.id }}">
+                    <input type="file" name="image" accept="image/*" class="form-control form-control-sm d-inline" style="width:180px;">
+                    <button class="btn btn-outline-success btn-sm">อัปเดตรูป</button>
+                  </form>
+
+                  {% if c.image %}
+                  <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_image">
+                    <input type="hidden" name="coupon_id" value="{{ c.id }}">
+                    <button class="btn btn-outline-danger btn-sm">ลบรูป</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-muted">ยังไม่มีคูปอง</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

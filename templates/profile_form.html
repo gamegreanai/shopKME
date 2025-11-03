@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container-fluid p-4 bg-light">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h4 class="fw-bold mb-4 text-success">ข้อมูลส่วนตัว</h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">ชื่อ</label>
+            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">นามสกุล</label>
+            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">อีเมล</label>
+            <input type="email" name="email" class="form-control" value="{{ user.email }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">เพศ</label>
+            <select name="gender" class="form-select">
+              <option value="">เลือกเพศ</option>
+              <option value="ชาย" {% if profile.gender == 'ชาย' %}selected{% endif %}>ชาย</option>
+              <option value="หญิง" {% if profile.gender == 'หญิง' %}selected{% endif %}>หญิง</option>
+              <option value="ไม่ระบุ" {% if profile.gender == 'ไม่ระบุ' %}selected{% endif %}>ไม่ระบุ</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success mt-4">บันทึกข้อมูล</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

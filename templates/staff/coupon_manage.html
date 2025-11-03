@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+{% block title %}จัดการคูปอง{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- ฟอร์มเพิ่มคูปอง -->
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-success text-white fw-bold">
+          ➕ เพิ่มคูปองใหม่
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success w-100">บันทึก</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ตารางแสดงคูปอง -->
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+          🎟️ รายการคูปองทั้งหมด
+        </div>
+        <div class="card-body">
+          {% if coupons %}
+            <table class="table table-striped align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>ชื่อ</th>
+                  <th>รหัส</th>
+                  <th>แต้มที่ใช้</th>
+                  <th>หมดอายุ</th>
+                  <th>สถานะ</th>
+                  <th>ภาพ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in coupons %}
+                <tr>
+                  <td>{{ c.name }}</td>
+                  <td>{{ c.code }}</td>
+                  <td>{{ c.required_points }}</td>
+                  <td>{{ c.expires_at|date:"d/m/Y H:i" }}</td>
+                  <td>{% if c.is_active %}<span class="badge bg-success">เปิด</span>{% else %}<span class="badge bg-secondary">ปิด</span>{% endif %}</td>
+                  <td>
+                    {% if c.image %}
+                      <img src="{{ c.image.url }}" width="50" class="rounded">
+                    {% else %}
+                      <span class="text-muted small">ไม่มีภาพ</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="text-muted">ยังไม่มีคูปองในระบบ</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

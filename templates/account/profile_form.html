@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+{% block title %}แก้ไขข้อมูลส่วนตัว | shopKME{% endblock %}
+{% block content %}
+
+<div class="container-fluid p-4 bg-light">
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- การ์ด: ข้อมูลผู้ใช้ (User) -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3"><i class="fa fa-user me-2"></i> ข้อมูลผู้ใช้</h5>
+        {{ uform.non_field_errors }}
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label" for="{{ uform.first_name.id_for_label }}">ชื่อ</label>
+            {{ uform.first_name }}
+            {{ uform.first_name.errors }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="{{ uform.last_name.id_for_label }}">นามสกุล</label>
+            {{ uform.last_name }}
+            {{ uform.last_name.errors }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="{{ uform.email.id_for_label }}">อีเมล</label>
+            {{ uform.email }}
+            {{ uform.email.errors }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- การ์ด: โปรไฟล์ (Profile) -->
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3"><i class="fa fa-id-card me-2"></i> โปรไฟล์</h5>
+        {{ pform.non_field_errors }}
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label" for="{{ pform.title.id_for_label }}">คำนำหน้าชื่อ</label>
+            {{ pform.title }}
+            {{ pform.title.errors }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="{{ pform.gender.id_for_label }}">เพศ</label>
+            {{ pform.gender }}
+            {{ pform.gender.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ pform.phone.id_for_label }}">เบอร์โทรศัพท์</label>
+            {{ pform.phone }}
+            {{ pform.phone.errors }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success">
+        <i class="fa fa-save me-1"></i> บันทึก
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ร้านขายยาส่ง - สมัครสมาชิก / เข้าสู่ระบบ</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body { font-family: 'Prompt', sans-serif; background: #f8f9fa; }
+    .hero { background: url('https://images.unsplash.com/photo-1588776814546-ec72a7c165e5') no-repeat center center/cover; height: 100vh; display: flex; align-items: center; color: white; position: relative; }
+    .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); }
+    .content-box { position: relative; background:white; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.2); padding:30px; width:380px; margin-left:auto; margin-right:50px; color:#333; }
+    .btn-success { background-color:#198754; border:none; }
+    .btn-success:hover { background-color:#157347; }
+    .toggle-btn { background:none; border:none; color:#198754; text-decoration:underline; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="overlay"></div>
+    <div class="container position-relative">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-start">
+          <h1 class="fw-bold">shopKME<br>ร้านขาย-ส่ง</h1>
+          <p class="lead">เครื่องมือแพทย์และอุปกรณ์ทางการแพทย์แบบครบวงจร</p>
+        </div>
+        <div class="col-md-6">
+          <div class="content-box" id="auth-box">
+            <h4 class="text-center fw-bold mb-4" id="form-title">สมัครสมาชิก</h4>
+
+            <!-- ฟอร์มสมัคร -->
+            <form id="register-form">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label">เบอร์โทรศัพท์</label>
+    <input type="text" id="register-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" maxlength="10" required>
+    <div id="phone-feedback" class="form-text text-danger"></div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">รหัสผ่าน</label>
+    <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
+  </div>
+  <button type="submit" class="btn btn-success w-100" id="btn-register" disabled>สมัครสมาชิก</button>
+</form>
+
+            <!-- ฟอร์มล็อกอิน -->
+            <form id="login-form" style="display:none;">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label">เบอร์โทรศัพท์</label>
+                <input type="text" id="login-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">รหัสผ่าน</label>
+                <input type="password" id="login-password" class="form-control" placeholder="รหัสผ่าน" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">เข้าสู่ระบบ</button>
+            </form>
+
+            <div class="text-center mt-3">
+              <small id="toggle-text">
+                หากมีบัญชีแล้ว?
+                <button class="toggle-btn" id="toggle-login">เข้าสู่ระบบ</button>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const registerForm = document.getElementById('register-form');
+    const loginForm = document.getElementById('login-form');
+    const toggleBtn = document.getElementById('toggle-login');
+    const title = document.getElementById('form-title');
+    const toggleText = document.getElementById('toggle-text');
+    const registerPhone = document.getElementById('register-phone');
+    const phoneFeedback = document.getElementById('phone-feedback');
+    const btnRegister = document.getElementById('btn-register');
+
+    // ✅ ใช้ state แทนการสร้าง element ใหม่
+    let isLoginMode = false;
+
+    function switchForm() {
+      if (isLoginMode) {
+        // กลับไปหน้า "สมัครสมาชิก"
+        registerForm.style.display = 'block';
+        loginForm.style.display = 'none';
+        title.textContent = 'สมัครสมาชิก';
+        toggleText.childNodes[0].textContent = 'หากมีบัญชีแล้ว? ';
+        toggleBtn.textContent = 'เข้าสู่ระบบ';
+        isLoginMode = false;
+      } else {
+        // สลับไปหน้า "เข้าสู่ระบบ"
+        registerForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        title.textContent = 'เข้าสู่ระบบ';
+        toggleText.childNodes[0].textContent = 'ยังไม่มีบัญชี? ';
+        toggleBtn.textContent = 'สมัครสมาชิก';
+        isLoginMode = true;
+      }
+    }
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchForm();
+    });
+
+    // ✅ ตรวจสอบเบอร์โทรอัตโนมัติเมื่อพิมพ์ครบ 10 หลัก
+    registerPhone.addEventListener('input', async () => {
+      const phone = registerPhone.value.trim();
+      if (phone.length !== 10 || !/^[0-9]+$/.test(phone)) {
+        phoneFeedback.textContent = "กรุณากรอกเบอร์โทรศัพท์ 10 หลักเท่านั้น";
+        phoneFeedback.classList.add('text-danger');
+        phoneFeedback.classList.remove('text-success');
+        btnRegister.disabled = true;
+        return;
+      }
+
+      const res = await fetch(`/account/check-phone/?phone=${phone}`);
+      const data = await res.json();
+
+      if (data.exists) {
+        phoneFeedback.textContent = "เบอร์นี้มีอยู่ในระบบแล้ว — กรุณาเข้าสู่ระบบแทน";
+        phoneFeedback.classList.add('text-danger');
+        phoneFeedback.classList.remove('text-success');
+        btnRegister.disabled = true;
+
+        Swal.fire({
+          icon: 'info',
+          title: 'เบอร์นี้มีอยู่ในระบบแล้ว',
+          text: 'กรุณาเข้าสู่ระบบ',
+          timer: 2500,
+          showConfirmButton: false
+        });
+
+        // เปลี่ยนเป็นฟอร์มเข้าสู่ระบบโดยอัตโนมัติ
+        if (!isLoginMode) {
+          switchForm();
+          document.getElementById('login-phone').value = phone;
+        }
+      } else {
+        phoneFeedback.textContent = "เบอร์นี้สามารถใช้สมัครได้";
+        phoneFeedback.classList.remove('text-danger');
+        phoneFeedback.classList.add('text-success');
+        btnRegister.disabled = false;
+      }
+    });
+
+    // ✅ สมัครสมาชิกด้วย AJAX (redirect ไปหน้า shop)
+registerForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const phone = registerPhone.value.trim();
+  const password = document.getElementById('register-password').value.trim();
+
+  const formData = new FormData();
+  formData.append('phone', phone);
+  formData.append('password', password);
+
+  const res = await fetch('/account/register/', { method: 'POST', body: formData });
+  const data = await res.json();
+
+  Swal.fire({ icon: data.status, title: data.message, timer: 2000, showConfirmButton: false });
+
+  if (data.redirect) {
+    setTimeout(() => window.location.href = data.redirect, 2000);
+  }
+});
+
+
+    // ✅ ล็อกอินด้วย AJAX
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const phone = document.getElementById('login-phone').value;
+  const password = document.getElementById('login-password').value;
+  const formData = new FormData();
+  formData.append('phone', phone);
+  formData.append('password', password);
+
+  const res = await fetch('/account/login/', { method: 'POST', body: formData });
+  const data = await res.json();
+
+  Swal.fire({ icon: data.status, title: data.message, timer: 2500, showConfirmButton: false });
+  if (data.redirect) {
+    setTimeout(() => window.location.href = data.redirect, 2000);
+  }
+});
+
+  </script>
+</body>
+</html>

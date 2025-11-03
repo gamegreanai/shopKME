@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container-fluid p-4 bg-light">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h4 class="fw-bold mb-4 text-success">
+        <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่ง
+      </h4>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label" for="{{ form.house_no.id_for_label }}">เลขที่บ้าน</label>
+            {{ form.house_no }} {{ form.house_no.errors }}
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="{{ form.moo.id_for_label }}">หมู่</label>
+            {{ form.moo }} {{ form.moo.errors }}
+          </div>
+          <div class="col-md-7">
+            <label class="form-label" for="{{ form.street.id_for_label }}">ถนน</label>
+            {{ form.street }} {{ form.street.errors }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.subdistrict.id_for_label }}">แขวง/ตำบล</label>
+            {{ form.subdistrict }} {{ form.subdistrict.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.district.id_for_label }}">เขต/อำเภอ</label>
+            {{ form.district }} {{ form.district.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.province.id_for_label }}">จังหวัด</label>
+            {{ form.province }} {{ form.province.errors }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.postal_code.id_for_label }}">รหัสไปรษณีย์</label>
+            {{ form.postal_code }} {{ form.postal_code.errors }}
+          </div>
+        </div>
+
+        <div class="text-end mt-4">
+          <button type="submit" class="btn btn-success px-4">
+            <i class="fa fa-save me-1"></i> บันทึกข้อมูล
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base/base.html' %}
+{% block title %}จัดการแต้ม | shopKME{% endblock %}
+{% block content %}
+
+<div class="container-fluid p-4 bg-light">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h4 class="fw-bold mb-4 text-success">
+        <i class="fa fa-coins me-2"></i> จัดการแต้มสะสมของผู้ใช้
+      </h4>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">จำนวนพ้อย (+ เพิ่ม / - ลบ)</label>
+          <input type="text" name="points" class="form-control" placeholder="เช่น +500 หรือ -300" required>
+          <small class="text-muted">พิมพ์เครื่องหมาย + เพื่อเพิ่ม หรือ - เพื่อลบแต้ม</small>
+        </div>
+
+        <div class="mt-4">
+          <h6 class="fw-bold text-secondary mb-3">
+            <i class="fa fa-users me-2"></i> เลือกผู้ใช้ที่ต้องการปรับพ้อย
+          </h6>
+
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead class="table-success">
+                <tr>
+                  <th><input type="checkbox" id="selectAll"></th>
+                  <th>เบอร์โทร</th>
+                  <th>ชื่อ-นามสกุล</th>
+                  <th>เลเวล</th>
+                  <th>พ้อยสะสม</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for profile in profiles %}
+                <tr>
+                  <td><input type="checkbox" name="users" value="{{ profile.user.id }}"></td>
+                  <td>{{ profile.user.phone }}</td>
+                  <td>{{ profile.user.first_name }} {{ profile.user.last_name }}</td>
+                  <td>
+                    {% if profile.points >= 5000 %}
+                      <span class="badge bg-warning text-dark">Premium</span>
+                    {% elif profile.points >= 1000 %}
+                      <span class="badge bg-info text-dark">Gold</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Silver</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ profile.points }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted">ไม่มีข้อมูลผู้ใช้</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="text-end mt-4">
+          <button type="submit" class="btn btn-success px-4">
+            <i class="fa fa-plus-circle me-1"></i> อัปเดตพ้อยของผู้ใช้ที่เลือก
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-4">
+        <a href="/account/dashboard/" class="btn btn-outline-secondary">
+          <i class="fa fa-arrow-left me-1"></i> กลับไปแดชบอร์ด
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('selectAll').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('input[name="users"]');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+  });
+</script>
+
+{% endblock %}

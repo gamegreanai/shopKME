@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% block title %}แดชบอร์ดเจ้าหน้าที่{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-5 bg-light text-center">
+  <p class="text-muted mb-5">เลือกเมนูที่คุณต้องการจัดการระบบได้จากด้านล่างนี้</p>
+
+  <div class="row justify-content-center g-4">
+
+    <!-- 🔸 จัดการแต้ม -->
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <i class="fa fa-coins fa-3x text-warning mb-3"></i>
+          <h5 class="fw-bold">จัดการแต้มผู้ใช้</h5>
+          <p class="text-muted small">เพิ่มหรือลบแต้มของผู้ใช้งานในระบบ</p>
+          <a href="/account/staff/points/" class="btn btn-outline-success mt-2 w-100">เข้าสู่เมนู</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔸 จัดการผู้ใช้ -->
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <i class="fa fa-users fa-3x text-primary mb-3"></i>
+          <h5 class="fw-bold">จัดการผู้ใช้</h5>
+          <p class="text-muted small">ดูข้อมูลผู้ใช้ทั้งหมดในระบบ</p>
+          <a href="/admin/account/user/" class="btn btn-outline-primary mt-2 w-100">เข้าสู่เมนู</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔸 จัดการคูปอง -->
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <i class="fa fa-gift fa-3x text-danger mb-3"></i>
+          <h5 class="fw-bold">จัดการคูปอง</h5>
+          <p class="text-muted small">เพิ่ม แก้ไข หรือลบคูปอง</p>
+          <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-danger mt-2 w-100">เข้าสู่เมนู</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container py-4">
+
+  <!-- แถบแต้ม & เลเวล -->
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+      <div class="mb-3 mb-md-0">
+        <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
+          ระดับสมาชิก: {{ meter.level }}
+        </span>
+        <span class="ms-2 text-muted">แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts</span>
+      </div>
+      <div class="w-100 w-md-50" style="max-width:520px;">
+        <div class="d-flex justify-content-between small mb-1">
+          <span>{{ meter.level }}</span>
+          <span>{{ meter.progress_pct }}%</span>
+        </div>
+        <div class="progress" role="progressbar" aria-valuenow="{{ meter.progress_pct }}" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar" style="width: {{ meter.progress_pct }}%"></div>
+        </div>
+        <div class="small text-muted mt-1">
+          {% if meter.next_level_name %}
+            อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong>
+          {% else %}
+            อยู่ระดับสูงสุดแล้ว 🎉
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">คูปองของฉัน</h5>
+      <div class="row g-3">
+       {% for r in my_coupons %}
+        {% with c=r.coupon %}
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm">
+            {% if c.image and c.image.name %}
+              <img src="{{ c.image.url }}" class="card-img-top" alt="{{ c.code }}">
+            {% else %}
+              {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
+            {% endif %}
+              <div class="card-body d-flex flex-column">
+                <h6 class="fw-bold mb-1">{{ c.name }}</h6>
+                <div class="small text-muted">
+                  แลกเมื่อ: {{ r.created_at|date:"Y-m-d H:i" }}
+                </div>
+                <div class="small mb-3">
+                  หมดอายุ: {{ c.ends_at|default:"-" }}
+                </div>
+
+                {# ปุ่มคัดลอกรหัส / เก็บไว้ใช้หน้า checkout ได้ #}
+                <div class="input-group mt-auto">
+                  <input type="text" class="form-control form-control-sm" value="{{ c.code }}" readonly>
+                  <button type="button" class="btn btn-outline-secondary btn-sm"
+                          onclick="navigator.clipboard.writeText('{{ c.code }}')">
+                    คัดลอก
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endwith %}
+        {% empty %}
+          <div class="col-12 text-muted">ยังไม่มีคูปองที่แลกไว้</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <!-- คูปองที่แลกได้ -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">คูปองที่แลกได้</h5>
+
+      <div class="row g-3">
+        {% for c in available %}
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 border-0 shadow-sm">
+            {% comment %} {% if c.image %}
+              <img src="{{ c.image.url }}" class="card-img-top" alt="{{ c.code }}">
+            {% else %} {% endcomment %}
+             {% if c.active %}
+              {% include "account/coupon_fall.html" with c=c theme="cpn--teal" %}
+            {% else %}
+              {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
+            {% endif %}
+            {% comment %} {% endif %} {% endcomment %}
+            <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold">{{ c.name }}</h6>
+              <div class="text-muted small mb-2">
+                ต้องการ <strong>{{ c.req_pts }}</strong> แต้ม
+              </div>
+              <div class="small mb-3">
+                หมดอายุ: {{ c.expires_at|default:"-" }}
+              </div>
+              <div class="mt-auto d-grid">
+                <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="redeem">
+                  <input type="hidden" name="coupon_id" value="{{ c.id }}">
+                  <button class="btn btn-success"
+                          {% if not c.can_use or not c.enough_points %} disabled {% endif %}>
+
+                    แลกคูปอง
+                  </button>
+                </form>
+              
+                {% if not c.active %}
+                  <div class="form-text text-danger">คูปองหมดแล้ว</div>
+                {% elif not c.enough_points %}
+                  <div class="form-text text-warning">แต้มสะสมไม่พอ</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-muted">ยังไม่มีคูปองสำหรับแลก</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ประวัติการแลก -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">ประวัติการแลก</h5>
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>คูปอง</th>
+              <th>เวลา</th>
+              <th>ออเดอร์</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in redemptions %}
+            <tr>
+              <td>
+                {% if r.coupon.image %}
+                  <img src="{{ r.coupon.image.url }}" class="me-2" style="width:48px;height:auto;">
+                {% endif %}
+                {{ r.coupon.code }}
+              </td>
+              <td>{{ r.created_at }}</td>
+              <td>{{ r.order_id|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-muted">ยังไม่มีรายการแลก</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

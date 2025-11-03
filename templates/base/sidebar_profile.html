@@ -1,0 +1,147 @@
+{% load static %}
+
+<style>
+  .sidebar {
+    min-width: 280px;
+    background-color: #f5fff6;
+    border-right: 1px solid #ddd;
+    min-height: 100vh;
+    {% comment %} display: flex;
+    flex-direction: column;
+    justify-content: space-between; {% endcomment %}
+  }
+
+  .sidebar-header {
+    background-color: #bff0c2;
+    padding: 20px;
+    border-bottom: 1px solid #d9f2dc;
+  }
+
+  .sidebar-header h5 {
+    font-weight: bold;
+    color: #2b7a32;
+    margin-bottom: 0;
+  }
+
+  .sidebar-header h4 {
+    font-weight: bold;
+    color: #198754;
+    margin-top: 5px;
+  }
+
+  .sidebar-header small {
+    font-size: 14px;
+    color: #198754;
+  }
+
+  .sidebar-section {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .sidebar-section h6 {
+    font-weight: bold;
+    color: #555;
+    font-size: 14px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+  }
+
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .sidebar a:hover,
+  .sidebar a.active {
+    background-color: #e9f8ec;
+    color: #198754;
+  }
+
+  .sidebar a i {
+    width: 25px;
+    font-size: 18px;
+    color: #198754;
+    margin-right: 10px;
+  }
+
+  .logout-btn {
+    margin: 15px;
+    border: 2px solid #198754;
+    color: #198754;
+    font-weight: bold;
+    border-radius: 25px;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .logout-btn:hover {
+    background-color: #198754;
+    color: white;
+  }
+</style>
+
+<!-- 🔹 Sidebar -->
+<div class="sidebar shadow-sm">
+
+  <!-- 🔹 ส่วนหัว (คลิกได้ทั้งหมด) -->
+  <a href="/account/dashboard/" class="sidebar-header text-center text-decoration-none d-block mb-3">
+    <div class="p-3 rounded" style="background-color:#bff0c2;">
+      <h5 id="greeting" class="fw-bold mb-1">สวัสดี</h5>
+      <h4 class="fw-bold text-success">{{ user.phone|default:"099-XXX-XXXX" }}</h4>
+      <small>ดูข้อมูลบัญชีของฉัน</small>
+    </div>
+  </a>
+
+  <!-- 🔸 เมนูหลัก -->
+    <div class="sidebar-section">
+      <h6>ข้อมูลส่วนตัว</h6>
+      <a href="/account/profile/"><i class="fa fa-user"></i> ข้อมูลส่วนตัว</a>
+      <a href="/account/address/"><i class="fa fa-map-marker-alt"></i> ที่อยู่จัดส่ง</a>
+      <a href="/account/redeem/"><i class="fa fa-gift"></i> แลก Point</a>
+      {% comment %} <a href="/account/change-password/"><i class="fa fa-lock"></i> เปลี่ยนรหัสผ่าน</a> {% endcomment %}
+    </div>
+
+  {% if user.is_staff or user.is_superuser %}
+  <div class="list-group">
+  <a href="/account/coupon/" class="list-group-item list-group-item-action">
+    🎁 จัดการคูปอง
+  </a>
+  <a href="/account/staff/points/" class="list-group-item list-group-item-action">
+    💎 จัดการแต้มผู้ใช้
+  </a>
+</div>
+
+{% endif %}
+
+
+  <!-- 🔸 ปุ่มออกจากระบบ -->
+  <a href="/account/logout/" class="logout-btn">ออกจากระบบ</a>
+</div>
+
+<!-- 🔹 Script ทักทายตามเวลา -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const greetingEl = document.getElementById("greeting");
+    const hour = new Date().getHours();
+
+    let greetingText = "สวัสดี";
+    if (hour >= 5 && hour < 12) {
+      greetingText = "🌅 สวัสดีตอนเช้า";
+    } else if (hour >= 12 && hour < 18) {
+      greetingText = "🌤️ สวัสดีตอนบ่าย";
+    } else {
+      greetingText = "🌙 สวัสดีตอนเย็น";
+    }
+
+    greetingEl.textContent = greetingText;
+  });
+</script>
+
+

@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row">
+    <!-- 🔹 รายการสินค้า -->
+    <div class="col-md-8">
+      <h4 class="fw-bold mb-4">ตะกร้าสินค้าของคุณ</h4>
+
+      <div class="card mb-3">
+        <div class="row g-0 align-items-center">
+          <div class="col-md-2 text-center">
+            <img src="https://cdn.buymed.co.th/uploads/products/omron_bp_monitor.jpg" 
+                 class="img-fluid rounded-start" 
+                 alt="สินค้า 1" 
+                 style="height: 80px; object-fit: cover;">
+          </div>
+          <div class="col-md-6">
+            <div class="card-body">
+              <h6 class="card-title mb-0">เครื่องวัดความดัน OMRON</h6>
+              <small class="text-muted">จำนวน: 1 ชิ้น</small>
+            </div>
+          </div>
+          <div class="col-md-4 text-end pe-4">
+            <span class="fw-bold text-success">฿1,290</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="row g-0 align-items-center">
+          <div class="col-md-2 text-center">
+            <img src="https://cdn.buymed.co.th/uploads/products/digital_thermometer.jpg" 
+                 class="img-fluid rounded-start" 
+                 alt="สินค้า 2" 
+                 style="height: 80px; object-fit: cover;">
+          </div>
+          <div class="col-md-6">
+            <div class="card-body">
+              <h6 class="card-title mb-0">เครื่องวัดอุณหภูมิดิจิทัล</h6>
+              <small class="text-muted">จำนวน: 2 ชิ้น</small>
+            </div>
+          </div>
+          <div class="col-md-4 text-end pe-4">
+            <span class="fw-bold text-success">฿300</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔹 สรุปยอดรวม -->
+    <div class="col-md-4">
+      <div class="card p-3 shadow-sm">
+        <h5 class="fw-bold mb-3">สรุปการสั่งซื้อ</h5>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span>ยอดรวมสินค้า</span>
+          <span>฿1,590</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>ค่าจัดส่ง</span>
+          <span>฿50</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold text-success">
+          <span>ยอดสุทธิ</span>
+          <span>฿1,640</span>
+        </div>
+
+        <button class="btn btn-success w-100 mt-4">
+          <i class="fa fa-check-circle me-1"></i> ยืนยันคำสั่งซื้อ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
