@@ -313,10 +313,11 @@ def redeem_view(request):
             cid = request.POST.get("coupon_id")
             coupon = get_object_or_404(Coupon, pk=cid)
 
-            # ตรวจสิทธิ์และแต้ม
+            # 🔹 ตรวจสอบสิทธิ์และแต้ม
             if not coupon.is_active_now():
                 messages.error(request, "คูปองนี้ไม่อยู่ในช่วงใช้งาน")
                 return redirect("account:redeem")
+
             if not coupon.can_user_use(request.user):
                 messages.error(request, "คูปองนี้ไม่ตรงกับระดับสมาชิกของคุณหรือเกินสิทธิ์การใช้ต่อผู้ใช้")
                 return redirect("account:redeem")
@@ -326,33 +327,41 @@ def redeem_view(request):
                 messages.error(request, "แต้มสะสมไม่เพียงพอสำหรับการแลกคูปองนี้")
                 return redirect("account:redeem")
 
-            # บันทึกแบบอะตอมมิก
+            # 🔸 บันทึกแบบ atomic ป้องกันแข่งกันแลก
             with transaction.atomic():
-                # เช็คซ้ำในทรานแซกชัน
+                # ดึงคูปองแบบ lock
                 c = Coupon.objects.select_for_update().get(pk=coupon.pk)
-                if c.max_uses is not None and c.use_count >= c.max_uses:
+
+                # ถ้าคูปองหมดหรือปิดอยู่แล้ว
+                if not c.active:
                     messages.error(request, "คูปองนี้ถูกใช้เต็มจำนวนแล้ว")
                     return redirect("account:redeem")
-                if c.max_uses_per_user is not None:
-                    used = CouponRedemption.objects.select_for_update().filter(user=request.user, coupon=c).count()
-                    if used >= c.max_uses_per_user:
-                        messages.error(request, "คุณใช้คูปองนี้ครบตามสิทธิ์ต่อผู้ใช้แล้ว")
-                        return redirect("account:redeem")
 
-                # หักแต้ม + อัปเดต use_count + บันทึก Redemption
+                # 🔹 หักแต้มจากโปรไฟล์
                 profile.points = F("points") - req_pts
                 profile.save(update_fields=["points"])
-                # refresh ค่า points ใน instance
                 profile.refresh_from_db(fields=["points"])
 
-                CouponRedemption.objects.create(
+                # 🔹 บันทึกการแลก (กันซ้ำด้วย get_or_create)
+                redemption, created = CouponRedemption.objects.get_or_create(
                     coupon=c,
                     user=request.user,
-                    order_id="",              # ไม่มีออเดอร์ ข้ามไป
-                    discount_applied=Decimal("0.00"),
+                    order_id="",  # ไม่มีออเดอร์
+                    defaults={"discount_applied": Decimal("0.00")},
                 )
 
-                Coupon.objects.filter(pk=c.pk).update(use_count=F("use_count") + 1)
+                if not created:
+                    messages.warning(request, "คุณได้แลกคูปองนี้ไปแล้ว")
+                    return redirect("account:redeem")
+
+                # 🔹 ปิดคูปองหลังแลกครั้งเดียว
+                updated = Coupon.objects.filter(pk=c.pk, active=True).update(
+                    use_count=F("use_count") + 1,
+                    active=False
+                )
+                if updated == 0:
+                    messages.error(request, "คูปองนี้ถูกใช้เต็มจำนวนแล้ว")
+                    return redirect("account:redeem")
 
             messages.success(request, "แลกคูปองสำเร็จ ✅")
             return redirect("account:redeem")
@@ -363,27 +372,28 @@ def redeem_view(request):
     # --- GET: แสดงรายการคูปองที่แลกได้ + ประวัติ ---
     now = timezone.now()
     coupons_qs = (
-        Coupon.objects.filter( starts_at__lte=now)
+        Coupon.objects.filter(starts_at__lte=now)
         .exclude(ends_at__lt=now)
         .order_by("ends_at", "code")
     )
 
-    # ฟิลเตอร์ให้เหลือ “แลกได้”
+    # 🔹 ฟิลเตอร์ให้เหลือเฉพาะ “แลกได้”
     available = []
     for c in coupons_qs:
         req_pts = getattr(c, "required_points", 0) or 0
-        # เงื่อนไขหลักจากโมเดล
         can_use = c.can_user_use(request.user)
         enough_points = profile.points >= req_pts
-        # แยกรายการเพื่อโชว์สถานะปุ่ม
+
+        # เพิ่มข้อมูลช่วยแสดงผลใน template
         c.req_pts = req_pts
         c.enough_points = enough_points
         c.can_use = can_use
         c.expires_at = c.ends_at
-        c.percent_off = round(req_pts / 10) 
+        c.percent_off = round(req_pts / 10)
         c.active = c.active
         available.append(c)
 
+    # 🔹 ประวัติการแลก
     redemptions = (
         CouponRedemption.objects.select_related("coupon")
         .filter(user=request.user)
@@ -396,12 +406,12 @@ def redeem_view(request):
         .order_by("-created_at")
     )
 
-
     context = {
         "profile": profile,
         "meter": meter,
         "available": available,
         "redemptions": redemptions,
-        "my_coupons": my_coupons, 
+        "my_coupons": my_coupons,
     }
     return render(request, "account/redeem.html", context)
+

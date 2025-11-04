@@ -53,6 +53,7 @@ def coupon_staff_view(request):
 
             code = _ensure_unique_code(code)
             c = Coupon(
+                name=name,
                 code=code,
                 discount_type=Coupon.FIXED,
                 discount_value=0,
@@ -61,7 +62,11 @@ def coupon_staff_view(request):
                 ends_at=ends_at,
                 active=True,
                 note=description,
-                allowed_levels=[MembershipLevel.SILVER, MembershipLevel.GOLD, MembershipLevel.PREMIUM],
+                allowed_levels=[
+                    MembershipLevel.SILVER,
+                    MembershipLevel.GOLD,
+                    MembershipLevel.PREMIUM,
+                ],
             )
             try:
                 if hasattr(Coupon, "required_points"):
@@ -74,7 +79,8 @@ def coupon_staff_view(request):
 
             try:
                 c.full_clean()
-                if img: c.image = img
+                if img:
+                    c.image = img
                 c.save()
                 messages.success(request, "บันทึกคูปองใหม่เรียบร้อย ✅")
             except Exception as e:
@@ -116,14 +122,42 @@ def coupon_staff_view(request):
                 coupon.save(update_fields=["image"])
             messages.success(request, "ลบรูปคูปองเรียบร้อย ✅")
             return redirect("account:coupon_staff")
+        
+        # ---------- DELETE COUPON ----------
+        elif action == "delete":
+            cid = request.POST.get("coupon_id")
+            coupon = get_object_or_404(Coupon, pk=cid)
 
+            # ✅ ลบรูปใน storage ก่อน (ถ้ามี)
+            if coupon.image:
+                coupon.image.delete(save=False)
+
+            # ✅ ลบคูปองออกจากฐานข้อมูล
+            coupon_name = coupon.name
+            coupon.delete()
+
+            messages.success(request, f"ลบคูปอง '{coupon_name}' เรียบร้อย ✅")
+            return redirect("account:coupon_staff")
+
+        
         else:
             messages.error(request, "รูปแบบคำสั่งไม่ถูกต้อง")
             return redirect("account:coupon_staff")
 
-    # GET
+    # ---------- GET ----------
     coupons = list(Coupon.objects.all().order_by("-created_at"))
+    now = timezone.now()  # ✅ เพิ่มตัวแปรเวลาสำหรับ template
+
     for c in coupons:
         c.expires_at = c.ends_at
         c.is_active = c.active
-    return render(request, "coupons/coupon_staff.html", {"coupons": coupons})
+        # ✅ เพิ่มฟิลด์ช่วยแสดงผลใน template
+        c.is_expired = c.ends_at and c.ends_at < now
+        c.is_fully_used = c.max_uses and c.use_count >= c.max_uses
+
+    # ✅ ส่ง now ไปด้วย เพื่อใช้ใน badge เงื่อนไขหมดอายุ
+    return render(
+        request,
+        "coupons/coupon_staff.html",
+        {"coupons": coupons, "now": now},
+    )

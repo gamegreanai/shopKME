@@ -75,7 +75,18 @@
                 {% if c.required_points is not None %}
                   {{ c.required_points }}
                 {% else %}
-                  -
+                  <td>
+  {% if not c.active %}
+    <span class="badge bg-secondary">หมดแล้ว</span>
+  {% elif c.max_uses and c.use_count >= c.max_uses %}
+    <span class="badge bg-danger">ครบจำนวน</span>
+  {% elif c.ends_at and c.ends_at|date:"U" < now|date:"U" %}
+    <span class="badge bg-dark">หมดอายุ</span>
+  {% else %}
+    <span class="badge bg-success">ใช้งานได้</span>
+  {% endif %}
+</td>
+
                 {% endif %}
               </td>
               <td>{{ c.expires_at }}</td>
@@ -94,6 +105,14 @@
                     <input type="hidden" name="coupon_id" value="{{ c.id }}">
                     <button class="btn btn-outline-primary btn-sm">สลับสถานะ</button>
                   </form>
+
+                  <!-- ปุ่มลบ -->
+              <form method="POST" style="display:inline;" onsubmit="return confirm('ยืนยันลบคูปองนี้หรือไม่?');">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="coupon_id" value="{{ c.id }}">
+                <button type="submit" class="btn btn-sm btn-danger">🗑️ ลบ</button>
+              </form>
 
                   <form method="post" enctype="multipart/form-data" class="d-inline">
                     {% csrf_token %}
