@@ -1,9 +1,9 @@
 <style>
 /* ----- Coupon Fallback (no image) ----- */
 .cpn {
-  --cpn-bg: #13b79c;       /* สีหลัก (teal) */
+  --cpn-bg: #ff008b;       /* สีหลัก (teal) */
   --cpn-fg: #ffffff;       /* สีตัวอักษร */
-  --cpn-side: #0fa38b;     /* เฉดเข้ม */
+  --cpn-side: #ff008b;     /* เฉดเข้ม */
   --cpn-gap: 10px;         /* ช่องฟันฉีก */
   --cpn-radius: 10px;
   position: relative;
@@ -14,10 +14,17 @@
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,.1);
   isolation: isolate;
+
+  /* ✅ จำกัดขนาดคูปอง */
+  width: 100%;
+  max-width: 874px;
+  max-height: 600pxpx;
+  margin: auto; /* จัดกึ่งกลาง */
 }
-.cpn--warn { --cpn-bg:#f5a623; --cpn-side:#e09313; --cpn-fg:#ffffff; } /* เหลือง */
-.cpn--red  { --cpn-bg:#f44336; --cpn-side:#d33125; --cpn-fg:#ffffff; } /* แดง  */
-.cpn--light{ --cpn-bg:#ffffff; --cpn-side:#f0f2f5; --cpn-fg:#222222; } /* ขาว */
+
+.cpn--warn { --cpn-bg:#f5a623; --cpn-side:#e09313; --cpn-fg:#ffffff; }
+.cpn--red  { --cpn-bg:#f44336; --cpn-side:#d33125; --cpn-fg:#ffffff; }
+.cpn--light{ --cpn-bg:#ffffff; --cpn-side:#f0f2f5; --cpn-fg:#222222; }
 
 .cpn__left{
   background: var(--cpn-bg);
@@ -38,22 +45,12 @@
   content:"";
   position:absolute; top:50%; transform:translateY(-50%);
   width:20px; height:20px; border-radius:50%;
-  background: #f6f7f9; /* สีพื้นหลังเพจ */
+  background: #f6f7f9;
   z-index:2;
 }
 .cpn::before{ left:-10px; }
 .cpn::after { right:-10px; }
 
-/* แนวรูเจาะเป็นจุดๆ */
-.cpn__perforate{
-  position:absolute; inset:0;
-  background:
-    radial-gradient(circle,#0000 55%,rgba(255,255,255,.7) 56%) left/var(--cpn-gap) 10px repeat-y;
-  width: var(--cpn-gap);
-  left: calc(100% - 96px - var(--cpn-gap)); /* ตรงรอยต่อซ้าย-ขวา */
-  mix-blend-mode: overlay;
-  pointer-events:none;
-}
 
 /* Typography */
 .cpn__kicker{ letter-spacing:.12em; font-weight:700; font-size:.8rem; opacity:.9; }
@@ -71,6 +68,19 @@
     repeating-linear-gradient(90deg, #fff 0 2px, #111 2px 4px);
   border-radius: 4px;
 }
+
+/* ✅ ปรับให้ responsive บนมือถือ */
+@media (max-width: 874px) {
+  .cpn {
+    grid-template-columns: 1fr;
+    max-height: 500px;
+  }
+  .cpn__right {
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 10px;
+  }
+}
 </style>
 
 {# ใช้ class สีตามเลเวล/หมวด: cpn--warn / cpn--red / cpn--light #}
@@ -78,9 +88,8 @@
   <div class="cpn__left">
     <div class="cpn__kicker">GIFT VOUCHER</div>
 
-    {# แสดงรูปแบบส่วนลด #}
     {% if c.discount_type == 'PERCENT' %}
-      <div class="cpn__off xxl">{{ c.percent_off|floatformat:0 }}%OFF</div>
+      <div class="cpn__off xxl">{{ c.percent_off|floatformat:0 }}% OFF</div>
     {% else %}
       <div class="cpn__off xxl">฿{{ c.percent_off|floatformat:0 }} OFF</div>
     {% endif %}
@@ -95,7 +104,7 @@
 
     <div class="small mt-2">
       หมดอายุ: {{ c.ends_at|date:"Y-m-d H:i" }} • สิทธิ์ต่อผู้ใช้:
-      {{ c.max_uses_per_user|default:"ไม่จำกัด" }}
+      {{ c.max_uses_per_user|default:"1" }}
     </div>
   </div>
 

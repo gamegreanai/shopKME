@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator
 from django.utils import timezone
 from django.db.models import Q, F
 from django.contrib.admin.views.decorators import staff_member_required
@@ -216,60 +217,6 @@ def manage_points_view(request):
 
 
 @staff_member_required
-def staff_manage_points(request):
-    """หน้า staff จัดการแต้มผู้ใช้ (เพิ่ม / ลบ / แก้ไข / ลบ user / ดูประวัติ / ค้นหา)"""
-    query = request.GET.get("q", "")
-    profiles = Profile.objects.select_related("user").order_by("-points")
-    if query:
-        profiles = profiles.filter(
-            Q(user__first_name__icontains=query) |
-            Q(user__last_name__icontains=query) |
-            Q(user__phone__icontains=query)
-        )
-
-    # ✅ เพิ่ม/ลดแต้มแบบหลายคน
-    if request.method == "POST":
-        selected_ids = request.POST.getlist("selected_users")
-        points_change = request.POST.get("points_change")
-
-        try:
-            change = int(points_change)
-        except (TypeError, ValueError):
-            messages.error(request, "กรุณากรอกจำนวนแต้มให้ถูกต้อง เช่น +100 หรือ -50")
-            return redirect("account:staff_manage_points")
-
-        for uid in selected_ids:
-            try:
-                profile = Profile.objects.get(user_id=uid)
-                old_points = profile.points
-                profile.points = F("points") + change
-                profile.save()
-                profile.refresh_from_db()
-
-                PointTransaction.objects.create(
-                    staff=request.user,
-                    user=profile.user,
-                    action="add" if change > 0 else "subtract",
-                    points=abs(change),
-                )
-
-                messages.success(request, f"✅ {profile.user.phone} {change:+} แต้ม (จาก {old_points} → {profile.points})")
-            except Profile.DoesNotExist:
-                messages.error(request, f"❌ ไม่พบผู้ใช้ ID {uid}")
-
-        return redirect("account:staff_manage_points")
-
-    # ✅ ประวัติการทำรายการแต้ม
-    history = PointTransaction.objects.select_related("staff", "user").order_by("-created_at")[:10]
-
-    context = {
-        "profiles": profiles,
-        "query": query,
-        "history": history,
-    }
-    return render(request, "staff/staff_manage_points.html", context)
-
-@staff_member_required
 def edit_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     profile = getattr(user, 'profile', None)
@@ -314,68 +261,75 @@ def staff_required(user):
     return user.is_staff or user.is_superuser
 
 
-@user_passes_test(staff_required)
-def staff_manage_points_view(request):
-    """หน้าจัดการแต้มผู้ใช้ + Search + History + เพิ่ม/ลบหลายคน"""
-    query = request.GET.get('q', '')
-    profiles = Profile.objects.select_related('user').order_by('-points')
 
-    # 🔍 ฟังก์ชันค้นหาชื่อหรือเบอร์โทร
+@staff_member_required
+def staff_manage_points(request):
+    """หน้า staff จัดการแต้มผู้ใช้ (เพิ่ม / ลบ / แก้ไข / ลบ user / ดูประวัติ / ค้นหา พร้อมแบ่งหน้า)"""
+    query = request.GET.get("q", "")
+
+    # ✅ ดึงรายชื่อผู้ใช้ + ค้นหา
+    profiles = Profile.objects.select_related("user").order_by("-points")
     if query:
         profiles = profiles.filter(
-            Q(user__first_name__icontains=query) |
-            Q(user__last_name__icontains=query) |
-            Q(user__phone__icontains=query)
+            Q(user__first_name__icontains=query)
+            | Q(user__last_name__icontains=query)
+            | Q(user__phone__icontains=query)
         )
 
-    # 🧾 เมื่อกดเพิ่ม/ลบแต้ม
+    # ✅ เพิ่ม/ลดแต้มหลายคน
     if request.method == "POST":
-        selected_ids = request.POST.getlist('selected_users')
-        points_change = request.POST.get('points_change', '0')
+        selected_ids = request.POST.getlist("selected_users")
+        points_change = request.POST.get("points_change")
 
         try:
-            points_change = int(points_change)
-        except ValueError:
-            messages.error(request, "กรุณากรอกจำนวนแต้มเป็นตัวเลข เช่น +100 หรือ -50")
-            return redirect('account:staff_manage_points')
+            change = int(points_change)
+        except (TypeError, ValueError):
+            messages.error(request, "กรุณากรอกจำนวนแต้มให้ถูกต้อง เช่น +100 หรือ -50")
+            return redirect("account:staff_manage_points")
 
-        if not selected_ids:
-            messages.warning(request, "กรุณาเลือกผู้ใช้อย่างน้อยหนึ่งคน")
-            return redirect('account:staff_manage_points')
-
-        # บันทึกการเปลี่ยนแต้มใน Profile และ PointTransaction
         for uid in selected_ids:
             try:
-                profile = Profile.objects.select_related('user').get(user_id=uid)
+                profile = Profile.objects.get(user_id=uid)
                 old_points = profile.points
-                profile.points = F('points') + points_change
+                profile.points = F("points") + change
                 profile.save()
+                profile.refresh_from_db()
 
-                # ✅ บันทึก history
+                # ✅ บันทึกประวัติ
                 PointTransaction.objects.create(
                     staff=request.user,
                     user=profile.user,
-                    action='add' if points_change > 0 else 'subtract',
-                    points=abs(points_change),
-                    created_at=timezone.now()
+                    action="add" if change > 0 else "subtract",
+                    points=abs(change),
                 )
 
-                profile.refresh_from_db()
-                messages.success(request, f"อัปเดตแต้ม {profile.user.phone} จาก {old_points} ➜ {profile.points}")
+                messages.success(
+                    request,
+                    f"✅ {profile.user.phone} {change:+} แต้ม (จาก {old_points} → {profile.points})",
+                )
             except Profile.DoesNotExist:
-                messages.error(request, f"ไม่พบผู้ใช้ ID {uid}")
+                messages.error(request, f"❌ ไม่พบผู้ใช้ ID {uid}")
 
-        return redirect('account:staff_manage_points')
+        return redirect("account:staff_manage_points")
 
-    # 📜 แสดงประวัติ 20 รายการล่าสุด
-    history = PointTransaction.objects.select_related('user', 'staff').order_by('-created_at')[:20]
+    # ✅ Pagination สำหรับ profiles (รายชื่อผู้ใช้)
+    user_paginator = Paginator(profiles, 10)
+    user_page_number = request.GET.get("user_page")
+    profiles_page = user_paginator.get_page(user_page_number)
 
+    # ✅ Pagination สำหรับ history (ประวัติ log staff)
+    history_qs = PointTransaction.objects.select_related("staff", "user").order_by("-created_at")
+    history_paginator = Paginator(history_qs, 10)
+    history_page_number = request.GET.get("history_page")
+    history_page = history_paginator.get_page(history_page_number)
+
+    # ✅ ส่งค่าไป template
     context = {
-        'profiles': profiles,
-        'history': history,
-        'query': query,
+        "profiles": profiles_page,
+        "query": query,
+        "history": history_page,
     }
-    return render(request, 'staff/staff_manage_points.html', context)
+    return render(request, "staff/staff_manage_points.html", context)
 
 
 # Override dashboard view to show Name/Address form

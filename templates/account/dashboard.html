@@ -42,26 +42,116 @@
   <!-- 🔹 ตรวจว่ามีข้อมูลหรือยัง -->
   {% if user.first_name and user.last_name and user.email and profile.title and profile.gender and profile.house_no and profile.moo and profile.street and profile.subdistrict and profile.district and profile.province and profile.postal_code %}
   
-  <!-- ✅ แสดงข้อมูล -->
-  <div class="card border-0 shadow-sm rounded-4 p-4">
-    <h5 class="fw-bold text-success mb-4"><i class="fa fa-user me-2"></i> ข้อมูลส่วนตัว</h5>
-    <div class="row g-4">
-      <div class="col-md-3"><strong>คำนำหน้าชื่อ</strong><div>{{ profile.title }}</div></div>
-      <div class="col-md-4"><strong>ชื่อ</strong><div>{{ user.first_name }}</div></div>
-      <div class="col-md-5"><strong>นามสกุล</strong><div>{{ user.last_name }}</div></div>
-      <div class="col-md-3"><strong>เพศ</strong><div>{{ profile.gender }}</div></div>
-      <div class="col-md-6"><strong>อีเมล</strong><div>{{ user.email }}</div></div>
-      <div class="col-md-6"><strong>เบอร์โทรศัพท์</strong><div>{{ user.phone }}</div></div>
-      <div class="col-12"><hr></div>
-      <div class="col-md-3"><strong>เลขที่บ้าน</strong><div>{{ profile.house_no }}</div></div>
-      <div class="col-md-2"><strong>หมู่</strong><div>{{ profile.moo }}</div></div>
-      <div class="col-md-7"><strong>ถนน</strong><div>{{ profile.street }}</div></div>
-      <div class="col-md-6"><strong>แขวง/ตำบล</strong><div>{{ profile.subdistrict }}</div></div>
-      <div class="col-md-6"><strong>เขต/อำเภอ</strong><div>{{ profile.district }}</div></div>
-      <div class="col-md-6"><strong>จังหวัด</strong><div>{{ profile.province }}</div></div>
-      <div class="col-md-6"><strong>รหัสไปรษณีย์</strong><div>{{ profile.postal_code }}</div></div>
+  <!-- คำนำหน้า และ เพศ -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="fw-semibold mb-2 d-block">คำนำหน้า *</label>
+        <div class="d-flex gap-3">
+          <div><input type="radio" name="title" {% if profile.title == 'นาย' %}checked{% endif %}> นาย</div>
+          <div><input type="radio" name="title" {% if profile.title == 'นาง' %}checked{% endif %}> นาง</div>
+          <div><input type="radio" name="title" {% if profile.title == 'นางสาว' %}checked{% endif %}> นางสาว</div>
+          <div><input type="radio" name="title" {% if profile.title == 'คุณ' %}checked{% endif %}> คุณ</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="fw-semibold mb-2 d-block">เพศ *</label>
+        <div class="d-flex gap-3">
+          <div><input type="radio" name="gender" {% if profile.gender == 'ชาย' %}checked{% endif %}> ชาย</div>
+          <div><input type="radio" name="gender" {% if profile.gender == 'หญิง' %}checked{% endif %}> หญิง</div>
+        </div>
+      </div>
     </div>
+
+    <!-- ชื่อ-นามสกุล -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="fw-semibold mb-2">ชื่อ *</label>
+        <input type="text" class="form-control bg-light" value="{{ user.first_name }}" readonly>
+      </div>
+      <div class="col-md-6">
+        <label class="fw-semibold mb-2">นามสกุล *</label>
+        <input type="text" class="form-control bg-light" value="{{ user.last_name }}" readonly>
+      </div>
+    </div>
+
+    <!-- วันเกิด -->
+    {% comment %} <div class="row mb-4">
+      <div class="col-md-12">
+        <label class="fw-semibold mb-2">วัน/เดือน/ปีเกิด *</label>
+        <div class="row g-2">
+          <div class="col-md-4">
+            <input type="text" class="form-control bg-light" placeholder="วัน" value="{{ profile.birth_day|default:'' }}" readonly>
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control bg-light" placeholder="เดือน" value="{{ profile.birth_month|default:'' }}" readonly>
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control bg-light" placeholder="ปี" value="{{ profile.birth_year|default:'' }}" readonly>
+          </div>
+        </div>
+      </div>
+    </div> {% endcomment %}
+
+    <!-- ข้อมูลติดต่อ -->
+    <h6 class="fw-bold mt-4 mb-3 text-secondary">ข้อมูลติดต่อ</h6>
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="fw-semibold mb-2">เบอร์มือถือ *</label>
+        <input type="text" class="form-control bg-light" value="{{ user.phone }}" readonly>
+      </div>
+      <div class="col-md-6">
+        <label class="fw-semibold mb-2">อีเมล *</label>
+        <input type="text" class="form-control bg-light" value="{{ user.email }}" readonly>
+      </div>
+    </div>
+
+    <!-- 🔹 ข้อมูลที่อยู่ -->
+<div class="col-12 my-4">
+  <hr>
+  <h6 class="fw-bold mt-3 mb-3 text-secondary">ข้อมูลที่อยู่</h6>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-3">
+    <label class="fw-semibold mb-2">เลขที่บ้าน</label>
+    <input type="text" class="form-control bg-light" value="{{ profile.house_no }}" readonly>
   </div>
+
+  <div class="col-md-2">
+    <label class="fw-semibold mb-2">หมู่</label>
+    <input type="text" class="form-control bg-light" value="{{ profile.moo }}" readonly>
+  </div>
+
+  <div class="col-md-7">
+    <label class="fw-semibold mb-2">ถนน</label>
+    <input type="text" class="form-control bg-light" value="{{ profile.street }}" readonly>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <label class="fw-semibold mb-2">แขวง/ตำบล</label>
+    <input type="text" class="form-control bg-light" value="{{ profile.subdistrict }}" readonly>
+  </div>
+
+  <div class="col-md-6">
+    <label class="fw-semibold mb-2">เขต/อำเภอ</label>
+    <input type="text" class="form-control bg-light" value="{{ profile.district }}" readonly>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <label class="fw-semibold mb-2">จังหวัด</label>
+    <input type="text" class="form-control bg-light" value="{{ profile.province }}" readonly>
+  </div>
+
+  <div class="col-md-6">
+    <label class="fw-semibold mb-2">รหัสไปรษณีย์</label>
+    <input type="text" class="form-control bg-light" value="{{ profile.postal_code }}" readonly>
+  </div>
+</div>
+
 
   {% else %}
 

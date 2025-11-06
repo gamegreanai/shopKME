@@ -42,7 +42,8 @@
                 </a>
               </td>
               <td>
-                <a href="{% url 'account:delete_user' p.user.id %}" class="btn btn-danger btn-sm" onclick="return confirm('แน่ใจว่าต้องการลบผู้ใช้นี้?');">
+                <a href="{% url 'account:delete_user' p.user.id %}" class="btn btn-danger btn-sm"
+                  onclick="return confirm('แน่ใจว่าต้องการลบผู้ใช้นี้?');">
                   <i class="fa fa-trash"></i> ลบผู้ใช้งาน
                 </a>
               </td>
@@ -53,8 +54,38 @@
           </tbody>
         </table>
 
+        <!-- 🔹 Pagination: รายชื่อผู้ใช้ -->
+        {% if profiles.has_other_pages %}
+        <div class="d-flex justify-content-center mt-3">
+          <nav>
+            <ul class="pagination">
+              {% if profiles.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?user_page={{ profiles.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">ก่อนหน้า</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled"><span class="page-link">ก่อนหน้า</span></li>
+              {% endif %}
+
+              <li class="page-item disabled">
+                <span class="page-link">หน้า {{ profiles.number }} / {{ profiles.paginator.num_pages }}</span>
+              </li>
+
+              {% if profiles.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?user_page={{ profiles.next_page_number }}{% if query %}&q={{ query }}{% endif %}">ถัดไป</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled"><span class="page-link">ถัดไป</span></li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+        {% endif %}
+
         <div class="d-flex mt-3">
-          <input type="text" name="points_change" class="form-control me-2" placeholder="+500 หรือ -200" style="max-width: 150px;">
+          <input type="text" name="points_change" class="form-control me-2" placeholder="+500 หรือ -200"
+            style="max-width: 150px;">
           <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> อัปเดตแต้ม</button>
         </div>
       </div>
@@ -97,6 +128,35 @@
           {% endfor %}
         </tbody>
       </table>
+
+      <!-- 🔹 Pagination: ประวัติการปรับแต้ม -->
+      {% if history.has_other_pages %}
+      <div class="d-flex justify-content-center mt-3">
+        <nav>
+          <ul class="pagination">
+            {% if history.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?history_page={{ history.previous_page_number }}">ก่อนหน้า</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">ก่อนหน้า</span></li>
+            {% endif %}
+
+            <li class="page-item disabled">
+              <span class="page-link">หน้า {{ history.number }} / {{ history.paginator.num_pages }}</span>
+            </li>
+
+            {% if history.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?history_page={{ history.next_page_number }}">ถัดไป</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">ถัดไป</span></li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
