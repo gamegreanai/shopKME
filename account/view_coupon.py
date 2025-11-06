@@ -43,6 +43,7 @@ def coupon_staff_view(request):
             ends_at = _parse_dt_local(request.POST.get("expires_at") or "")
             description = (request.POST.get("description") or "").strip()
             img = request.FILES.get("image")
+            image_qr = request.FILES.get("image_qr")
 
             if not name:
                 messages.error(request, "กรุณาระบุชื่อคูปอง")
@@ -81,6 +82,8 @@ def coupon_staff_view(request):
                 c.full_clean()
                 if img:
                     c.image = img
+                if image_qr:
+                    c.image_code = image_qr
                 c.save()
                 messages.success(request, "บันทึกคูปองใหม่เรียบร้อย ✅")
             except Exception as e:
@@ -101,14 +104,24 @@ def coupon_staff_view(request):
             cid = request.POST.get("coupon_id")
             coupon = get_object_or_404(Coupon, pk=cid)
             img = request.FILES.get("image")
+            image_qr = request.FILES.get("image_qr")
+            
             if not _validate_image(img):
                 messages.error(request, f"รูปไม่ถูกต้อง (ชนิดไฟล์ต้องเป็นภาพ และไม่เกิน {MAX_IMAGE_MB}MB)")
                 return redirect("account:coupon_staff")
+            if not _validate_image(image_qr):
+                messages.error(request, f"รูปไม่ถูกต้อง (ชนิดไฟล์ต้องเป็นภาพ และไม่เกิน {MAX_IMAGE_MB}MB)")
+                return redirect("account:coupon_staff")
             # ลบไฟล์เก่า (ถ้ามี) แล้วอัปใหม่
-            if coupon.image:
+            if coupon.image and img:
                 coupon.image.delete(save=False)
-            coupon.image = img
-            coupon.save(update_fields=["image"])
+                coupon.image = img
+                coupon.save(update_fields=["image"])
+            if coupon.image_code and image_qr:
+                coupon.image_code.delete(save=False)
+                coupon.image_code = image_qr
+                coupon.save(update_fields=["image_code"])
+            
             messages.success(request, "อัปเดตรูปคูปองเรียบร้อย ✅")
             return redirect("account:coupon_staff")
 
@@ -127,25 +140,55 @@ def coupon_staff_view(request):
         elif action == "delete":
             cid = request.POST.get("coupon_id")
             coupon = get_object_or_404(Coupon, pk=cid)
-
-            # ✅ ลบรูปใน storage ก่อน (ถ้ามี)
-            if coupon.image:
-                coupon.image.delete(save=False)
-
-            # ✅ ลบคูปองออกจากฐานข้อมูล
+            updated = Coupon.objects.filter(pk=cid).update(is_deleted=True)
             coupon_name = coupon.name
-            coupon.delete()
+            # ✅ ลบรูปใน storage ก่อน (ถ้ามี)
+            # if coupon.image:
+            #     coupon.image.delete(save=False)
+
+            # # ✅ ลบคูปองออกจากฐานข้อมูล
+            # coupon_name = coupon.name
+            # coupon.delete()
 
             messages.success(request, f"ลบคูปอง '{coupon_name}' เรียบร้อย ✅")
             return redirect("account:coupon_staff")
+        # ---------- UPDATE ----------
+        elif action == "update":
+            cid = request.POST.get("coupon_id")
+            c = get_object_or_404(Coupon, pk=cid)
+            c.name = request.POST.get("name", c.name).strip()
+            c.code = request.POST.get("code", c.code).strip()
+            rp = request.POST.get("required_points", "")
+            c.required_points = int(rp) if rp != "" else None
+            c.note = request.POST.get("description", c.note)
 
+            exp = request.POST.get("expires_at")
+            if exp is not None:
+                c.ends_at = exp if exp != "" else None
+
+            # จัดการรูป
+            if request.POST.get("remove_image") == '1':
+                if c.image:
+                    c.image.delete(save=False)
+                c.image = None
+            elif request.FILES.get("image"):
+                c.image = request.FILES["image"]
+            if request.POST.get("remove_image_code")  == '1':
+                if c.image_code:
+                    c.image_code.delete(save=False)
+                c.image_code = None
+            elif request.FILES.get("image_code"):
+                c.image_code = request.FILES["image_code"]
+
+            c.save()
+            return redirect(request.path)
         
         else:
             messages.error(request, "รูปแบบคำสั่งไม่ถูกต้อง")
             return redirect("account:coupon_staff")
 
     # ---------- GET ----------
-    coupons = list(Coupon.objects.all().order_by("-created_at"))
+    coupons = list(Coupon.objects.filter(is_deleted = False).order_by("-created_at"))
     now = timezone.now()  # ✅ เพิ่มตัวแปรเวลาสำหรับ template
 
     for c in coupons:
@@ -154,8 +197,6 @@ def coupon_staff_view(request):
         # ✅ เพิ่มฟิลด์ช่วยแสดงผลใน template
         c.is_expired = c.ends_at and c.ends_at < now
         c.is_fully_used = c.max_uses and c.use_count >= c.max_uses
-
-    # ✅ ส่ง now ไปด้วย เพื่อใช้ใน badge เงื่อนไขหมดอายุ
     return render(
         request,
         "coupons/coupon_staff.html",

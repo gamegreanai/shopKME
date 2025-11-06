@@ -2,49 +2,111 @@
 {% block title %}จัดการแต้มผู้ใช้{% endblock %}
 {% block content %}
 
-<div class="container-fluid p-4 bg-light">
-  <h4 class="fw-bold text-success mb-4">
-    <i class="fa fa-coins me-2"></i> จัดการแต้มของผู้ใช้
+<div class="container mt-4">
+  <h4 class="fw-bold text-success mb-3">
+    <i class="fa fa-coins me-2"></i> จัดการแต้มผู้ใช้
   </h4>
 
-  <table class="table table-bordered text-center align-middle">
-    <thead class="table-success">
-      <tr>
-        <th>เบอร์โทร</th>
-        <th>ชื่อ</th>
-        <th>แต้มปัจจุบัน</th>
-        <th>จัดการแต้ม</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for p in profiles %}
-      <tr>
-        <td>{{ p.user.phone }}</td>
-        <td>{{ p.user.first_name }} {{ p.user.last_name }}</td>
-        <td>{{ p.points }}</td>
-        <td>
-          <form method="post" class="d-inline">
-            {% csrf_token %}
-            <input type="hidden" name="user_id" value="{{ p.user.id }}">
-            <input type="hidden" name="action" value="add">
-            <input type="number" name="points" value="100" class="form-control d-inline w-25">
-            <button class="btn btn-success btn-sm">+ เพิ่ม</button>
-          </form>
+  <!-- 🔍 Search bar -->
+  <form method="get" class="d-flex mb-3">
+    <input type="text" name="q" value="{{ query }}" class="form-control me-2" placeholder="ค้นหาชื่อหรือเบอร์โทร...">
+    <button type="submit" class="btn btn-success"><i class="fa fa-search me-1"></i> ค้นหา</button>
+  </form>
 
-          <form method="post" class="d-inline">
-            {% csrf_token %}
-            <input type="hidden" name="user_id" value="{{ p.user.id }}">
-            <input type="hidden" name="action" value="subtract">
-            <input type="number" name="points" value="100" class="form-control d-inline w-25">
-            <button class="btn btn-danger btn-sm">- ลบ</button>
-          </form>
-        </td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="4" class="text-muted">ยังไม่มีผู้ใช้</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <!-- 🧾 ตารางผู้ใช้ -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <table class="table table-hover table-bordered align-middle text-center">
+          <thead class="table-success">
+            <tr>
+              <th><input type="checkbox" id="select-all"></th>
+              <th>ชื่อผู้ใช้</th>
+              <th>เบอร์โทรศัพท์</th>
+              <th>แต้มปัจจุบัน</th>
+              <th>แก้ไข</th>
+              <th>ลบออกจากระบบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in profiles %}
+            <tr>
+              <td><input type="checkbox" name="selected_users" value="{{ p.user.id }}"></td>
+              <td>{{ p.user.first_name|default:"-" }} {{ p.user.last_name|default:"-" }}</td>
+              <td>{{ p.user.phone }}</td>
+              <td><span class="badge bg-success fs-6">{{ p.points }}</span></td>
+              <td>
+                <a href="{% url 'account:edit_user' p.user.id %}" class="btn btn-warning btn-sm">
+                  <i class="fa fa-edit"></i> แก้ไข
+                </a>
+              </td>
+              <td>
+                <a href="{% url 'account:delete_user' p.user.id %}" class="btn btn-danger btn-sm" onclick="return confirm('แน่ใจว่าต้องการลบผู้ใช้นี้?');">
+                  <i class="fa fa-trash"></i> ลบผู้ใช้งาน
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-muted">ยังไม่มีข้อมูลผู้ใช้</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="d-flex mt-3">
+          <input type="text" name="points_change" class="form-control me-2" placeholder="+500 หรือ -200" style="max-width: 150px;">
+          <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> อัปเดตแต้ม</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- 📜 ประวัติการทำรายการ -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+      <i class="fa fa-history me-2"></i> ประวัติการปรับแต้มล่าสุด
+    </div>
+    <div class="card-body">
+      <table class="table table-striped text-center align-middle">
+        <thead>
+          <tr>
+            <th>ผู้ใช้</th>
+            <th>เจ้าหน้าที่</th>
+            <th>การกระทำ</th>
+            <th>แต้ม</th>
+            <th>เวลา</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for h in history %}
+          <tr>
+            <td>{{ h.user.phone }}</td>
+            <td>{{ h.staff.username|default:"-" }}</td>
+            <td>
+              {% if h.action == 'add' %}
+              <span class="text-success fw-bold">+ เพิ่ม</span>
+              {% else %}
+              <span class="text-danger fw-bold">- ลบ</span>
+              {% endif %}
+            </td>
+            <td>{{ h.points }}</td>
+            <td>{{ h.created_at|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="text-muted">ยังไม่มีประวัติการปรับแต้ม</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
+
+<!-- ✅ JavaScript -->
+<script>
+  // เลือกทั้งหมด
+  document.getElementById("select-all").addEventListener("change", function() {
+    document.querySelectorAll("input[name='selected_users']").forEach(cb => cb.checked = this.checked);
+  });
+</script>
 
 {% endblock %}

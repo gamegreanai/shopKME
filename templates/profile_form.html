@@ -1,26 +1,43 @@
 {% extends 'base/base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="container-fluid p-4 bg-light">
-  <div class="card shadow-sm border-0">
-    <div class="card-body">
-      <h4 class="fw-bold mb-4 text-success">ข้อมูลส่วนตัว</h4>
-      <form method="post">
+<div class="container py-4">
+  <!-- 🔹 หัวข้อหลัก -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap mb-4">
+    <h4 class="fw-bold text-success mb-0">
+      <i class="fa fa-user-circle me-2"></i> ข้อมูลส่วนตัวของคุณ
+    </h4>
+    <span class="text-muted small">อัปเดตข้อมูลของคุณเพื่อให้เป็นปัจจุบัน</span>
+  </div>
+
+  <!-- 🔹 Card หลัก -->
+  <div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+      <form method="post" novalidate>
         {% csrf_token %}
-        <div class="row g-3">
+        <div class="row g-4">
+          <!-- 🔸 ชื่อ -->
           <div class="col-md-6">
-            <label class="form-label">ชื่อ</label>
+            <label class="form-label fw-semibold text-secondary">ชื่อ</label>
             <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
           </div>
+
+          <!-- 🔸 นามสกุล -->
           <div class="col-md-6">
-            <label class="form-label">นามสกุล</label>
+            <label class="form-label fw-semibold text-secondary">นามสกุล</label>
             <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
           </div>
+
+          <!-- 🔸 อีเมล -->
           <div class="col-md-6">
-            <label class="form-label">อีเมล</label>
+            <label class="form-label fw-semibold text-secondary">อีเมล</label>
             <input type="email" name="email" class="form-control" value="{{ user.email }}">
           </div>
+
+          <!-- 🔸 เพศ -->
           <div class="col-md-6">
-            <label class="form-label">เพศ</label>
+            <label class="form-label fw-semibold text-secondary">เพศ</label>
             <select name="gender" class="form-select">
               <option value="">เลือกเพศ</option>
               <option value="ชาย" {% if profile.gender == 'ชาย' %}selected{% endif %}>ชาย</option>
@@ -29,9 +46,78 @@
             </select>
           </div>
         </div>
-        <button type="submit" class="btn btn-success mt-4">บันทึกข้อมูล</button>
+
+        <!-- 🔸 ปุ่มบันทึก -->
+        <div class="text-end mt-5">
+          <button type="submit" class="btn btn-success px-4 py-2 fw-semibold shadow-sm rounded-3">
+            <i class="fa fa-save me-2"></i> บันทึกข้อมูล
+          </button>
+        </div>
       </form>
     </div>
   </div>
 </div>
+
+<!-- 🎨 Style เสริม -->
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+
+  /* Label */
+  label.form-label {
+    margin-bottom: 6px;
+    color: #444;
+  }
+
+  /* ช่อง input */
+  input, select {
+    border-radius: 10px !important;
+    border: 1px solid #ccc !important;
+    padding: 10px 12px !important;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+
+  input:focus, select:focus {
+    border-color: #198754 !important;
+    box-shadow: 0 0 4px rgba(25, 135, 84, 0.4) !important;
+    outline: none !important;
+  }
+
+  /* ปุ่มบันทึก */
+  .btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .btn-success:hover {
+    background-color: #157347 !important;
+    box-shadow: 0 3px 6px rgba(25, 135, 84, 0.3);
+  }
+
+  /* ปรับขนาดข้อความ */
+  h4 {
+    font-size: 1.35rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .card-body {
+      padding: 1.5rem !important;
+    }
+
+    h4 {
+      font-size: 1.1rem;
+    }
+
+    .btn {
+      width: 100%;
+    }
+  }
+</style>
 {% endblock %}

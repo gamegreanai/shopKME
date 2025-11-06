@@ -36,6 +36,13 @@
           <input class="form-control" type="file" name="image" accept="image/*">
           <div class="form-text">รองรับ jpg, png, webp ขนาดไม่เกิน 2MB</div>
         </div>
+
+        <div class="col-md-4">
+          <label class="form-label">รูป QR Code</label>
+          <input class="form-control" type="file" name="image_qr" accept="image/*">
+          <div class="form-text">รองรับ jpg, png, webp ขนาดไม่เกิน 2MB</div>
+        </div>
+
         <div class="col-12 text-end">
           <button class="btn btn-success">บันทึกคูปอง</button>
         </div>
@@ -50,7 +57,7 @@
         <table class="table table-striped align-middle">
           <thead>
             <tr>
-              <th style="width:120px;">รูป</th>
+              {% comment %} <th style="width:120px;">รูป</th> {% endcomment %}
               <th>ชื่อ</th>
               <th>รหัส</th>
               <th>แต้ม</th>
@@ -62,31 +69,34 @@
           <tbody>
             {% for c in coupons %}
             <tr>
-              <td>
-                {% if c.image %}
-                  <img src="{{ c.image.url }}" alt="coupon" class="img-thumbnail" style="width:100px;height:auto;">
+              {% comment %} <td>
+                {% if c.image and c.image_code  %}
+                    <img src="{{ c.image.url }}" alt="coupon" class="img-thumbnail" style="width:100px;height:auto;">
+                    <img src="{{ c.image_code.url }}" alt="coupon" class="img-thumbnail" style="width:100px;height:auto;">
+                {% elif c.image %}
+                  ️  <img src="{{ c.image.url }}" alt="coupon" class="img-thumbnail" style="width:100px;height:auto;">
+                {% elif c.image_code %}  
+                    <img src="{{ c.image_code.url }}" alt="coupon" class="img-thumbnail" style="width:100px;height:auto;">
                 {% else %}
                   <span class="text-muted">ไม่มีรูป</span>
                 {% endif %}
-              </td>
+              </td> {% endcomment %}
                <td>{{ c.name }}</td>
               <td>{{ c.code }}</td>
               <td>
                 {% if c.required_points is not None %}
                   {{ c.required_points }}
                 {% else %}
-                  <td>
-  {% if not c.active %}
-    <span class="badge bg-secondary">หมดแล้ว</span>
-  {% elif c.max_uses and c.use_count >= c.max_uses %}
-    <span class="badge bg-danger">ครบจำนวน</span>
-  {% elif c.ends_at and c.ends_at|date:"U" < now|date:"U" %}
-    <span class="badge bg-dark">หมดอายุ</span>
-  {% else %}
-    <span class="badge bg-success">ใช้งานได้</span>
-  {% endif %}
-</td>
-
+                  {% if not c.active %}
+                    <span class="badge bg-secondary">หมดแล้ว</span>
+                  {% elif c.max_uses and c.use_count >= c.max_uses %}
+                    <span class="badge bg-danger">ครบจำนวน</span>
+                  {% elif c.ends_at and c.ends_at|date:"U" < now|date:"U" %}
+                    <span class="badge bg-dark">หมดอายุ</span>
+                  {% else %}
+                    <span class="badge bg-success">ใช้งานได้</span>
+                  {% endif %}
+                </td>
                 {% endif %}
               </td>
               <td>{{ c.expires_at }}</td>
@@ -113,23 +123,24 @@
                 <input type="hidden" name="coupon_id" value="{{ c.id }}">
                 <button type="submit" class="btn btn-sm btn-danger">🗑️ ลบ</button>
               </form>
-
-                  <form method="post" enctype="multipart/form-data" class="d-inline">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="set_image">
-                    <input type="hidden" name="coupon_id" value="{{ c.id }}">
-                    <input type="file" name="image" accept="image/*" class="form-control form-control-sm d-inline" style="width:180px;">
-                    <button class="btn btn-outline-success btn-sm">อัปเดตรูป</button>
-                  </form>
-
-                  {% if c.image %}
-                  <form method="post" class="d-inline">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="delete_image">
-                    <input type="hidden" name="coupon_id" value="{{ c.id }}">
-                    <button class="btn btn-outline-danger btn-sm">ลบรูป</button>
-                  </form>
-                  {% endif %}
+                <button type="button"
+                      class="btn btn-sm btn-warning"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editCouponModal"
+                      data-id="{{ c.id }}"
+                      data-name="{{ c.name }}"
+                      data-code="{{ c.code }}"
+                      data-required_points="{{ c.required_points }}"
+                      data-expires_at="{{ c.expires_at|date:'Y-m-d\\TH:i' }}"
+                      data-description="{{ c.note }}"
+                      {% if c.image %}
+                      data-image="{{ c.image.url }}"
+                      {% endif %}
+                      {% if c.image_code %}
+                      data-image_code="{{ c.image_code.url }}" 
+                      {% endif %}> 
+                แก้ไข
+              </button>
                 </div>
               </td>
             </tr>
@@ -141,6 +152,165 @@
       </div>
     </div>
   </div>
-
 </div>
+<div class="modal fade" id="editCouponModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <form method="post" enctype="multipart/form-data" class="modal-content">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="update">
+      <input type="hidden" name="coupon_id" id="edit_id">
+      <div class="modal-header">
+        <h5 class="modal-title">แก้ไขคูปอง</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body row g-3">
+        <div class="col-12">
+          <label class="form-label">ชื่อคูปอง</label>
+          <input class="form-control" name="name" id="edit_name" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">รหัสคูปอง</label>
+          <input class="form-control" name="code" id="edit_code" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">แต้มที่ต้องใช้</label>
+          <input class="form-control" type="number" name="required_points" id="edit_required_points" min="0">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">วันหมดอายุ</label>
+          <input class="form-control" type="datetime-local" name="expires_at" id="edit_expires_at">
+        </div>
+        <div class="col-12">
+          <label class="form-label">รายละเอียด</label>
+          <textarea class="form-control" rows="2" name="description" id="edit_description"></textarea>
+        </div>
+      <div class="col-6">
+        <label class="form-label d-block">รูปคูปอง</label>
+        <div class="d-flex align-items-center gap-3">
+          <img id="preview_image" src="" alt="coupon" class="img-thumbnail"
+              style="width:120px;height:auto;display:none;">
+          <div class="d-flex flex-column gap-2">
+            <input class="form-control" type="file" name="image" id="file_image" accept="image/*">
+            <div class="d-flex gap-2">
+              <button type="button" id="mark_remove_image" class="btn btn-outline-danger btn-sm">ลบรูปนี้</button>
+              <button type="button" id="undo_remove_image" class="btn btn-outline-secondary btn-sm" style="display:none;">ยกเลิกการลบ</button>
+            </div>
+            <input type="hidden" name="remove_image" id="remove_image" value="0">
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <label class="form-label d-block">รูป QR</label>
+        <div class="d-flex align-items-center gap-3">
+          <img id="preview_image_code" src="" alt="coupon-qr" class="img-thumbnail"
+              style="width:120px;height:auto;display:none;">
+          <div class="d-flex flex-column gap-2">
+            <input class="form-control" type="file" name="image_code" id="file_image_code" accept="image/*">
+            <div class="d-flex gap-2">
+              <button type="button" id="mark_remove_image_code" class="btn btn-outline-danger btn-sm">ลบรูปนี้</button>
+              <button type="button" id="undo_remove_image_code" class="btn btn-outline-secondary btn-sm" style="display:none;">ยกเลิกการลบ</button>
+            </div>
+            <input type="hidden" name="remove_image_code" id="remove_image_code" value="0">
+          </div>
+        </div>
+      </div>
+      </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary">บันทึกการแก้ไข</button>
+              </div>
+            </form>
+          </div>
+        </div>
+<script>
+(function() {
+  const modal = document.getElementById('editCouponModal');
+
+  function applyStagedState(kind, hasImage, marked) {
+    const preview = modal.querySelector('#preview_' + kind);
+    const file    = modal.querySelector('#file_' + kind);
+    const markBtn = modal.querySelector('#mark_remove_' + kind);
+    const undoBtn = modal.querySelector('#undo_remove_' + kind);
+    const hidden  = modal.querySelector('#remove_' + kind);
+
+    hidden.value = marked ? '1' : '0';
+
+   
+    if (hasImage) {
+      preview.style.display = 'inline-block';
+      if (marked) {
+        preview.style.opacity = '0.35';
+        preview.style.filter = 'grayscale(100%)';
+        preview.style.textDecoration = 'line-through'; 
+      } else {
+        preview.style.opacity = '1';
+        preview.style.filter = 'none';
+        preview.style.textDecoration = 'none';
+      }
+    } else {
+      preview.style.display = 'none';
+    }
+
+    markBtn.style.display = (hasImage && !marked) ? 'inline-block' : 'none';
+    undoBtn.style.display = (hasImage && marked) ? 'inline-block' : 'none';
+
+  
+    file.onchange = () => {
+      if (file.files && file.files.length > 0) {
+        applyStagedState(kind, true, false); // clear remove flag
+      }
+    };
+  }
+
+  modal.addEventListener('show.bs.modal', function (event) {
+    const btn   = event.relatedTarget;
+    const id   = btn.getAttribute('data-id');
+    const name = btn.getAttribute('data-name') || '';
+    const code = btn.getAttribute('data-code') || '';
+    const pts  = btn.getAttribute('data-required_points') || '';
+    const exp  = btn.getAttribute('data-expires_at') || '';
+    const desc = btn.getAttribute('data-description') || '';
+
+    this.querySelector('#edit_id').value = id;
+    this.querySelector('#edit_name').value = name;
+    this.querySelector('#edit_code').value = code;
+    this.querySelector('#edit_required_points').value = pts;
+    this.querySelector('#edit_expires_at').value = exp;   // ต้องเป็น YYYY-MM-DDTHH:MM
+    this.querySelector('#edit_description').value = desc;
+    const img   = btn.getAttribute('data-image') || '';
+    const imgQr = btn.getAttribute('data-image_code') || '';
+    const prevImg   = modal.querySelector('#preview_image');
+    const prevImgQr = modal.querySelector('#preview_image_code');
+    if (img) { prevImg.src = img; }
+    if (imgQr) { prevImgQr.src = imgQr; }
+
+    applyStagedState('image', !!img, false);
+    applyStagedState('image_code', !!imgQr, false);
+  });
+
+  modal.addEventListener('click', function (e) {
+    if (e.target.id === 'mark_remove_image')    applyStagedState('image', true,  true);
+    if (e.target.id === 'undo_remove_image')    applyStagedState('image', true,  false);
+    if (e.target.id === 'mark_remove_image_code') applyStagedState('image_code', true,  true);
+    if (e.target.id === 'undo_remove_image_code') applyStagedState('image_code', true,  false);
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", function () {
+    const fileInputQR = document.getElementById("file_image_code");
+    const previewImageQR = document.getElementById("preview_image_code");
+
+    fileInputQR.addEventListener("change", function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImageQR.src = e.target.result;
+                previewImageQR.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
+
 {% endblock %}

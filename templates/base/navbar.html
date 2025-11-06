@@ -4,16 +4,16 @@
   <div class="container-fluid d-flex align-items-center justify-content-between">
 
     <!-- โลโก้ -->
-    <a class="navbar-brand d-flex align-items-center" href="/shop/">
+    <a class="navbar-brand d-flex align-items-center">
       <img src="{% static 'images/logo.png' %}" alt="shopKME" style="height: 40px;">
       <span class="ms-2 fw-bold text-success">shopKME</span>
     </a>
 
     <!-- ช่องค้นหา -->
-    <form class="d-flex search-bar mx-auto" role="search" style="max-width: 500px;">
+    {% comment %} <form class="d-flex search-bar mx-auto" role="search" style="max-width: 500px;">
       <input class="form-control me-2" type="search" placeholder="ค้นหาสินค้าทางการแพทย์..." aria-label="Search">
       <button class="btn btn-success"><i class="fa fa-search"></i></button>
-    </form>
+    </form> {% endcomment %}
 
     {% comment %} <!-- ปุ่มต่าง ๆ -->
     <div class="d-flex align-items-center gap-2">

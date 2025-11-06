@@ -1,14 +1,22 @@
 {% load static %}
 
 <style>
+  /* 🎨 พื้นหลังและโครงสร้าง Sidebar */
   .sidebar {
     min-width: 280px;
     background-color: #f5fff6;
     border-right: 1px solid #ddd;
     min-height: 100vh;
-    {% comment %} display: flex;
-    flex-direction: column;
-    justify-content: space-between; {% endcomment %}
+    transition: transform 0.3s ease-in-out;
+    position: fixed;
+    left: 0;
+    top: 56px; /* ✅ อยู่ใต้ navbar */
+    z-index: 1040;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
   }
 
   .sidebar-header {
@@ -85,12 +93,43 @@
     background-color: #198754;
     color: white;
   }
+
+  /* ✅ ปุ่ม ☰ อยู่ใต้ Navbar */
+  .sidebar-toggle-btn {
+    position: fixed;
+    top: 65px; /* 👈 อยู่ใต้ navbar */
+    left: 15px;
+    z-index: 1100;
+    background-color: #198754;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ✅ Responsive */
+  @media (min-width: 992px) {
+    .sidebar {
+      position: relative;
+      transform: none;
+      top: 0;
+    }
+
+    .sidebar-toggle-btn {
+      display: none;
+    }
+  }
 </style>
 
-<!-- 🔹 Sidebar -->
-<div class="sidebar shadow-sm">
+<!-- 🔹 ปุ่ม ☰ แยกอยู่ใต้ Navbar -->
+<button class="sidebar-toggle-btn d-lg-none" id="toggleSidebarBtn">☰ เมนู</button>
 
-  <!-- 🔹 ส่วนหัว (คลิกได้ทั้งหมด) -->
+<!-- 🔹 Sidebar -->
+<div class="sidebar shadow-sm" id="sidebarMenu">
+  <!-- ส่วนหัว -->
   <a href="/account/dashboard/" class="sidebar-header text-center text-decoration-none d-block mb-3">
     <div class="p-3 rounded" style="background-color:#bff0c2;">
       <h5 id="greeting" class="fw-bold mb-1">สวัสดี</h5>
@@ -99,33 +138,27 @@
     </div>
   </a>
 
-  <!-- 🔸 เมนูหลัก -->
-    <div class="sidebar-section">
-      <h6>ข้อมูลส่วนตัว</h6>
-      <a href="/account/profile/"><i class="fa fa-user"></i> ข้อมูลส่วนตัว</a>
-      <a href="/account/address/"><i class="fa fa-map-marker-alt"></i> ที่อยู่จัดส่ง</a>
-      <a href="/account/redeem/"><i class="fa fa-gift"></i> แลก Point</a>
-      {% comment %} <a href="/account/change-password/"><i class="fa fa-lock"></i> เปลี่ยนรหัสผ่าน</a> {% endcomment %}
-    </div>
+  <!-- เมนู -->
+  <div class="sidebar-section">
+    <h6>ข้อมูลส่วนตัว</h6>
+    <a href="/account/profile/"><i class="fa fa-user"></i> ข้อมูลส่วนตัว</a>
+    <a href="/account/address/"><i class="fa fa-map-marker-alt"></i> ที่อยู่จัดส่ง</a>
+    <a href="/account/redeem/"><i class="fa fa-gift"></i> แลก Point</a>
+  </div>
 
   {% if user.is_staff or user.is_superuser %}
-  <div class="list-group">
-  <a href="/account/coupon/" class="list-group-item list-group-item-action">
-    🎁 จัดการคูปอง
-  </a>
-  <a href="/account/staff/points/" class="list-group-item list-group-item-action">
-    💎 จัดการแต้มผู้ใช้
-  </a>
-</div>
+  <div class="sidebar-section">
+    <h6>สำหรับผู้ดูแล</h6>
+    <a href="/account/coupon/"><i class="fa fa-ticket-alt"></i> จัดการคูปอง</a>
+    <a href="/account/staff/points/"><i class="fa fa-gem"></i> จัดการแต้มผู้ใช้</a>
+  </div>
+  {% endif %}
 
-{% endif %}
-
-
-  <!-- 🔸 ปุ่มออกจากระบบ -->
+  <!-- ปุ่มออกจากระบบ -->
   <a href="/account/logout/" class="logout-btn">ออกจากระบบ</a>
 </div>
 
-<!-- 🔹 Script ทักทายตามเวลา -->
+<!-- 🔹 Script toggle -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const greetingEl = document.getElementById("greeting");
@@ -139,9 +172,15 @@
     } else {
       greetingText = "🌙 สวัสดีตอนเย็น";
     }
-
     greetingEl.textContent = greetingText;
+
+    const sidebar = document.getElementById("sidebarMenu");
+    const toggleBtn = document.getElementById("toggleSidebarBtn");
+
+    if (sidebar && toggleBtn) {
+      toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("active");
+      });
+    }
   });
 </script>
-
-

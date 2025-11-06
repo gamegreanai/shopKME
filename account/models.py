@@ -4,7 +4,11 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
 from django.core.validators import MinValueValidator, MaxValueValidator,FileExtensionValidator
+
+
 # Custom User using phone as username
 class User(AbstractUser):
     phone = models.CharField(max_length=10, unique=True)
@@ -60,7 +64,19 @@ User = get_user_model()
 def default_expiry_date():
     return timezone.now() + timedelta(days=30)
 
+class PointTransaction(models.Model):
+    ACTION_CHOICES = [
+        ('add', 'เพิ่มแต้ม'),
+        ('subtract', 'ลบแต้ม'),
+    ]
+    staff = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='transactions_made')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='transactions_received')
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    points = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.staff} {self.get_action_display()} {self.points} แต้ม ให้ {self.user}"
 
 
 class MembershipLevel(models.TextChoices):
@@ -132,6 +148,13 @@ class Coupon(models.Model):
         null=True, blank=True,
         validators=[FileExtensionValidator(["jpg","jpeg","png","webp"])],
     )
+    image_code = models.ImageField(
+        upload_to="coupons_qr/%Y/%m/",
+        null=True, blank=True,
+        validators=[FileExtensionValidator(["jpg","jpeg","png","webp"])],
+    )
+    is_deleted = models.BooleanField(default=False)
+
     class Meta:
         indexes = [
             models.Index(fields=["code"]),

@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from django.db.models import F
+from django.db.models import Q, F
 from django.contrib.admin.views.decorators import staff_member_required
-
-from .models import User, Profile,Coupon, CouponRedemption
+from .models import User, Profile,Coupon, CouponRedemption, PointTransaction
 from django.db import transaction 
 from decimal import Decimal
 from .forms import RegisterForm, LoginForm, ProfileForm, AddressForm, CombinedProfileForm,UserForm,ProfileAddressForm
@@ -99,8 +98,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
-
-
 
 # 🔹 โปรไฟล์ — แก้ไขข้อมูลส่วนตัว
 @login_required
@@ -217,66 +214,168 @@ def manage_points_view(request):
 
     return render(request, "account/manage_points.html", {"profiles": profiles})
 
+
 @staff_member_required
 def staff_manage_points(request):
-    """หน้า staff สำหรับเพิ่ม/ลดแต้มของผู้ใช้"""
-    profiles = Profile.objects.select_related('user').all().order_by('-points')
+    """หน้า staff จัดการแต้มผู้ใช้ (เพิ่ม / ลบ / แก้ไข / ลบ user / ดูประวัติ / ค้นหา)"""
+    query = request.GET.get("q", "")
+    profiles = Profile.objects.select_related("user").order_by("-points")
+    if query:
+        profiles = profiles.filter(
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query) |
+            Q(user__phone__icontains=query)
+        )
 
-    if request.method == 'POST':
-        user_id = request.POST.get('user_id')
-        points_change = request.POST.get('points_change')
-
-        try:
-            points_change = int(points_change)
-        except (ValueError, TypeError):
-            messages.error(request, "กรุณากรอกจำนวนแต้มเป็นตัวเลข เช่น +100 หรือ -50")
-            return redirect('account:staff_manage_points')
-
-        try:
-            profile = Profile.objects.get(user_id=user_id)
-            profile.points = F('points') + points_change
-            profile.save()
-            messages.success(request, f"อัปเดตแต้มให้ {profile.user.phone} สำเร็จ ({points_change:+}) ✅")
-        except Profile.DoesNotExist:
-            messages.error(request, "ไม่พบผู้ใช้นี้")
-
-        return redirect('account:staff_manage_points')
-
-    context = {'profiles': profiles}
-    return render(request, 'staff/manage_points.html', context)
-
-@staff_member_required
-def staff_dashboard_home(request):
-    """
-    หน้าแรกของแดชบอร์ดเจ้าหน้าที่
-    """
-    return render(request, 'staff/staff_dashboard_home.html')
-
-
-
-@staff_member_required
-def staff_manage_points_view(request):
-    """จัดการแต้มของผู้ใช้"""
-    profiles = Profile.objects.select_related('user').all()
-
+    # ✅ เพิ่ม/ลดแต้มแบบหลายคน
     if request.method == "POST":
-        user_id = request.POST.get("user_id")
-        action = request.POST.get("action")
-        points = int(request.POST.get("points", 0))
-        profile = Profile.objects.filter(user_id=user_id).first()
+        selected_ids = request.POST.getlist("selected_users")
+        points_change = request.POST.get("points_change")
 
-        if profile:
-            if action == "add":
-                profile.points += points
-                messages.success(request, f"เพิ่ม {points} แต้มให้ {profile.user.phone} แล้ว ✅")
-            elif action == "subtract":
-                profile.points = max(0, profile.points - points)
-                messages.warning(request, f"ลบ {points} แต้มจาก {profile.user.phone} แล้ว ⚠️")
-            profile.save()
+        try:
+            change = int(points_change)
+        except (TypeError, ValueError):
+            messages.error(request, "กรุณากรอกจำนวนแต้มให้ถูกต้อง เช่น +100 หรือ -50")
+            return redirect("account:staff_manage_points")
+
+        for uid in selected_ids:
+            try:
+                profile = Profile.objects.get(user_id=uid)
+                old_points = profile.points
+                profile.points = F("points") + change
+                profile.save()
+                profile.refresh_from_db()
+
+                PointTransaction.objects.create(
+                    staff=request.user,
+                    user=profile.user,
+                    action="add" if change > 0 else "subtract",
+                    points=abs(change),
+                )
+
+                messages.success(request, f"✅ {profile.user.phone} {change:+} แต้ม (จาก {old_points} → {profile.points})")
+            except Profile.DoesNotExist:
+                messages.error(request, f"❌ ไม่พบผู้ใช้ ID {uid}")
 
         return redirect("account:staff_manage_points")
 
-    return render(request, "staff/staff_manage_points.html", {"profiles": profiles})
+    # ✅ ประวัติการทำรายการแต้ม
+    history = PointTransaction.objects.select_related("staff", "user").order_by("-created_at")[:10]
+
+    context = {
+        "profiles": profiles,
+        "query": query,
+        "history": history,
+    }
+    return render(request, "staff/staff_manage_points.html", context)
+
+@staff_member_required
+def edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    profile = getattr(user, 'profile', None)
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone')
+        points = request.POST.get('points')
+
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phone = phone
+        user.save()
+
+        if profile:
+            profile.points = points
+            profile.save()
+
+        messages.success(request, "แก้ไขข้อมูลผู้ใช้สำเร็จ ✅")
+        return redirect('account:staff_manage_points')
+
+    return render(request, 'staff/edit_user.html', {
+        'user': user,
+        'profile': profile,
+    })
+
+@staff_member_required
+def delete_user(request, user_id):
+    """ฟังก์ชันลบผู้ใช้"""
+    user = get_object_or_404(User, id=user_id)
+    
+    try:
+        user.delete()
+        messages.success(request, f"ลบผู้ใช้ {user.first_name} {user.last_name} สำเร็จ ✅")
+    except Exception as e:
+        messages.error(request, f"เกิดข้อผิดพลาดในการลบผู้ใช้: {str(e)}")
+
+    return redirect('account:staff_manage_points')
+
+def staff_required(user):
+    return user.is_staff or user.is_superuser
+
+
+@user_passes_test(staff_required)
+def staff_manage_points_view(request):
+    """หน้าจัดการแต้มผู้ใช้ + Search + History + เพิ่ม/ลบหลายคน"""
+    query = request.GET.get('q', '')
+    profiles = Profile.objects.select_related('user').order_by('-points')
+
+    # 🔍 ฟังก์ชันค้นหาชื่อหรือเบอร์โทร
+    if query:
+        profiles = profiles.filter(
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query) |
+            Q(user__phone__icontains=query)
+        )
+
+    # 🧾 เมื่อกดเพิ่ม/ลบแต้ม
+    if request.method == "POST":
+        selected_ids = request.POST.getlist('selected_users')
+        points_change = request.POST.get('points_change', '0')
+
+        try:
+            points_change = int(points_change)
+        except ValueError:
+            messages.error(request, "กรุณากรอกจำนวนแต้มเป็นตัวเลข เช่น +100 หรือ -50")
+            return redirect('account:staff_manage_points')
+
+        if not selected_ids:
+            messages.warning(request, "กรุณาเลือกผู้ใช้อย่างน้อยหนึ่งคน")
+            return redirect('account:staff_manage_points')
+
+        # บันทึกการเปลี่ยนแต้มใน Profile และ PointTransaction
+        for uid in selected_ids:
+            try:
+                profile = Profile.objects.select_related('user').get(user_id=uid)
+                old_points = profile.points
+                profile.points = F('points') + points_change
+                profile.save()
+
+                # ✅ บันทึก history
+                PointTransaction.objects.create(
+                    staff=request.user,
+                    user=profile.user,
+                    action='add' if points_change > 0 else 'subtract',
+                    points=abs(points_change),
+                    created_at=timezone.now()
+                )
+
+                profile.refresh_from_db()
+                messages.success(request, f"อัปเดตแต้ม {profile.user.phone} จาก {old_points} ➜ {profile.points}")
+            except Profile.DoesNotExist:
+                messages.error(request, f"ไม่พบผู้ใช้ ID {uid}")
+
+        return redirect('account:staff_manage_points')
+
+    # 📜 แสดงประวัติ 20 รายการล่าสุด
+    history = PointTransaction.objects.select_related('user', 'staff').order_by('-created_at')[:20]
+
+    context = {
+        'profiles': profiles,
+        'history': history,
+        'query': query,
+    }
+    return render(request, 'staff/staff_manage_points.html', context)
 
 
 # Override dashboard view to show Name/Address form
@@ -372,25 +471,30 @@ def redeem_view(request):
     # --- GET: แสดงรายการคูปองที่แลกได้ + ประวัติ ---
     now = timezone.now()
     coupons_qs = (
-        Coupon.objects.filter(starts_at__lte=now)
-        .exclude(ends_at__lt=now)
+        Coupon.objects.filter(
+            active=True,
+            starts_at__lte=now
+        ).exclude(ends_at__lt=now)
         .order_by("ends_at", "code")
     )
 
-    # 🔹 ฟิลเตอร์ให้เหลือเฉพาะ “แลกได้”
+    # 🔹 ฟิลเตอร์ให้เหลือเฉพาะ “แลกได้จริง”
     available = []
     for c in coupons_qs:
         req_pts = getattr(c, "required_points", 0) or 0
-        can_use = c.can_user_use(request.user)
         enough_points = profile.points >= req_pts
+        can_use = c.can_user_use(request.user)
 
-        # เพิ่มข้อมูลช่วยแสดงผลใน template
+        if not (enough_points and can_use and c.active):
+            continue  # ❌ ข้ามถ้าแลกไม่ได้
+
+        # ✅ เพิ่มข้อมูลไว้ให้ template ใช้
         c.req_pts = req_pts
         c.enough_points = enough_points
         c.can_use = can_use
         c.expires_at = c.ends_at
-        c.percent_off = round(req_pts / 10)
-        c.active = c.active
+        c.percent_off = round(req_pts / 10) if req_pts else 0
+
         available.append(c)
 
     # 🔹 ประวัติการแลก
@@ -400,6 +504,7 @@ def redeem_view(request):
         .order_by("-created_at")
     )
 
+    # 🔹 คูปองของฉัน
     my_coupons = (
         CouponRedemption.objects.select_related("coupon")
         .filter(user=request.user, order_id="")
@@ -409,7 +514,7 @@ def redeem_view(request):
     context = {
         "profile": profile,
         "meter": meter,
-        "available": available,
+        "available": available,      # ✅ ตอนนี้เหลือเฉพาะที่แลกได้จริง
         "redemptions": redemptions,
         "my_coupons": my_coupons,
     }
