@@ -4,17 +4,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ร้านขายยาส่ง - สมัครสมาชิก / เข้าสู่ระบบ</title>
+  <title>DDreamclinic</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    body { font-family: 'Prompt', sans-serif; background: #f8f9fa; }
-    .hero { background: url('https://images.unsplash.com/photo-1588776814546-ec72a7c165e5') no-repeat center center/cover; height: 100vh; display: flex; align-items: center; color: white; position: relative; }
-    .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background-color:rgba(0,0,0,0.5); }
-    .content-box { position: relative; background:white; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.2); padding:30px; width:380px; margin-left:auto; margin-right:50px; color:#333; }
-    .btn-success { background-color:#198754; border:none; }
-    .btn-success:hover { background-color:#157347; }
-    .toggle-btn { background:none; border:none; color:#198754; text-decoration:underline; cursor:pointer; }
+    body { 
+      font-family: 'Prompt', sans-serif; 
+      background: #f8f9fa; 
+    }
+    .hero { 
+      {% comment %} background: url('https://images.uns') no-repeat center center/cover;  {% endcomment %}
+      height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      color: #ff66c8; 
+      position: relative; 
+    }
+    .overlay { 
+      position: absolute; 
+      top:0; left:0; right:0; bottom:0; 
+      background-color:rgba(0,0,0,0.5); 
+    }
+    .content-box { 
+      position: relative; 
+      background:white; 
+      border-radius:15px; 
+      box-shadow:0 0 20px rgba(0,0,0,0.2); 
+      padding:30px; 
+      width:380px; 
+      margin-left:auto; 
+      margin-right:50px; 
+      color:#333; 
+    }
+    .btn-success { 
+      background-color:#198754; 
+      border:none; 
+    }
+    .btn-success:hover { 
+      background-color:#157347; 
+    }
+    .toggle-btn { 
+      background:none; 
+      border:none; 
+      color:#198754; 
+      text-decoration:underline; 
+      cursor:pointer; 
+    }
+
+    /* 🌸 เพิ่มส่วนสีชมพู */
+    :root {
+      --pink-color: #e91e63;
+    }
+
+    /* 🩷 ตัวอักษรทั้งหมดเป็นสีชมพู */
+    body, h1, h4, p, label, small, .form-label, .lead {
+      color: var(--pink-color) !important;
+    }
+
+    /* 🌸 ปุ่มหลัก */
+    .btn-success {
+      background-color: var(--pink-color) !important;
+      border: none !important;
+      color: white !important;
+      transition: 0.3s;
+    }
+
+    /* 🤍 เมื่อ hover → สีขาว + พื้นหลังชมพูอ่อน */
+    .btn-success:hover,
+    .btn-success:active,
+    .btn-success:focus {
+      background-color: white !important;
+      color: var(--pink-color) !important;
+      border: 1px solid var(--pink-color) !important;
+    }
+
+    /* 🌸 ปุ่ม toggle (เข้าสู่ระบบ / สมัครสมาชิก) */
+    .toggle-btn, .btn-link, #toggle-login {
+      color: var(--pink-color) !important;
+      transition: 0.3s;
+    }
+
+    .toggle-btn:hover,
+    .btn-link:hover,
+    #toggle-login:hover {
+      color: white !important;
+      background-color: var(--pink-color) !important;
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+
+    /* 🩷 ช่อง input focus border */
+    .form-control:focus {
+      border-color: var(--pink-color);
+      box-shadow: 0 0 5px rgba(233, 30, 99, 0.5);
+    }
+
+    /* 🤍 ให้ข้อความด้านซ้าย (ชื่อร้าน + คำอธิบาย) เป็นสีขาว */
+    .hero .text-start h1,
+    .hero .text-start p {
+      color: white !important;
+    }
+
   </style>
 </head>
 <body>
@@ -23,8 +113,8 @@
     <div class="container position-relative">
       <div class="row align-items-center">
         <div class="col-md-6 text-start">
-          <h1 class="fw-bold">KME Redeems</h1> <br><h3>redeem gift code</h3>
-          <p class="lead">รับ point เพื่อแลกส่วนลดกับเรา สมัครสมาชิกเลย</p>
+          <h1 class="fw-bold">Ddreamclinic<br>ร้านขาย-ส่ง</h1>
+          <p class="lead">เครื่องมือแพทย์และอุปกรณ์ทางการแพทย์แบบครบวงจร</p>
         </div>
         <div class="col-md-6">
           <div class="content-box" id="auth-box">
@@ -32,18 +122,18 @@
 
             <!-- ฟอร์มสมัคร -->
             <form id="register-form">
-  {% csrf_token %}
-  <div class="mb-3">
-    <label class="form-label">เบอร์โทรศัพท์</label>
-    <input type="text" id="register-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" maxlength="10" required>
-    <div id="phone-feedback" class="form-text text-danger"></div>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">รหัสผ่าน</label>
-    <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
-  </div>
-  <button type="submit" class="btn btn-success w-100" id="btn-register" disabled>สมัครสมาชิก</button>
-</form>
+              {% csrf_token %}
+              <div class="mb-3">
+                <label class="form-label">เบอร์โทรศัพท์</label>
+                <input type="text" id="register-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" maxlength="10" required>
+                <div id="phone-feedback" class="form-text text-danger"></div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">รหัสผ่าน</label>
+                <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100" id="btn-register" disabled>สมัครสมาชิก</button>
+            </form>
 
             <!-- ฟอร์มล็อกอิน -->
             <form id="login-form" style="display:none;">
@@ -81,12 +171,10 @@
     const phoneFeedback = document.getElementById('phone-feedback');
     const btnRegister = document.getElementById('btn-register');
 
-    // ✅ ใช้ state แทนการสร้าง element ใหม่
     let isLoginMode = false;
 
     function switchForm() {
       if (isLoginMode) {
-        // กลับไปหน้า "สมัครสมาชิก"
         registerForm.style.display = 'block';
         loginForm.style.display = 'none';
         title.textContent = 'สมัครสมาชิก';
@@ -94,7 +182,6 @@
         toggleBtn.textContent = 'เข้าสู่ระบบ';
         isLoginMode = false;
       } else {
-        // สลับไปหน้า "เข้าสู่ระบบ"
         registerForm.style.display = 'none';
         loginForm.style.display = 'block';
         title.textContent = 'เข้าสู่ระบบ';
@@ -109,7 +196,6 @@
       switchForm();
     });
 
-    // ✅ ตรวจสอบเบอร์โทรอัตโนมัติเมื่อพิมพ์ครบ 10 หลัก
     registerPhone.addEventListener('input', async () => {
       const phone = registerPhone.value.trim();
       if (phone.length !== 10 || !/^[0-9]+$/.test(phone)) {
@@ -137,7 +223,6 @@
           showConfirmButton: false
         });
 
-        // เปลี่ยนเป็นฟอร์มเข้าสู่ระบบโดยอัตโนมัติ
         if (!isLoginMode) {
           switchForm();
           document.getElementById('login-phone').value = phone;
@@ -150,45 +235,41 @@
       }
     });
 
-    // ✅ สมัครสมาชิกด้วย AJAX (redirect ไปหน้า shop)
-registerForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const phone = registerPhone.value.trim();
-  const password = document.getElementById('register-password').value.trim();
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = registerPhone.value.trim();
+      const password = document.getElementById('register-password').value.trim();
 
-  const formData = new FormData();
-  formData.append('phone', phone);
-  formData.append('password', password);
+      const formData = new FormData();
+      formData.append('phone', phone);
+      formData.append('password', password);
 
-  const res = await fetch('/account/register/', { method: 'POST', body: formData });
-  const data = await res.json();
+      const res = await fetch('/account/register/', { method: 'POST', body: formData });
+      const data = await res.json();
 
-  Swal.fire({ icon: data.status, title: data.message, timer: 2000, showConfirmButton: false });
+      Swal.fire({ icon: data.status, title: data.message, timer: 2000, showConfirmButton: false });
 
-  if (data.redirect) {
-    setTimeout(() => window.location.href = data.redirect, 2000);
-  }
-});
+      if (data.redirect) {
+        setTimeout(() => window.location.href = data.redirect, 2000);
+      }
+    });
 
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('login-phone').value;
+      const password = document.getElementById('login-password').value;
+      const formData = new FormData();
+      formData.append('phone', phone);
+      formData.append('password', password);
 
-    // ✅ ล็อกอินด้วย AJAX
-loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const phone = document.getElementById('login-phone').value;
-  const password = document.getElementById('login-password').value;
-  const formData = new FormData();
-  formData.append('phone', phone);
-  formData.append('password', password);
+      const res = await fetch('/account/login/', { method: 'POST', body: formData });
+      const data = await res.json();
 
-  const res = await fetch('/account/login/', { method: 'POST', body: formData });
-  const data = await res.json();
-
-  Swal.fire({ icon: data.status, title: data.message, timer: 2500, showConfirmButton: false });
-  if (data.redirect) {
-    setTimeout(() => window.location.href = data.redirect, 2000);
-  }
-});
-
+      Swal.fire({ icon: data.status, title: data.message, timer: 2500, showConfirmButton: false });
+      if (data.redirect) {
+        setTimeout(() => window.location.href = data.redirect, 2000);
+      }
+    });
   </script>
 </body>
 </html>

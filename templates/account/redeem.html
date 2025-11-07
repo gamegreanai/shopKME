@@ -1,62 +1,63 @@
 {% extends 'base/base.html' %}
+{% block title %}DDreamclinic{% endblock %}
 {% load static %}
 {% block content %}
-<div class="container py-4">
 
-  <!-- 🔹 แถบแต้ม & เลเวล -->
-  <div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-      <div>
-        <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
-          ระดับสมาชิก: {{ meter.level }}
-        </span>
-        <span class="ms-2 text-muted">
-          แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
-        </span>
-      </div>
-      <div class="progress-wrapper w-100 w-md-50" style="max-width: 520px;">
-        <div class="d-flex justify-content-between small mb-1">
-          <span>{{ meter.level }}</span>
-          <span>{{ meter.progress_pct }}%</span>
-        </div>
-        <div class="progress" style="height: 10px;">
-          <div class="progress-bar bg-success" style="width: {{ meter.progress_pct }}%;"></div>
-        </div>
-        <div class="small text-muted mt-1">
-          {% if meter.next_level_name %}
-            อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong>
-          {% else %}
-            อยู่ระดับสูงสุดแล้ว 🎉
-          {% endif %}
-        </div>
-      </div>
+<!-- ✅ Container หลัก -->
+<div class="container py-5 redeem-container">
+
+  <!-- 🌸 การ์ด Redeem หลัก -->
+  <div class="card border-0 shadow-lg rounded-4 redeem-card">
+    <div class="card-header text-center text-white py-4">
+      <h4 class="fw-bold mb-0">
+        <i class="fa fa-gift me-2"></i> แลกคูปองของคุณ
+      </h4>
     </div>
-  </div>
 
-  <!-- 🔹 คูปองของฉัน -->
-  <div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body">
-      <h5 class="fw-bold text-success mb-3">
+    <div class="card-body p-4">
+
+      <!-- 🌸 ส่วนแถบแต้มและเลเวล -->
+      <div class="member-section p-3 mb-4 rounded-4 text-center text-white">
+        <div class="fw-semibold mb-2">
+          ระดับสมาชิก: {{ meter.level }}
+        </div>
+        <div class="mb-3">
+          แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
+        </div>
+        <div class="progress mx-auto" style="max-width: 300px; height: 10px;">
+          <div class="progress-bar bg-white" style="width: {{ meter.progress_pct }}%;"></div>
+        </div>
+        <small class="d-block mt-2">
+          {% if meter.next_level_name %}
+            อีก {{ meter.remain_to_next }} คะแนน เพื่ออัปเป็น {{ meter.next_level_name }}
+          {% else %}
+            อยู่ระดับสูงสุดแล้ว 
+          {% endif %}
+        </small>
+      </div>
+
+      <!-- 🌸 คูปองของฉัน -->
+      <h5 class="fw-bold text-pink mb-3">
         <i class="fa fa-ticket-alt me-2"></i> คูปองของฉัน
       </h5>
-      <div class="row g-3">
+      <div class="row g-3 mb-4">
         {% for r in my_coupons %}
           {% with c=r.coupon %}
           <div class="col-6 col-md-4 col-lg-3">
-            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden coupon-card">
+            <div class="card coupon-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
               {% if c.image_code and c.image_code.name %}
                 <img src="{{ c.image_code.url }}" class="card-img-top" alt="{{ c.code }}">
               {% else %}
                 {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
               {% endif %}
               <div class="card-body d-flex flex-column p-2">
-                <h6 class="fw-bold text-success mb-1 small">{{ c.name }}</h6>
+                <h6 class="fw-bold text-pink small">{{ c.name }}</h6>
                 <div class="small text-muted mb-1">แลกเมื่อ: {{ r.created_at|date:"Y-m-d H:i" }}</div>
-                <div class="small mb-2 text-secondary">หมดอายุ: {{ c.ends_at|default:"-" }}</div>
+                <div class="small text-muted mb-2">หมดอายุ: {{ c.ends_at|default:"-" }}</div>
                 <div class="input-group input-group-sm mt-auto">
                   <input type="text" class="form-control" value="{{ c.code }}" readonly>
-                  <button type="button" class="btn btn-outline-success"
-                          onclick="navigator.clipboard.writeText('{{ c.code }}')">คัดลอก</button>
+                  <button type="button" class="btn btn-pink"
+                    onclick="navigator.clipboard.writeText('{{ c.code }}')">คัดลอก</button>
                 </div>
               </div>
             </div>
@@ -66,19 +67,15 @@
           <div class="col-12 text-muted text-center">ยังไม่มีคูปองที่แลกไว้</div>
         {% endfor %}
       </div>
-    </div>
-  </div>
 
-  <!-- 🔹 คูปองที่แลกได้ -->
-  <div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body">
-      <h5 class="fw-bold text-success mb-3">
+      <!-- 🌸 คูปองที่แลกได้ -->
+      <h5 class="fw-bold text-pink mb-3">
         <i class="fa fa-gift me-2"></i> คูปองที่แลกได้
       </h5>
-      <div class="row g-3">
+      <div class="row g-3 mb-4">
         {% for c in available %}
         <div class="col-6 col-md-4 col-lg-3">
-          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden coupon-card">
+          <div class="card coupon-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
             {% if c.image and c.image_code %}
               <img src="{{ c.image.url }}" class="card-img-top" alt="{{ c.code }}">
             {% elif c.active %}
@@ -87,7 +84,7 @@
               {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
             {% endif %}
             <div class="card-body d-flex flex-column p-2">
-              <h6 class="fw-bold text-success small">{{ c.name }}</h6>
+              <h6 class="fw-bold text-pink small">{{ c.name }}</h6>
               <div class="small text-muted mb-1">แต้มที่ใช้: <strong>{{ c.req_pts }}</strong></div>
               <div class="small mb-2 text-secondary">หมดอายุ: {{ c.expires_at|default:"-" }}</div>
               <div class="mt-auto d-grid">
@@ -95,8 +92,8 @@
                   {% csrf_token %}
                   <input type="hidden" name="action" value="redeem">
                   <input type="hidden" name="coupon_id" value="{{ c.id }}">
-                  <button class="btn btn-success btn-sm fw-semibold"
-                          {% if not c.can_use or not c.enough_points %} disabled {% endif %}>
+                  <button class="btn btn-pink btn-sm fw-semibold"
+                    {% if not c.can_use or not c.enough_points %} disabled {% endif %}>
                     แลกคูปอง
                   </button>
                 </form>
@@ -113,18 +110,14 @@
         <div class="col-12 text-muted text-center">ยังไม่มีคูปองสำหรับแลก</div>
         {% endfor %}
       </div>
-    </div>
-  </div>
 
-  <!-- 🔹 ประวัติการแลก -->
-  <div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body">
-      <h5 class="fw-bold text-success mb-3">
+      <!-- 🌸 ประวัติการแลก -->
+      <h5 class="fw-bold text-pink mb-3">
         <i class="fa fa-history me-2"></i> ประวัติการแลก
       </h5>
       <div class="table-responsive">
         <table class="table table-hover align-middle text-center">
-          <thead class="table-success">
+          <thead class="table-pink">
             <tr>
               <th>คูปอง</th>
               <th>เวลา</th>
@@ -149,19 +142,79 @@
           </tbody>
         </table>
       </div>
+
     </div>
   </div>
-
 </div>
 
-<!-- 🎨 CSS เพิ่มเติม -->
+<!-- 🌸 CSS -->
 <style>
   body {
     background-color: #f8f9fa;
   }
 
-  .card {
-    border-radius: 16px;
+  /* 🌸 สีช่องเบอร์โทรศัพท์ */
+input[name="phone"] {
+  color: #ff008b !important;                /* ตัวอักษรในช่องเป็นสีชมพู */
+  font-weight: 600;                         /* หนาขึ้นให้ดูชัด */
+  border-color: #ff66c8 !important;         /* ขอบชมพูอ่อน */
+  transition: all 0.3s ease-in-out;
+}
+
+input[name="phone"]:focus {
+  border-color: #ff008b !important;         /* ขอบชมพูเข้มตอน focus */
+  box-shadow: 0 0 6px rgba(255, 0, 139, 0.4) !important; /* เงาชมพูเรือง */
+  color: #ff008b !important;                /* สีตัวอักษรยังคงชมพู */
+  outline: none;
+}
+
+
+  .redeem-container {
+    margin-top: clamp(110px, 10vw, 130px);
+    max-width: 1000px;
+  }
+
+  .redeem-card {
+    border-radius: 20px;
+    background: #fff;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .redeem-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.1);
+  }
+
+  .redeem-card .card-header {
+    background: linear-gradient(135deg, #ff008b, #ff66c8);
+    border: none;
+  }
+
+  .text-pink {
+    color: #ff008b !important;
+  }
+
+  .btn-pink {
+    background-color: #ff008b !important;
+    color: #fff !important;
+    border-radius: 30px;
+    border: none;
+    transition: 0.3s;
+  }
+
+  .btn-pink:hover {
+    background-color: #ff66c8 !important;
+    box-shadow: 0 4px 10px rgba(255, 102, 200, 0.3);
+  }
+
+  .table-pink {
+    background-color: #ffe6f5;
+    color: #ff008b;
+  }
+
+  .member-section {
+    background: linear-gradient(135deg, #ff008b, #ff66c8);
   }
 
   .coupon-card {
@@ -170,48 +223,35 @@
 
   .coupon-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
-  .card-img-top {
-    height: 120px;
-    object-fit: cover;
-  }
-
-  .btn-success {
-    background-color: #198754 !important;
-    border-color: #198754 !important;
-  }
-
-  .btn-success:hover {
-    background-color: #157347 !important;
-  }
-
-  .form-text {
-    font-size: 0.75rem;
+  /* Responsive */
+  @media (max-width: 991px) {
+    .redeem-container {
+      margin-top: 115px;
+      padding: 1.5rem;
+    }
+    .redeem-card .card-header h4 {
+      font-size: 1.2rem;
+    }
   }
 
   @media (max-width: 768px) {
-    .card-body {
-      padding: 0.75rem !important;
+    .redeem-container {
+      margin-top: 100px !important;
+      padding: 1rem !important;
     }
-    .card-img-top {
-      height: 100px;
+    .redeem-card {
+      border-radius: 16px;
+    }
+    .redeem-card .card-header h4 {
+      font-size: 1.1rem;
     }
     .coupon-card h6 {
       font-size: 0.9rem;
     }
-    .btn-sm {
-      font-size: 0.8rem;
-      padding: 0.3rem 0.6rem;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .col-6 {
-      flex: 0 0 50%;
-      max-width: 50%;
-    }
   }
 </style>
+
 {% endblock %}

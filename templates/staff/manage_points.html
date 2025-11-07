@@ -1,43 +1,132 @@
 {% extends 'base/base.html' %}
-{% block content %}
-<div class="container mt-5">
-  <h3 class="fw-bold text-success mb-4">
-    <i class="fa fa-coins me-2"></i> จัดการแต้มผู้ใช้
-  </h3>
+{% load static %}
+{% block title %}DDreamclinic{% endblock %}
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <table class="table table-striped align-middle">
-        <thead class="table-success">
-          <tr>
-            <th>ชื่อผู้ใช้</th>
-            <th>เบอร์โทรศัพท์</th>
-            <th>แต้มปัจจุบัน</th>
-            <th>เพิ่ม/ลดแต้ม</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for p in profiles %}
-          <tr>
-            <td>{{ p.user.first_name|default:"-" }} {{ p.user.last_name|default:"-" }}</td>
-            <td>{{ p.user.phone }}</td>
-            <td><span class="badge bg-success fs-6">{{ p.points }}</span></td>
-            <td>
-              <form method="post" class="d-flex">
-                {% csrf_token %}
-                <input type="hidden" name="user_id" value="{{ p.user.id }}">
-                <input type="text" name="points_change" class="form-control form-control-sm me-2"
-                       placeholder="+500 หรือ -200" style="max-width: 120px;">
-                <button type="submit" class="btn btn-success btn-sm">
-                  <i class="fa fa-check"></i>
-                </button>
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+{% block content %}
+<div class="main-wrapper">
+  <!-- ✅ Navbar -->
+  {% include 'base/navbar.html' %}
+
+  <!-- ✅ Sidebar -->
+  {% include 'account/sidebar_profile.html' %}
+
+  <!-- ✅ เนื้อหา (Redeem หรือ Dashboard) -->
+  <div class="main-content container-fluid py-4">
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+          <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
+            ระดับสมาชิก: {{ meter.level }}
+          </span>
+          <span class="ms-2 text-muted">
+            แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
+          </span>
+        </div>
+        <div class="progress-wrapper w-100 w-md-50" style="max-width: 520px;">
+          <div class="d-flex justify-content-between small mb-1">
+            <span>{{ meter.level }}</span>
+            <span>{{ meter.progress_pct }}%</span>
+          </div>
+          <div class="progress" style="height: 10px;">
+            <div class="progress-bar bg-success" style="width: {{ meter.progress_pct }}%;"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- 🌸 CSS ปรับ Layout ให้สมบูรณ์ -->
+<style>
+  body {
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* ✅ จัด Layout รวมทั้งหมด */
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* ✅ Navbar */
+  .navbar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110px;
+    z-index: 1100;
+  }
+
+  /* ✅ Sidebar */
+  .sidebar {
+    position: fixed !important;
+    top: 110px; /* อยู่ใต้ Navbar */
+    left: 0;
+    width: 280px;
+    height: calc(100vh - 110px);
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    z-index: 1040;
+  }
+
+  /* ✅ เนื้อหา */
+  .main-content {
+    margin-top: 130px; /* ป้องกัน Navbar ทับ */
+    margin-left: 280px; /* ป้องกัน Sidebar ทับ */
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  /* ✅ Responsive (Tablet / Mobile) */
+  @media (max-width: 991px) {
+    .sidebar {
+      display: none !important;
+    }
+
+    .main-content {
+      margin-left: 0 !important;
+      margin-top: 120px !important;
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .navbar {
+      height: 90px;
+    }
+
+    .main-content {
+      margin-top: 100px !important;
+      padding: 0.8rem;
+    }
+  }
+
+  /* ✅ ปรับขนาดองค์ประกอบตามหน้าจอจริง */
+  .card {
+    border-radius: clamp(12px, 2vw, 18px);
+  }
+
+  .badge {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    padding: clamp(0.3rem, 1vw, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+  }
+
+  .progress {
+    height: clamp(8px, 1vw, 12px);
+  }
+
+  .progress-bar {
+    transition: width 0.5s ease-in-out;
+  }
+
+  span, p, h5, h6 {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+  }
+</style>
 {% endblock %}

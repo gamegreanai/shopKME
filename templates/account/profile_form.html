@@ -1,67 +1,186 @@
 {% extends 'base/base.html' %}
-{% block title %}แก้ไขข้อมูลส่วนตัว | shopKME{% endblock %}
+{% block title %}DDreamclinic{% endblock %}
 {% block content %}
 
-<div class="container-fluid p-4 bg-light">
+<!-- ✅ Container หลัก -->
+<div class="container py-5 profile-container">
   <form method="post" novalidate>
     {% csrf_token %}
 
-    <!-- การ์ด: ข้อมูลผู้ใช้ (User) -->
-    <div class="card shadow-sm border-0 mb-3">
-      <div class="card-body">
-        <h5 class="fw-bold mb-3"><i class="fa fa-user me-2"></i> ข้อมูลผู้ใช้</h5>
-        {{ uform.non_field_errors }}
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label class="form-label" for="{{ uform.first_name.id_for_label }}">ชื่อ</label>
+    <!-- 🌸 การ์ดโปรไฟล์หลัก -->
+    <div class="card profile-card border-0 shadow-lg">
+      <div class="card-header text-center text-white py-4">
+        <h4 class="fw-bold mb-0"><i class="fa fa-user-circle me-2"></i> ข้อมูลโปรไฟล์ของคุณ</h4>
+      </div>
+
+      <div class="card-body p-4">
+        <div class="row g-4">
+          <!-- 🧩 คำนำหน้า เพศ โทรศัพท์ -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label">คำนำหน้าชื่อ</label>
+            {{ pform.title }}
+            {{ pform.title.errors }}
+          </div>
+
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label">เพศ</label>
+            {{ pform.gender }}
+            {{ pform.gender.errors }}
+          </div>
+
+          <div class="col-md-6 col-sm-12">
+            <label class="form-label">เบอร์โทรศัพท์</label>
+            {% if pform.phone.value %}
+              <input type="text" name="{{ pform.phone.name }}" 
+                     value="{% if pform.phone.value|stringformat:'s'|slice:':1' != '0' %}0{{ pform.phone.value }}{% else %}{{ pform.phone.value }}{% endif %}" 
+                     class="form-control" maxlength="10" pattern="[0-9]{10}" title="กรุณากรอกเบอร์โทรศัพท์ 10 หลัก" />
+            {% else %}
+              {{ pform.phone }}
+            {% endif %}
+            {{ pform.phone.errors }}
+          </div>
+
+          <!-- 🧩 ข้อมูลผู้ใช้ -->
+          <div class="col-md-4 col-sm-6">
+            <label class="form-label">ชื่อ</label>
             {{ uform.first_name }}
             {{ uform.first_name.errors }}
           </div>
-          <div class="col-md-4">
-            <label class="form-label" for="{{ uform.last_name.id_for_label }}">นามสกุล</label>
+
+          <div class="col-md-4 col-sm-6">
+            <label class="form-label">นามสกุล</label>
             {{ uform.last_name }}
             {{ uform.last_name.errors }}
           </div>
-          <div class="col-md-4">
-            <label class="form-label" for="{{ uform.email.id_for_label }}">อีเมล</label>
+
+          <div class="col-md-4 col-sm-12">
+            <label class="form-label">อีเมล</label>
             {{ uform.email }}
             {{ uform.email.errors }}
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- การ์ด: โปรไฟล์ (Profile) -->
-    <div class="card shadow-sm border-0">
-      <div class="card-body">
-        <h5 class="fw-bold mb-3"><i class="fa fa-id-card me-2"></i> โปรไฟล์</h5>
-        {{ pform.non_field_errors }}
-        <div class="row g-3">
-          <div class="col-md-3">
-            <label class="form-label" for="{{ pform.title.id_for_label }}">คำนำหน้าชื่อ</label>
-            {{ pform.title }}
-            {{ pform.title.errors }}
-          </div>
-          <div class="col-md-3">
-            <label class="form-label" for="{{ pform.gender.id_for_label }}">เพศ</label>
-            {{ pform.gender }}
-            {{ pform.gender.errors }}
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="{{ pform.phone.id_for_label }}">เบอร์โทรศัพท์</label>
-            {{ pform.phone }}
-            {{ pform.phone.errors }}
-          </div>
+        <!-- 🌸 ปุ่มบันทึก -->
+        <div class="text-center mt-5">
+          <button type="submit" class="btn btn-pink px-5 py-2 fw-bold">
+            <i class="fa fa-save me-2"></i> บันทึกข้อมูล
+          </button>
         </div>
       </div>
-    </div>
-
-    <div class="mt-4">
-      <button type="submit" class="btn btn-success">
-        <i class="fa fa-save me-1"></i> บันทึก
-      </button>
     </div>
   </form>
 </div>
 
+<!-- 🎨 CSS -->
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+
+  /* 🩷 Container หลัก */
+  .profile-container {
+    margin-top: clamp(110px, 10vw, 130px);
+    max-width: 900px;
+  }
+
+  /* 🩷 การ์ดหลัก */
+  .profile-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .profile-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.15);
+  }
+
+  /* 🩷 Header การ์ด */
+  .profile-card .card-header {
+    background: linear-gradient(135deg, #ff008b, #ff66c8);
+    border-bottom: none;
+    font-size: 1.3rem;
+  }
+
+  /* Label & Input */
+  label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  input, select {
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    width: 100%;
+    transition: all 0.2s ease;
+  }
+
+  input:focus, select:focus {
+    border-color: #ff008b;
+    box-shadow: 0 0 5px rgba(255, 0, 139, 0.3);
+    outline: none;
+  }
+
+  /* ปุ่มชมพู */
+  .btn-pink {
+    background-color: #ff008b;
+    border: none;
+    color: white;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-pink:hover {
+    background-color: #ff66c8;
+    box-shadow: 0 4px 10px rgba(255, 102, 200, 0.4);
+  }
+
+  /* 📱 iPad */
+  @media (max-width: 991px) {
+    .profile-container {
+      margin-top: 115px;
+      padding: 1.5rem;
+    }
+
+    .profile-card .card-header h4 {
+      font-size: 1.2rem;
+    }
+
+    input, select {
+      font-size: 0.95rem;
+    }
+  }
+
+  /* 📱 มือถือ */
+  @media (max-width: 768px) {
+    .profile-container {
+      margin-top: 100px !important;
+      padding: 1rem !important;
+    }
+
+    .profile-card {
+      border-radius: 16px;
+    }
+
+    .profile-card .card-header h4 {
+      font-size: 1.1rem;
+    }
+
+    .btn-pink {
+      width: 100%;
+      font-size: 1rem;
+      padding: 0.8rem;
+    }
+
+    input, select {
+      font-size: 0.9rem;
+      padding: 0.6rem 0.8rem;
+    }
+  }
+</style>
 {% endblock %}

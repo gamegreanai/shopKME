@@ -1,368 +1,209 @@
 {% extends 'base/base.html' %}
 {% load static %}
-{% block title %}แก้ไขชื่อและที่อยู่ | shopKME{% endblock %}
+{% block title %}DDreamclinic{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container py-5" style="margin-top:130px;">
 
-  <!-- 🔹 แถบ Points & Level -->
-  <!-- 🔹 การ์ดระดับสมาชิก พร้อมพื้นหลังรูป -->
-<div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden position-relative member-bg"
-     style="
-       background-image: url('https://tse3.mm.bing.net/th/id/OIP.lV4xKo7IhnZD6PIrfxL6vwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3');
-       background-size: cover;
-       background-position: center;
-       background-repeat: no-repeat;
-     ">
+  <!-- 🔹 การ์ดระดับสมาชิก -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden position-relative member-bg"
+       style="
+         background-image: url('/media/gard.png');
+         background-size: cover;
+         background-position: center;
+         background-repeat: no-repeat;
+       ">
+    <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
 
-  <!-- ชั้นโปร่งคลุมพื้นหลัง -->
-  <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative text-white member-content">
+      
+      <!-- 🔸 ฝั่งซ้าย: ข้อมูลเลเวล -->
+      <div class="d-flex flex-column align-items-start gap-3 member-left">
 
-  <!-- 🔸 เนื้อหาภายในการ์ด -->
-  <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 position-relative text-white">
-    <div>
-      <span class="badge bg-success bg-opacity-75 rounded-pill px-3 py-2 fs-6 shadow-sm">
-        ระดับสมาชิก: {{ meter.level }}
-      </span>
-      <span class="ms-2 text-light">
-        แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
-      </span>
-    </div>
-
-    <div class="progress-wrapper w-100 w-md-50" style="max-width: 520px;">
-      <div class="d-flex justify-content-between small mb-1">
-        <span>
-          {% if meter.level == "Silver" %} Silver
-          {% elif meter.level == "Gold" %} Gold
-          {% else %} Premium {% endif %}
-        </span>
-        <span>{{ meter.progress_pct }}%</span>
-      </div>
-      <div class="progress bg-light bg-opacity-50" style="height: 10px;">
-        <div class="progress-bar bg-success" style="width: {{ meter.progress_pct }}%;"></div>
-      </div>
-      <div class="small text-white mt-1">
-        {% if meter.next_level_name %}
-          อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong>
-        {% else %}
-          อยู่ระดับสูงสุดแล้ว 🎉
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</div>
-
-
-  <!-- 🔹 ตรวจว่ามีข้อมูลหรือยัง -->
-  {% if user.first_name and user.last_name and user.email and profile.title and profile.gender and profile.house_no and profile.moo and profile.street and profile.subdistrict and profile.district and profile.province and profile.postal_code %}
-  
-  <!-- คำนำหน้า และ เพศ -->
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <label class="fw-semibold mb-2 d-block">คำนำหน้า *</label>
-        <div class="d-flex gap-3">
-          <div><input type="radio" name="title" {% if profile.title == 'นาย' %}checked{% endif %}> นาย</div>
-          <div><input type="radio" name="title" {% if profile.title == 'นาง' %}checked{% endif %}> นาง</div>
-          <div><input type="radio" name="title" {% if profile.title == 'นางสาว' %}checked{% endif %}> นางสาว</div>
-          <div><input type="radio" name="title" {% if profile.title == 'คุณ' %}checked{% endif %}> คุณ</div>
+        <!-- 🏅 ไอคอน + ระดับ -->
+        <div class="member-info d-flex align-items-center gap-3 flex-wrap">
+          {% if meter.level == "Silver" %}
+            <i class="fa fa-medal level-icon text-silver"></i>
+          {% elif meter.level == "Gold" %}
+            <i class="fa fa-medal level-icon text-gold"></i>
+          {% else %}
+            <i class="fa fa-crown level-icon text-premium"></i>
+          {% endif %}
+          <span class="badge rounded-pill shadow-sm text-white fw-bold member-badge">
+            ระดับสมาชิก: {{ meter.level }}
+          </span>
         </div>
-      </div>
-      <div class="col-md-6">
-        <label class="fw-semibold mb-2 d-block">เพศ *</label>
-        <div class="d-flex gap-3">
-          <div><input type="radio" name="gender" {% if profile.gender == 'ชาย' %}checked{% endif %}> ชาย</div>
-          <div><input type="radio" name="gender" {% if profile.gender == 'หญิง' %}checked{% endif %}> หญิง</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- ชื่อ-นามสกุล -->
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <label class="fw-semibold mb-2">ชื่อ *</label>
-        <input type="text" class="form-control bg-light" value="{{ user.first_name }}" readonly>
-      </div>
-      <div class="col-md-6">
-        <label class="fw-semibold mb-2">นามสกุล *</label>
-        <input type="text" class="form-control bg-light" value="{{ user.last_name }}" readonly>
-      </div>
-    </div>
+        <!-- 💎 แต้มสะสม -->
+        <p class="mt-1 mb-0 text-outline member-points">
+          แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
+        </p>
 
-    <!-- วันเกิด -->
-    {% comment %} <div class="row mb-4">
-      <div class="col-md-12">
-        <label class="fw-semibold mb-2">วัน/เดือน/ปีเกิด *</label>
-        <div class="row g-2">
-          <div class="col-md-4">
-            <input type="text" class="form-control bg-light" placeholder="วัน" value="{{ profile.birth_day|default:'' }}" readonly>
+        <!-- 🌈 Progress -->
+        <div class="progress-wrapper mt-2 w-100" style="max-width: 400px;">
+          <div class="d-flex justify-content-between small mb-1 text-outline member-progress-text">
+            <span>
+              {% if meter.level == "Silver" %} Silver
+              {% elif meter.level == "Gold" %} Gold
+              {% else %} Premium {% endif %}
+            </span>
+            <span>{{ meter.progress_pct }}%</span>
           </div>
-          <div class="col-md-4">
-            <input type="text" class="form-control bg-light" placeholder="เดือน" value="{{ profile.birth_month|default:'' }}" readonly>
+          <div class="progress bg-light bg-opacity-50 member-progress-bar">
+            <div class="progress-bar member-progress" style="width: {{ meter.progress_pct }}%;"></div>
           </div>
-          <div class="col-md-4">
-            <input type="text" class="form-control bg-light" placeholder="ปี" value="{{ profile.birth_year|default:'' }}" readonly>
-          </div>
-        </div>
-      </div>
-    </div> {% endcomment %}
-
-    <!-- ข้อมูลติดต่อ -->
-    <h6 class="fw-bold mt-4 mb-3 text-secondary">ข้อมูลติดต่อ</h6>
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <label class="fw-semibold mb-2">เบอร์มือถือ *</label>
-        <input type="text" class="form-control bg-light" value="{{ user.phone }}" readonly>
-      </div>
-      <div class="col-md-6">
-        <label class="fw-semibold mb-2">อีเมล *</label>
-        <input type="text" class="form-control bg-light" value="{{ user.email }}" readonly>
-      </div>
-    </div>
-
-    <!-- 🔹 ข้อมูลที่อยู่ -->
-<div class="col-12 my-4">
-  <hr>
-  <h6 class="fw-bold mt-3 mb-3 text-secondary">ข้อมูลที่อยู่</h6>
-</div>
-
-<div class="row mb-4">
-  <div class="col-md-3">
-    <label class="fw-semibold mb-2">เลขที่บ้าน</label>
-    <input type="text" class="form-control bg-light" value="{{ profile.house_no }}" readonly>
-  </div>
-
-  <div class="col-md-2">
-    <label class="fw-semibold mb-2">หมู่</label>
-    <input type="text" class="form-control bg-light" value="{{ profile.moo }}" readonly>
-  </div>
-
-  <div class="col-md-7">
-    <label class="fw-semibold mb-2">ถนน</label>
-    <input type="text" class="form-control bg-light" value="{{ profile.street }}" readonly>
-  </div>
-</div>
-
-<div class="row mb-4">
-  <div class="col-md-6">
-    <label class="fw-semibold mb-2">แขวง/ตำบล</label>
-    <input type="text" class="form-control bg-light" value="{{ profile.subdistrict }}" readonly>
-  </div>
-
-  <div class="col-md-6">
-    <label class="fw-semibold mb-2">เขต/อำเภอ</label>
-    <input type="text" class="form-control bg-light" value="{{ profile.district }}" readonly>
-  </div>
-</div>
-
-<div class="row mb-4">
-  <div class="col-md-6">
-    <label class="fw-semibold mb-2">จังหวัด</label>
-    <input type="text" class="form-control bg-light" value="{{ profile.province }}" readonly>
-  </div>
-
-  <div class="col-md-6">
-    <label class="fw-semibold mb-2">รหัสไปรษณีย์</label>
-    <input type="text" class="form-control bg-light" value="{{ profile.postal_code }}" readonly>
-  </div>
-</div>
-
-
-  {% else %}
-
-  <!-- ✅ ฟอร์มกรอกข้อมูล -->
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-
-    <!-- 🔸 การ์ด: ข้อมูลผู้ใช้ -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-      <div class="card-body p-4">
-        <h5 class="fw-bold text-success mb-4">
-          <i class="fa fa-id-card me-2"></i> กรอกชื่อและข้อมูลติดต่อ
-        </h5>
-
-        <div class="row g-4 align-items-end">
-          <div class="col-md-2 col-sm-4">
-            <label class="form-label fw-semibold text-secondary">คำนำหน้า</label>
-            {{ form.title }}
-          </div>
-
-          <!-- 👇 ชื่อ–นามสกุลต่อกัน -->
-          <div class="col-md-10 col-sm-8">
-            <div class="d-flex flex-column flex-sm-row gap-3">
-              <div class="flex-fill">
-                <label class="form-label fw-semibold text-secondary">ชื่อ</label>
-                {{ form.first_name }}
-              </div>
-              <div class="flex-fill">
-                <label class="form-label fw-semibold text-secondary">นามสกุล</label>
-                {{ form.last_name }}
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-2 col-sm-6">
-            <label class="form-label fw-semibold text-secondary">เพศ</label>
-            {{ form.gender }}
-          </div>
-          <div class="col-md-4 col-sm-6">
-            <label class="form-label fw-semibold text-secondary">อีเมล</label>
-            {{ form.email }}
-          </div>
-          <div class="col-md-3 col-sm-6">
-            <label class="form-label fw-semibold text-secondary">เบอร์โทรศัพท์</label>
-            {{ form.phone }}
+          <div class="small text-outline mt-2 fw-semibold member-progress-text">
+            {% if meter.next_level_name %}
+              อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong>
+            {% else %}
+              อยู่ระดับสูงสุดแล้ว 🎉
+            {% endif %}
           </div>
         </div>
       </div>
     </div>
-
-    <!-- 🔸 การ์ด: ที่อยู่ -->
-    <div class="card border-0 shadow-sm rounded-4">
-      <div class="card-body p-4">
-        <h5 class="fw-bold text-success mb-4">
-          <i class="fa fa-home me-2"></i> ที่อยู่สำหรับติดต่อ/จัดส่ง
-        </h5>
-
-        <div class="row g-4">
-          <div class="col-md-3 col-sm-6">
-            <label class="form-label fw-semibold text-secondary">เลขที่บ้าน</label>
-            {{ form.house_no }}
-          </div>
-          <div class="col-md-2 col-sm-6">
-            <label class="form-label fw-semibold text-secondary">หมู่</label>
-            {{ form.moo }}
-          </div>
-          <div class="col-md-7">
-            <label class="form-label fw-semibold text-secondary">ถนน</label>
-            {{ form.street }}
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary">แขวง/ตำบล</label>
-            {{ form.subdistrict }}
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary">เขต/อำเภอ</label>
-            {{ form.district }}
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary">จังหวัด</label>
-            {{ form.province }}
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary">รหัสไปรษณีย์</label>
-            {{ form.postal_code }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-end mt-4">
-      <button type="submit" class="btn btn-success px-4 py-2 fw-semibold shadow-sm rounded-3">
-        <i class="fa fa-save me-2"></i> บันทึกข้อมูล
-      </button>
-    </div>
-  </form>
-  {% endif %}
+  </div>
 </div>
 
-<!-- 🎨 Custom Style -->
+<!-- 🌸 CSS -->
 <style>
   body {
     background-color: #f8f9fa;
   }
 
-  .card {
-    border-radius: 16px;
+  /* 🎀 การ์ดพื้นหลัง */
+  .member-bg {
+    min-height: clamp(240px, 30vw, 320px);
+    color: white;
+    position: relative;
+    border-radius: 1.25rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
   }
 
-  input, select {
-    border-radius: 10px !important;
-    border: 1px solid #ccc !important;
-    padding: 10px 12px !important;
-    transition: all 0.2s ease-in-out;
+  .member-bg:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
   }
 
-  input:focus, select:focus {
-    border-color: #198754 !important;
-    box-shadow: 0 0 4px rgba(25, 135, 84, 0.4) !important;
-    outline: none !important;
+  .member-bg .overlay {
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1;
   }
 
-  label.form-label {
-    margin-bottom: 4px;
+  .member-content {
+    z-index: 2;
+    padding: clamp(1.2rem, 3vw, 2.5rem);
+    width: 100%;
   }
 
-  .btn-success {
-    background-color: #198754 !important;
-    border-color: #198754 !important;
-    transition: all 0.2s ease-in-out;
+  /* 🌸 จัดฝั่งซ้ายสุด */
+  .member-left {
+    align-items: flex-start;
+    text-align: left;
+    max-width: 600px;
   }
 
-  .btn-success:hover {
-    background-color: #157347 !important;
-    box-shadow: 0 3px 6px rgba(25, 135, 84, 0.3);
+  /* 🎀 Badge */
+  .member-badge {
+    background-color: #ff008b !important;
+    font-size: clamp(0.9rem, 2vw, 1.3rem);
+    padding: clamp(0.4rem, 1vw, 0.7rem) clamp(1rem, 2vw, 1.5rem);
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(255, 0, 139, 0.4);
   }
 
-  /* 📱 Responsive */
+  /* 💖 ตัวอักษรหลัก */
+  .text-outline,
+  .member-points,
+  .member-progress-text {
+    color: #fff;
+    font-size: clamp(0.9rem, 2vw, 1.3rem);
+    font-weight: 600;
+    text-shadow:
+      -1px -1px 0 #ff66c8,
+       1px -1px 0 #ff66c8,
+      -1px  1px 0 #ff66c8,
+       1px  1px 0 #ff66c8;
+  }
+
+  .member-info strong {
+    color: #ff008b;
+    font-weight: 800;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  }
+
+  /* 🌈 Progress Bar */
+  .progress {
+    border-radius: 50px;
+  }
+
+  .member-progress-bar {
+    height: clamp(8px, 1vw, 14px);
+  }
+
+  .member-progress {
+    background: linear-gradient(90deg, #ff008b, #ff66c8) !important;
+    border-radius: 50px;
+    transition: width 0.5s ease-in-out;
+  }
+
+  /* 🌟 ไอคอน */
+  .level-icon {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+  }
+
+  .text-silver { color: #c0c0c0; }
+  .text-gold { color: #ffd700; }
+  .text-premium { color: #ff66c8; }
+
+  /* 📱 Layout Responsive */
+  @media (max-width: 992px) {
+    .member-left {
+      padding-left: 0 !important;
+      align-items: center;
+      text-align: center;
+    }
+
+    .member-info {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .progress-wrapper {
+      max-width: 90%;
+      margin: 0 auto;
+    }
+  }
+
   @media (max-width: 768px) {
-    .card-body {
-      padding: 1.5rem !important;
+    .member-bg {
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
     }
 
-    h5 {
-      font-size: 1.1rem;
+    .member-left {
+      align-items: center;
+      text-align: center;
     }
 
-    .btn {
-      width: 100%;
+    .member-badge {
+      font-size: clamp(0.85rem, 4vw, 1rem);
     }
 
-    /* ให้ชื่อ–นามสกุลต่อกันในมือถือ */
-    .d-flex.flex-sm-row {
-      flex-direction: row !important;
+    .text-outline,
+    .member-points,
+    .member-progress-text {
+      font-size: clamp(0.9rem, 4vw, 1rem);
     }
 
-  .member-bg {
-  min-height: 250px;
-  color: white;
-  position: relative;
-  border-radius: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.member-bg:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-}
-
-.member-bg .overlay {
-  background: rgba(0, 0, 0, 0.35);
-  z-index: 1;
-}
-
-.member-bg .card-body {
-  z-index: 2;
-  padding: 1.5rem;
-}
-
-.progress {
-  border-radius: 50px;
-}
-
-@media (max-width: 768px) {
-  .member-bg {
-    text-align: center;
-  }
-  .member-bg .card-body {
-    flex-direction: column !important;
-  }
-  .progress-wrapper {
-    max-width: 100% !important;
-  }
-}
-
+    .level-icon {
+      font-size: clamp(1.5rem, 5vw, 2rem);
+    }
   }
 </style>
 {% endblock %}

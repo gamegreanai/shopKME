@@ -2,8 +2,8 @@
 {% block title %}จัดการแต้มผู้ใช้{% endblock %}
 {% block content %}
 
-<div class="container mt-4">
-  <h4 class="fw-bold text-success mb-3">
+<div class="container">
+  <h4 class="fw-bold text-success mb-3 mt-4">
     <i class="fa fa-coins me-2"></i> จัดการแต้มผู้ใช้
   </h4>
 
@@ -168,5 +168,39 @@
     document.querySelectorAll("input[name='selected_users']").forEach(cb => cb.checked = this.checked);
   });
 </script>
+
+<!-- ✅ ป้องกันเนื้อหาทับ Navbar -->
+<style>
+  .container {
+    margin-top: clamp(110px, 10vw, 130px);
+  }
+
+  /* 📱 iPad */
+  @media (max-width: 991px) {
+    .container {
+      margin-top: 115px;
+      padding: 1rem;
+    }
+  }
+
+  /* 📱 มือถือ */
+  @media (max-width: 768px) {
+    .container {
+      margin-top: 100px !important;
+      padding: 0.8rem !important;
+    }
+    h4 {
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    table {
+      font-size: 0.9rem;
+    }
+    .btn {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.8rem;
+    }
+  }
+</style>
 
 {% endblock %}

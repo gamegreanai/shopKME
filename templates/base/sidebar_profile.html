@@ -4,33 +4,33 @@
   /* 🎨 พื้นหลังและโครงสร้าง Sidebar */
   .sidebar {
     width: 280px;
-    background-color: #f5fff6;
+    background-color: #ffffff;
     border-right: 1px solid #ddd;
     min-height: 100vh;
     position: fixed;
     left: 0;
-    top: 65px; /* ✅ อยู่ใต้ navbar */
+    top: 100px; /* ✅ อยู่ใต้ navbar */
     z-index: 1040;
     overflow-y: auto;
     padding-bottom: 80px;
   }
 
   .sidebar-header {
-    background-color: #bff0c2;
+    background-color: #ffffff;
     padding: 20px;
-    border-bottom: 1px solid #d9f2dc;
+    border-bottom: 1px solid #eee;
     text-align: center;
   }
 
   .sidebar-header h5 {
     font-weight: bold;
-    color: #2b7a32;
+    color: #ff008b;
     margin-bottom: 0;
   }
 
   .sidebar-header h4 {
     font-weight: bold;
-    color: #198754;
+    color: #ff008b;
     margin-top: 5px;
   }
 
@@ -70,14 +70,14 @@
   .sidebar a i {
     width: 25px;
     font-size: 18px;
-    color: #198754;
+    color: #ff008b;
     margin-right: 10px;
   }
 
   .logout-btn {
     margin: 15px;
     border: 2px solid #198754;
-    color: #198754;
+    color: #ffffff;
     font-weight: bold;
     border-radius: 25px;
     padding: 10px 0;
@@ -98,6 +98,66 @@
       padding: 20px;
       transition: margin-left 0.3s ease;
     }
+
+    /* 🌸 เพิ่มธีมสีชมพู */
+:root {
+  --pink-color: #ff008b;
+}
+
+/* 🩷 ตัวอักษรทั่วไปเป็นสีชมพู */
+.sidebar a,
+.sidebar-section h6,
+.logout-btn,
+.footer-menu a span,
+.footer-menu a i {
+  color: var(--pink-color) !important;
+}
+
+/* 🌸 เมื่อ hover → ตัวอักษรสีขาว พื้นหลังชมพู */
+.sidebar a:hover,
+.sidebar a.active {
+  background-color: var(--pink-color) !important;
+  color: white !important;
+}
+
+.sidebar a:hover i,
+.sidebar a.active i {
+  color: white !important;
+}
+
+/* 🌸 ปุ่มออกจากระบบ */
+.logout-btn {
+  border: 2px solid var(--pink-color) !important;
+  color: var(--pink-color) !important;
+}
+
+.logout-btn:hover {
+  background-color: var(--pink-color) !important;
+  color: white !important;
+}
+
+/* 🌸 Footer menu (มือถือ / iPad) */
+.footer-menu a {
+  color: var(--pink-color) !important;
+}
+
+.footer-menu a.active {
+  background-color: var(--pink-color) !important;
+  color: white !important;
+  border-radius: 10px;
+}
+
+.footer-menu a.active i,
+.footer-menu a.active span {
+  color: white !important;
+}
+
+.footer-menu a:hover {
+  background-color: var(--pink-color) !important;
+  color: white !important;
+  border-radius: 10px;
+}
+
   }
 
   /* ✅ Footer Menu (Mobile / iPad) */
@@ -126,7 +186,7 @@
 
     .footer-menu a {
       text-align: center;
-      color: #777;
+      color: #ff66c8;
       font-size: 12px;
       text-decoration: none;
       flex: 1;
@@ -134,7 +194,7 @@
     }
 
     .footer-menu a.active {
-      color: #198754;
+      color: #ff008b;
       font-weight: 600;
     }
 
@@ -145,7 +205,7 @@
     }
 
     body {
-      padding-bottom: 65px; /* ป้องกัน footer ทับเนื้อหา */
+      padding-bottom: 60px; /* ป้องกัน footer ทับเนื้อหา */
     }
 
     .main-content {
@@ -153,16 +213,25 @@
       padding: 15px;
     }
   }
+
+  /* 🌸 สีชมพูหลักของเบอร์โทร */
+.text-pink {
+  color: #ff008b !important;
+  font-weight: 700;
+  text-shadow: 0 0 4px rgba(255, 102, 200, 0.3); /* เพิ่มความนุ่มนวล */
+}
+
 </style>
 
 <!-- 🔹 Sidebar -->
  <div class="main-content">
 <div class="sidebar shadow-sm">
-  <a href="/account/dashboard/" class="sidebar-header text-decoration-none d-block mb-3">
+
     <div class="p-3 rounded">
+      <center><small>ยินดีตอนรับ</small>
       <h5 id="greeting" class="fw-bold mb-1">สวัสดี</h5>
-      <h4 class="fw-bold text-success">{{ user.phone|default:"099-XXX-XXXX" }}</h4>
-      <small>ดูข้อมูลบัญชีของฉัน</small>
+      <h4 class="fw-bold text-pink">{{ user.phone|default:"099-XXX-XXXX" }}</h4>
+</center>
     </div>
   </a>
 

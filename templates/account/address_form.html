@@ -1,18 +1,16 @@
 {% extends 'base/base.html' %}
+{% block title %}DDreamclinic{% endblock %}
 {% load static %}
 
 {% block content %}
-<div class="container py-4">
-  <!-- 🔹 หัวข้อหลัก -->
-  <div class="d-flex align-items-center justify-content-between flex-wrap mb-4">
-    <h4 class="fw-bold text-success mb-0">
-      <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ
-    </h4>
-    <span class="text-muted small">โปรดตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก</span>
-  </div>
+<div class="container py-5 address-container">
 
-  <!-- 🔹 Card หลัก -->
-  <div class="card border-0 shadow-sm rounded-4">
+  <!-- 🌸 การ์ดหลัก -->
+  <div class="card address-card border-0 shadow-lg mx-auto">
+    <div class="card-header text-center text-white py-4">
+      <h4 class="fw-bold mb-0"><i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ</h4>
+    </div>
+
     <div class="card-body p-4">
       <form method="post" novalidate>
         {% csrf_token %}
@@ -21,52 +19,52 @@
         <div class="row g-4">
           <!-- บ้าน / หมู่ / ถนน -->
           <div class="col-md-3 col-sm-6">
-            <label class="form-label fw-semibold text-secondary" for="{{ form.house_no.id_for_label }}">เลขที่บ้าน</label>
+            <label class="form-label">เลขที่บ้าน</label>
             {{ form.house_no }}
-            <div class="text-danger small">{{ form.house_no.errors }}</div>
+            {{ form.house_no.errors }}
           </div>
 
           <div class="col-md-2 col-sm-6">
-            <label class="form-label fw-semibold text-secondary" for="{{ form.moo.id_for_label }}">หมู่</label>
+            <label class="form-label">หมู่</label>
             {{ form.moo }}
-            <div class="text-danger small">{{ form.moo.errors }}</div>
+            {{ form.moo.errors }}
           </div>
 
-          <div class="col-md-7">
-            <label class="form-label fw-semibold text-secondary" for="{{ form.street.id_for_label }}">ถนน</label>
+          <div class="col-md-7 col-sm-12">
+            <label class="form-label">ถนน</label>
             {{ form.street }}
-            <div class="text-danger small">{{ form.street.errors }}</div>
+            {{ form.street.errors }}
           </div>
 
           <!-- แขวง / เขต / จังหวัด / รหัส -->
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary" for="{{ form.subdistrict.id_for_label }}">แขวง/ตำบล</label>
+          <div class="col-md-6 col-sm-12">
+            <label class="form-label">แขวง/ตำบล</label>
             {{ form.subdistrict }}
-            <div class="text-danger small">{{ form.subdistrict.errors }}</div>
+            {{ form.subdistrict.errors }}
           </div>
 
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary" for="{{ form.district.id_for_label }}">เขต/อำเภอ</label>
+          <div class="col-md-6 col-sm-12">
+            <label class="form-label">เขต/อำเภอ</label>
             {{ form.district }}
-            <div class="text-danger small">{{ form.district.errors }}</div>
+            {{ form.district.errors }}
           </div>
 
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary" for="{{ form.province.id_for_label }}">จังหวัด</label>
+          <div class="col-md-6 col-sm-12">
+            <label class="form-label">จังหวัด</label>
             {{ form.province }}
-            <div class="text-danger small">{{ form.province.errors }}</div>
+            {{ form.province.errors }}
           </div>
 
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary" for="{{ form.postal_code.id_for_label }}">รหัสไปรษณีย์</label>
+          <div class="col-md-6 col-sm-12">
+            <label class="form-label">รหัสไปรษณีย์</label>
             {{ form.postal_code }}
-            <div class="text-danger small">{{ form.postal_code.errors }}</div>
+            {{ form.postal_code.errors }}
           </div>
         </div>
 
-        <!-- ปุ่มบันทึก -->
-        <div class="text-end mt-5">
-          <button type="submit" class="btn btn-success px-4 py-2 fw-semibold shadow-sm rounded-3">
+        <!-- 🌸 ปุ่มบันทึก -->
+        <div class="text-center mt-5">
+          <button type="submit" class="btn btn-pink fw-bold px-5 py-2">
             <i class="fa fa-save me-2"></i> บันทึกข้อมูล
           </button>
         </div>
@@ -75,66 +73,120 @@
   </div>
 </div>
 
-<!-- 🔹 Style พิเศษให้ดูสวยขึ้น -->
+<!-- 🌸 CSS -->
 <style>
-  /* โครงสร้างโดยรวม */
   body {
     background-color: #f8f9fa;
   }
 
-  .card {
-    border-radius: 16px;
+  /* Container */
+  .address-container {
+    margin-top: clamp(110px, 10vw, 130px);
+    max-width: 900px;
   }
 
-  /* ป้าย label */
-  label.form-label {
-    margin-bottom: 4px;
-    color: #555;
+  /* การ์ดหลัก */
+  .address-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+    transition: all 0.3s ease-in-out;
   }
 
-  /* ช่อง input ทุกชนิด */
+  .address-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.15);
+  }
+
+  /* Header */
+  .address-card .card-header {
+    background: linear-gradient(135deg, #ff008b, #ff66c8);
+    border-bottom: none;
+  }
+
+  .address-card .card-header h4 {
+    font-size: 1.3rem;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* Label & Input */
+  label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
   input, select, textarea {
-    border-radius: 10px !important;
-    border: 1px solid #ccc !important;
-    padding: 10px 12px !important;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    width: 100%;
+    transition: all 0.2s ease;
   }
 
   input:focus, select:focus, textarea:focus {
-    border-color: #198754 !important;
-    box-shadow: 0 0 4px rgba(25, 135, 84, 0.4) !important;
-    outline: none !important;
+    border-color: #ff008b;
+    box-shadow: 0 0 5px rgba(255, 0, 139, 0.3);
+    outline: none;
   }
 
-  /* ปุ่มบันทึก */
-  .btn-success {
-    background-color: #198754 !important;
-    border-color: #198754 !important;
-    transition: all 0.2s ease-in-out;
+  /* ปุ่มชมพู */
+  .btn-pink {
+    background-color: #ff008b;
+    border: none;
+    color: white;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
   }
 
-  .btn-success:hover {
-    background-color: #157347 !important;
-    box-shadow: 0 3px 6px rgba(25, 135, 84, 0.3);
+  .btn-pink:hover {
+    background-color: #ff66c8;
+    box-shadow: 0 4px 10px rgba(255, 102, 200, 0.4);
   }
 
-  /* ข้อความ error */
-  .text-danger.small {
-    margin-top: 2px;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .card-body {
-      padding: 1.5rem !important;
+  /* Responsive iPad */
+  @media (max-width: 991px) {
+    .address-container {
+      margin-top: 115px;
+      padding: 1.5rem;
     }
 
-    h4 {
+    .address-card .card-header h4 {
+      font-size: 1.2rem;
+    }
+
+    input, select {
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Responsive Mobile */
+  @media (max-width: 768px) {
+    .address-container {
+      margin-top: 100px !important;
+      padding: 1rem !important;
+    }
+
+    .address-card {
+      border-radius: 16px;
+    }
+
+    .address-card .card-header h4 {
       font-size: 1.1rem;
     }
 
-    .btn {
+    .btn-pink {
       width: 100%;
+      font-size: 1rem;
+      padding: 0.8rem;
+    }
+
+    input, select {
+      font-size: 0.9rem;
+      padding: 0.6rem 0.8rem;
     }
   }
 </style>

@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %}
+{% comment %} {% extends 'base/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -15,7 +15,19 @@
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
       <form method="post" novalidate>
-        {% csrf_token %}
+        {% csrf_token %}        
+        <!-- 🔸 เพศ -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-secondary">เพศ</label>
+            <select name="gender" class="form-select">
+              <option value="">เลือกเพศ</option>
+              <option value="ชาย" {% if profile.gender == 'ชาย' %}selected{% endif %}>ชาย</option>
+              <option value="หญิง" {% if profile.gender == 'หญิง' %}selected{% endif %}>หญิง</option>
+              <option value="ไม่ระบุ" {% if profile.gender == 'ไม่ระบุ' %}selected{% endif %}>ไม่ระบุ</option>
+            </select>
+          </div>
+        </div>
+        
         <div class="row g-4">
           <!-- 🔸 ชื่อ -->
           <div class="col-md-6">
@@ -34,18 +46,6 @@
             <label class="form-label fw-semibold text-secondary">อีเมล</label>
             <input type="email" name="email" class="form-control" value="{{ user.email }}">
           </div>
-
-          <!-- 🔸 เพศ -->
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary">เพศ</label>
-            <select name="gender" class="form-select">
-              <option value="">เลือกเพศ</option>
-              <option value="ชาย" {% if profile.gender == 'ชาย' %}selected{% endif %}>ชาย</option>
-              <option value="หญิง" {% if profile.gender == 'หญิง' %}selected{% endif %}>หญิง</option>
-              <option value="ไม่ระบุ" {% if profile.gender == 'ไม่ระบุ' %}selected{% endif %}>ไม่ระบุ</option>
-            </select>
-          </div>
-        </div>
 
         <!-- 🔸 ปุ่มบันทึก -->
         <div class="text-end mt-5">
@@ -120,4 +120,4 @@
     }
   }
 </style>
-{% endblock %}
+{% endblock %} {% endcomment %}
