@@ -3,26 +3,23 @@
 <style>
   /* 🎨 พื้นหลังและโครงสร้าง Sidebar */
   .sidebar {
-    min-width: 280px;
+    width: 280px;
     background-color: #f5fff6;
     border-right: 1px solid #ddd;
     min-height: 100vh;
-    transition: transform 0.3s ease-in-out;
     position: fixed;
     left: 0;
-    top: 56px; /* ✅ อยู่ใต้ navbar */
+    top: 65px; /* ✅ อยู่ใต้ navbar */
     z-index: 1040;
-    transform: translateX(-100%);
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
+    overflow-y: auto;
+    padding-bottom: 80px;
   }
 
   .sidebar-header {
     background-color: #bff0c2;
     padding: 20px;
     border-bottom: 1px solid #d9f2dc;
+    text-align: center;
   }
 
   .sidebar-header h5 {
@@ -94,93 +91,148 @@
     color: white;
   }
 
-  /* ✅ ปุ่ม ☰ อยู่ใต้ Navbar */
-  .sidebar-toggle-btn {
-    position: fixed;
-    top: 65px; /* 👈 อยู่ใต้ navbar */
-    left: 15px;
-    z-index: 1100;
-    background-color: #198754;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 10px;
-    cursor: pointer;
-    font-size: 18px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  /* ✅ ปรับเนื้อหาให้ไม่ทับ Sidebar */
+  @media (min-width: 992px) {
+    .main-content {
+      margin-left: 280px; /* ช่องว่างด้านซ้ายเท่ากับความกว้างของ Sidebar */
+      padding: 20px;
+      transition: margin-left 0.3s ease;
+    }
   }
 
-  /* ✅ Responsive */
-  @media (min-width: 992px) {
+  /* ✅ Footer Menu (Mobile / iPad) */
+  .footer-menu {
+    display: none;
+  }
+
+  @media (max-width: 991px) {
     .sidebar {
-      position: relative;
-      transform: none;
-      top: 0;
+      display: none;
     }
 
-    .sidebar-toggle-btn {
-      display: none;
+    .footer-menu {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #ffffff;
+      border-top: 1px solid #ddd;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 8px 0;
+      z-index: 1050;
+    }
+
+    .footer-menu a {
+      text-align: center;
+      color: #777;
+      font-size: 12px;
+      text-decoration: none;
+      flex: 1;
+      transition: color 0.2s ease;
+    }
+
+    .footer-menu a.active {
+      color: #198754;
+      font-weight: 600;
+    }
+
+    .footer-menu i {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    body {
+      padding-bottom: 65px; /* ป้องกัน footer ทับเนื้อหา */
+    }
+
+    .main-content {
+      margin-left: 0; /* ✅ ไม่มี Sidebar ในมือถือ */
+      padding: 15px;
     }
   }
 </style>
 
-<!-- 🔹 ปุ่ม ☰ แยกอยู่ใต้ Navbar -->
-<button class="sidebar-toggle-btn d-lg-none" id="toggleSidebarBtn">☰ เมนู</button>
-
 <!-- 🔹 Sidebar -->
-<div class="sidebar shadow-sm" id="sidebarMenu">
-  <!-- ส่วนหัว -->
-  <a href="/account/dashboard/" class="sidebar-header text-center text-decoration-none d-block mb-3">
-    <div class="p-3 rounded" style="background-color:#bff0c2;">
+ <div class="main-content">
+<div class="sidebar shadow-sm">
+  <a href="/account/dashboard/" class="sidebar-header text-decoration-none d-block mb-3">
+    <div class="p-3 rounded">
       <h5 id="greeting" class="fw-bold mb-1">สวัสดี</h5>
       <h4 class="fw-bold text-success">{{ user.phone|default:"099-XXX-XXXX" }}</h4>
       <small>ดูข้อมูลบัญชีของฉัน</small>
     </div>
   </a>
 
-  <!-- เมนู -->
   <div class="sidebar-section">
     <h6>ข้อมูลส่วนตัว</h6>
-    <a href="/account/profile/"><i class="fa fa-user"></i> ข้อมูลส่วนตัว</a>
-    <a href="/account/address/"><i class="fa fa-map-marker-alt"></i> ที่อยู่จัดส่ง</a>
-    <a href="/account/redeem/"><i class="fa fa-gift"></i> แลก Point</a>
+    <a href="/account/dashboard/" class="{% if request.path == '/account/dashboard/' %}active{% endif %}">
+      <i class="fa fa-home"></i> หน้าแรก
+    </a>
+    <a href="/account/profile/" class="{% if request.path == '/account/profile/' %}active{% endif %}">
+      <i class="fa fa-user"></i> ข้อมูลส่วนตัว
+    </a>
+    <a href="/account/address/" class="{% if request.path == '/account/address/' %}active{% endif %}">
+      <i class="fa fa-map-marker-alt"></i> ที่อยู่จัดส่ง
+    </a>
+    <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
+      <i class="fa fa-gift"></i> แลก Point
+    </a>
   </div>
 
   {% if user.is_staff or user.is_superuser %}
   <div class="sidebar-section">
     <h6>สำหรับผู้ดูแล</h6>
-    <a href="/account/coupon/"><i class="fa fa-ticket-alt"></i> จัดการคูปอง</a>
-    <a href="/account/staff/points/"><i class="fa fa-gem"></i> จัดการแต้มผู้ใช้</a>
+    <a href="/account/coupon/" class="{% if request.path == '/account/coupon/' %}active{% endif %}">
+      <i class="fa fa-ticket-alt"></i> จัดการคูปอง
+    </a>
+    <a href="/account/staff/points/" class="{% if request.path == '/account/staff/points/' %}active{% endif %}">
+      <i class="fa fa-gem"></i> จัดการแต้มผู้ใช้
+    </a>
   </div>
   {% endif %}
 
-  <!-- ปุ่มออกจากระบบ -->
   <a href="/account/logout/" class="logout-btn">ออกจากระบบ</a>
 </div>
 
-<!-- 🔹 Script toggle -->
+<!-- 🔹 Footer Menu (มือถือ / iPad) -->
+<nav class="footer-menu">
+  <a href="/account/dashboard/" class="{% if request.path == '/account/dashboard/' %}active{% endif %}">
+    <i class="fa fa-home"></i>
+    <span>หน้าแรก</span>
+  </a>
+  <a href="/account/profile/" class="{% if request.path == '/account/profile/' %}active{% endif %}">
+    <i class="fa fa-user"></i>
+    <span>ข้อมูลส่วนตัว</span>
+  </a>
+  <a href="/account/address/" class="{% if request.path == '/account/address/' %}active{% endif %}">
+    <i class="fa fa-map-marker-alt"></i>
+    <span>ที่อยู่</span>
+  </a>
+  <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
+    <i class="fa fa-gift"></i>
+    <span>แลก Point</span>
+  </a>
+  <a href="/account/logout/">
+    <i class="fa fa-sign-out-alt"></i>
+    <span>ออกจากระบบ</span>
+  </a>
+</nav>
+</div>
+
+<!-- 🔹 Script: คำทักทาย -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const greetingEl = document.getElementById("greeting");
+    if (!greetingEl) return;
+
     const hour = new Date().getHours();
-
     let greetingText = "สวัสดี";
-    if (hour >= 5 && hour < 12) {
-      greetingText = "🌅 สวัสดีตอนเช้า";
-    } else if (hour >= 12 && hour < 18) {
-      greetingText = "🌤️ สวัสดีตอนบ่าย";
-    } else {
-      greetingText = "🌙 สวัสดีตอนเย็น";
-    }
+    if (hour >= 5 && hour < 12) greetingText = "🌅 สวัสดีตอนเช้า";
+    else if (hour >= 12 && hour < 18) greetingText = "🌤️ สวัสดีตอนบ่าย";
+    else greetingText = "🌙 สวัสดีตอนเย็น";
     greetingEl.textContent = greetingText;
-
-    const sidebar = document.getElementById("sidebarMenu");
-    const toggleBtn = document.getElementById("toggleSidebarBtn");
-
-    if (sidebar && toggleBtn) {
-      toggleBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("active");
-      });
-    }
   });
 </script>
