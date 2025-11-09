@@ -10,25 +10,27 @@
     <!-- 🌸 การ์ดโปรไฟล์หลัก -->
     <div class="card profile-card border-0 shadow-lg">
       <div class="card-header text-center text-white py-4">
-        <h4 class="fw-bold mb-0"><i class="fa fa-user-circle me-2"></i> ข้อมูลโปรไฟล์ของคุณ</h4>
+        <h4 class="fw-bold mb-0">
+          <i class="fa fa-user-circle me-2"></i> ข้อมูลโปรไฟล์ของคุณ
+        </h4>
       </div>
 
       <div class="card-body p-4">
         <div class="row g-4">
           <!-- 🧩 คำนำหน้า เพศ โทรศัพท์ -->
-          <div class="col-md-3 col-sm-6">
+          <div class="col-md-3 col-sm-6 col-12">
             <label class="form-label">คำนำหน้าชื่อ</label>
             {{ pform.title }}
             {{ pform.title.errors }}
           </div>
 
-          <div class="col-md-3 col-sm-6">
+          <div class="col-md-3 col-sm-6 col-12">
             <label class="form-label">เพศ</label>
             {{ pform.gender }}
             {{ pform.gender.errors }}
           </div>
 
-          <div class="col-md-6 col-sm-12">
+          <div class="col-md-6 col-sm-12 col-12">
             <label class="form-label">เบอร์โทรศัพท์</label>
             {% if pform.phone.value %}
               <input type="text" name="{{ pform.phone.name }}" 
@@ -41,19 +43,19 @@
           </div>
 
           <!-- 🧩 ข้อมูลผู้ใช้ -->
-          <div class="col-md-4 col-sm-6">
+          <div class="col-md-4 col-sm-6 col-12">
             <label class="form-label">ชื่อ</label>
             {{ uform.first_name }}
             {{ uform.first_name.errors }}
           </div>
 
-          <div class="col-md-4 col-sm-6">
+          <div class="col-md-4 col-sm-6 col-12">
             <label class="form-label">นามสกุล</label>
             {{ uform.last_name }}
             {{ uform.last_name.errors }}
           </div>
 
-          <div class="col-md-4 col-sm-12">
+          <div class="col-md-4 col-sm-12 col-12">
             <label class="form-label">อีเมล</label>
             {{ uform.email }}
             {{ uform.email.errors }}
@@ -77,30 +79,35 @@
     background-color: #f8f9fa;
   }
 
-  /* 🩷 Container หลัก */
+  /* 🌸 Container หลัก */
   .profile-container {
-    margin-top: clamp(110px, 10vw, 130px);
-    max-width: 900px;
+    margin-top: 120px;
+    margin-left: 120px;
+    max-width: calc(100% - 240px);
+    transition: all 0.3s ease;
   }
 
-  /* 🩷 การ์ดหลัก */
-  .profile-card {
-    border-radius: 20px;
-    overflow: hidden;
-    background: #ffffff;
-    transition: all 0.3s ease-in-out;
-  }
+  /* 🌸 การ์ดโปรไฟล์ */
+.profile-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #ffffff;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 8px 25px rgba(255, 0, 139, 0.1); /* เพิ่มความนุ่ม */
+}
 
-  .profile-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.15);
-  }
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
+}
 
-  /* 🩷 Header การ์ด */
+  /* 🌸 Header การ์ด */
   .profile-card .card-header {
     background: linear-gradient(135deg, #ff008b, #ff66c8);
     border-bottom: none;
-    font-size: 1.3rem;
+    border-top-left-radius: 1rem;  /* ✅ โค้งเหมือน body */
+    border-top-right-radius: 1rem; /* ✅ โค้งเหมือน body */
+    font-size: 1rem;
   }
 
   /* Label & Input */
@@ -112,7 +119,7 @@
 
   input, select {
     font-size: 1rem;
-    border-radius: 10px;
+    border-radius: 0.75rem; /* ✅ มุม input โค้งละมุน */
     border: 1px solid #ddd;
     padding: 10px 14px;
     width: 100%;
@@ -130,7 +137,7 @@
     background-color: #ff008b;
     border: none;
     color: white;
-    border-radius: 30px;
+    border-radius: 0.75rem; /* ✅ มุมปุ่มเข้ากับการ์ด */
     font-size: 1.1rem;
     transition: all 0.3s ease;
   }
@@ -140,11 +147,17 @@
     box-shadow: 0 4px 10px rgba(255, 102, 200, 0.4);
   }
 
-  /* 📱 iPad */
+  /* 📱 Tablet */
   @media (max-width: 991px) {
     .profile-container {
-      margin-top: 115px;
+      margin-top: 110px;
+      margin-left: 0;
       padding: 1.5rem;
+      max-width: 100%;
+    }
+
+    .profile-card {
+      border-radius: 1rem; /* ✅ ลดมุมลงในแท็บเล็ต */
     }
 
     .profile-card .card-header h4 {
@@ -159,16 +172,18 @@
   /* 📱 มือถือ */
   @media (max-width: 768px) {
     .profile-container {
-      margin-top: 100px !important;
+      margin-top: 95px !important;
+      margin-left: 0 !important;
       padding: 1rem !important;
+      max-width: 100%;
     }
 
     .profile-card {
-      border-radius: 16px;
+      border-radius: 1rem; /* ✅ มุมเดียวกับมือถือหน้า Dashboard */
     }
 
     .profile-card .card-header h4 {
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
 
     .btn-pink {
@@ -180,6 +195,37 @@
     input, select {
       font-size: 0.9rem;
       padding: 0.6rem 0.8rem;
+      border-radius: 0.6rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+    }
+  }
+
+  /* 📱 มือถือจอเล็กพิเศษ */
+  @media (max-width: 480px) {
+    .profile-container {
+      padding: 0.8rem !important;
+      margin-top: 90px !important;
+    }
+
+    .profile-card {
+      border-radius: 0.9rem; /* ✅ ยังคงสวยแม้จอเล็ก */
+    }
+
+    .card-body {
+      padding: 1rem !important;
+    }
+
+    .btn-pink {
+      font-size: 0.95rem;
+      padding: 0.7rem;
+      border-radius: 0.6rem;
+    }
+
+    label {
+      font-size: 0.85rem;
     }
   }
 </style>

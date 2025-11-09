@@ -16,22 +16,22 @@
 
     <div class="card-body p-4">
 
-      <!-- 🌸 ส่วนแถบแต้มและเลเวล -->
-      <div class="member-section p-3 mb-4 rounded-4 text-center text-white">
+      <!-- 🌈 การ์ดแสดงเลเวลสมาชิก -->
+      <div class="member-section p-3 mb-4 rounded-4">
         <div class="fw-semibold mb-2">
           ระดับสมาชิก: {{ meter.level }}
         </div>
         <div class="mb-3">
           แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
         </div>
-        <div class="progress mx-auto" style="max-width: 300px; height: 10px;">
-          <div class="progress-bar bg-white" style="width: {{ meter.progress_pct }}%;"></div>
+        <div class="progress" style="max-width: 320px; height: 10px;">
+          <div class="progress-bar" style="width: {{ meter.progress_pct }}%;"></div>
         </div>
         <small class="d-block mt-2">
           {% if meter.next_level_name %}
             อีก {{ meter.remain_to_next }} คะแนน เพื่ออัปเป็น {{ meter.next_level_name }}
           {% else %}
-            อยู่ระดับสูงสุดแล้ว 
+            อยู่ระดับสูงสุดแล้ว 🎉
           {% endif %}
         </small>
       </div>
@@ -51,9 +51,6 @@
                 {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
               {% endif %}
               <div class="card-body d-flex flex-column p-2">
-                <h6 class="fw-bold text-pink small">{{ c.name }}</h6>
-                <div class="small text-muted mb-1">แลกเมื่อ: {{ r.created_at|date:"Y-m-d H:i" }}</div>
-                <div class="small text-muted mb-2">หมดอายุ: {{ c.ends_at|default:"-" }}</div>
                 <div class="input-group input-group-sm mt-auto">
                   <input type="text" class="form-control" value="{{ c.code }}" readonly>
                   <button type="button" class="btn btn-pink"
@@ -84,25 +81,22 @@
               {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
             {% endif %}
             <div class="card-body d-flex flex-column p-2">
-              <h6 class="fw-bold text-pink small">{{ c.name }}</h6>
               <div class="small text-muted mb-1">แต้มที่ใช้: <strong>{{ c.req_pts }}</strong></div>
-              <div class="small mb-2 text-secondary">หมดอายุ: {{ c.expires_at|default:"-" }}</div>
-              <div class="mt-auto d-grid">
-                <form method="post">
-                  {% csrf_token %}
-                  <input type="hidden" name="action" value="redeem">
-                  <input type="hidden" name="coupon_id" value="{{ c.id }}">
-                  <button class="btn btn-pink btn-sm fw-semibold"
-                    {% if not c.can_use or not c.enough_points %} disabled {% endif %}>
-                    แลกคูปอง
-                  </button>
-                </form>
-                {% if not c.active %}
-                  <div class="form-text text-danger small">คูปองหมดแล้ว</div>
-                {% elif not c.enough_points %}
-                  <div class="form-text text-warning small">แต้มสะสมไม่พอ</div>
-                {% endif %}
-              </div>
+              <br>
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="redeem">
+                <input type="hidden" name="coupon_id" value="{{ c.id }}">
+                <button class="btn btn-pink btn-sm fw-semibold"
+                  {% if not c.can_use or not c.enough_points %} disabled {% endif %}>
+                  แลกคูปอง
+                </button>
+              </form>
+              {% if not c.active %}
+                <div class="form-text text-danger small">คูปองหมดแล้ว</div>
+              {% elif not c.enough_points %}
+                <div class="form-text text-warning small">แต้มสะสมไม่พอ</div>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -148,34 +142,45 @@
 </div>
 
 <!-- 🌸 CSS -->
-<style>
+<style> 
   body {
     background-color: #f8f9fa;
   }
 
-  /* 🌸 สีช่องเบอร์โทรศัพท์ */
-input[name="phone"] {
-  color: #ff008b !important;                /* ตัวอักษรในช่องเป็นสีชมพู */
-  font-weight: 600;                         /* หนาขึ้นให้ดูชัด */
-  border-color: #ff66c8 !important;         /* ขอบชมพูอ่อน */
-  transition: all 0.3s ease-in-out;
-}
-
-input[name="phone"]:focus {
-  border-color: #ff008b !important;         /* ขอบชมพูเข้มตอน focus */
-  box-shadow: 0 0 6px rgba(255, 0, 139, 0.4) !important; /* เงาชมพูเรือง */
-  color: #ff008b !important;                /* สีตัวอักษรยังคงชมพู */
-  outline: none;
-}
-
-
+  /* ✅ Container ให้ห่างจาก Navbar */
   .redeem-container {
-    margin-top: clamp(110px, 10vw, 130px);
-    max-width: 1000px;
+    margin-top: 120px;
+    margin-left: 120px;
+    max-width: calc(100% - 240px);
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  /* 🌸 สีชมพู */
+  .text-pink {
+    color: #ff008b !important;
+  }
+
+  .btn-pink {
+    background-color: #ff008b !important;
+    color: #fff !important;
+    border-radius: 5px;
+    border: none;
+    transition: 0.3s;
+  }
+
+  .btn-pink:hover {
+    background-color: #ff66c8 !important;
+    box-shadow: 0 4px 10px rgba(255, 102, 200, 0.3);
+  }
+
+  .table-pink {
+    background-color: #ffe6f5;
+    color: #ff008b;
   }
 
   .redeem-card {
-    border-radius: 20px;
+    border-radius: 5px;
     background: #fff;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -191,65 +196,63 @@ input[name="phone"]:focus {
     border: none;
   }
 
-  .text-pink {
-    color: #ff008b !important;
-  }
-
-  .btn-pink {
-    background-color: #ff008b !important;
-    color: #fff !important;
-    border-radius: 30px;
-    border: none;
-    transition: 0.3s;
-  }
-
-  .btn-pink:hover {
-    background-color: #ff66c8 !important;
-    box-shadow: 0 4px 10px rgba(255, 102, 200, 0.3);
-  }
-
-  .table-pink {
-    background-color: #ffe6f5;
-    color: #ff008b;
-  }
-
+  /* 🌈 Member Section */
   .member-section {
-    background: linear-gradient(135deg, #ff008b, #ff66c8);
+    position: relative;
+    border-radius: 1.5rem;
+    padding: 2rem 1.5rem;
+    text-align: left;
+    color: #ff008b;
+    font-weight: 600;
+    background-image: url('/media/gardDM.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
-  .coupon-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  .member-section .progress {
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.5);
+    height: 10px;
+    max-width: 320px;
   }
 
-  .coupon-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+  .member-section .progress-bar {
+    background-color: #ff008b !important;
   }
 
-  /* Responsive */
+  /* 🌸 Responsive */
   @media (max-width: 991px) {
     .redeem-container {
       margin-top: 115px;
+      margin-left: 0;
+      max-width: 100%;
       padding: 1.5rem;
-    }
-    .redeem-card .card-header h4 {
-      font-size: 1.2rem;
     }
   }
 
   @media (max-width: 768px) {
     .redeem-container {
-      margin-top: 100px !important;
+      margin-top: 95px !important;
+      margin-left: 0 !important;
       padding: 1rem !important;
     }
-    .redeem-card {
-      border-radius: 16px;
+
+    .member-section {
+      padding: 1.2rem 1rem;
+      border-radius: 1rem;
+      background-position: center;
     }
-    .redeem-card .card-header h4 {
-      font-size: 1.1rem;
-    }
-    .coupon-card h6 {
+
+    .member-section .fw-semibold,
+    .member-section strong,
+    .member-section small {
       font-size: 0.9rem;
+    }
+
+    .member-section .progress {
+      max-width: 100%;
     }
   }
 </style>

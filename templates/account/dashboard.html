@@ -1,58 +1,48 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base.html' %} 
 {% load static %}
 {% block title %}DDreamclinic{% endblock %}
 
 {% block content %}
-<div class="container py-5" style="margin-top:130px;">
+<div class="container dashboard-container">
 
   <!-- 🔹 การ์ดระดับสมาชิก -->
-  <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden position-relative member-bg"
-       style="
-         background-image: url('/media/gard.png');
-         background-size: cover;
-         background-position: center;
-         background-repeat: no-repeat;
-       ">
+  <div class="card border-0 shadow-sm overflow-hidden position-relative member-bg">
     <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
 
-    <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative text-white member-content">
+    <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative member-content">
       
       <!-- 🔸 ฝั่งซ้าย: ข้อมูลเลเวล -->
       <div class="d-flex flex-column align-items-start gap-3 member-left">
-
-        <!-- 🏅 ไอคอน + ระดับ -->
-        <div class="member-info d-flex align-items-center gap-3 flex-wrap">
-          {% if meter.level == "Silver" %}
-            <i class="fa fa-medal level-icon text-silver"></i>
-          {% elif meter.level == "Gold" %}
-            <i class="fa fa-medal level-icon text-gold"></i>
-          {% else %}
-            <i class="fa fa-crown level-icon text-premium"></i>
-          {% endif %}
-          <span class="badge rounded-pill shadow-sm text-white fw-bold member-badge">
+        
+        <!-- 🏅 ป้ายระดับสมาชิก -->
+        <div class="member-info d-flex align-items-center flex-wrap">
+          <span class="badge rounded-pill shadow-sm fw-bold member-badge d-flex align-items-center gap-2">
+            {% if meter.level == "Silver" %}
+              <i class="fa fa-medal level-icon text-silver"></i>
+            {% elif meter.level == "Gold" %}
+              <i class="fa fa-medal level-icon text-gold"></i>
+            {% else %}
+              <i class="fa fa-crown level-icon text-premium"></i>
+            {% endif %}
             ระดับสมาชิก: {{ meter.level }}
           </span>
         </div>
 
         <!-- 💎 แต้มสะสม -->
-        <p class="mt-1 mb-0 text-outline member-points">
+        <p class="mt-2 mb-0 member-points">
           แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
         </p>
 
         <!-- 🌈 Progress -->
         <div class="progress-wrapper mt-2 w-100" style="max-width: 400px;">
-          <div class="d-flex justify-content-between small mb-1 text-outline member-progress-text">
-            <span>
-              {% if meter.level == "Silver" %} Silver
-              {% elif meter.level == "Gold" %} Gold
-              {% else %} Premium {% endif %}
-            </span>
+          <div class="d-flex justify-content-between small mb-1 member-progress-text">
+            <span>{{ meter.level }}</span>
             <span>{{ meter.progress_pct }}%</span>
           </div>
           <div class="progress bg-light bg-opacity-50 member-progress-bar">
             <div class="progress-bar member-progress" style="width: {{ meter.progress_pct }}%;"></div>
           </div>
-          <div class="small text-outline mt-2 fw-semibold member-progress-text">
+          <div class="small mt-2 fw-semibold member-progress-text">
             {% if meter.next_level_name %}
               อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong>
             {% else %}
@@ -69,141 +59,156 @@
 <style>
   body {
     background-color: #f8f9fa;
+    overflow-x: hidden;
   }
 
-  /* 🎀 การ์ดพื้นหลัง */
-  .member-bg {
-    min-height: clamp(240px, 30vw, 320px);
-    color: white;
-    position: relative;
-    border-radius: 1.25rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
+  /* ✅ Container */
+  .dashboard-container {
+    margin-top: 120px;
+    margin-left: 100px;
+    margin-right: 1rem;
+    padding: 1.5rem;
     display: flex;
-    align-items: center;
+    justify-content: flex-start;
   }
 
-  .member-bg:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  /* 🌸 การ์ดพื้นหลัง */
+  .member-bg {
+    aspect-ratio: 2 / 1;
+    width: 100%;
+    max-width: 950px;
+    border-radius: 1.5rem;
+    background-image: url('/media/gardDM.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    color: white;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    filter: brightness(1.1);
   }
 
   .member-bg .overlay {
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.08);
     z-index: 1;
   }
 
   .member-content {
     z-index: 2;
-    padding: clamp(1.2rem, 3vw, 2.5rem);
-    width: 100%;
+    padding: clamp(1rem, 3vw, 2.5rem);
   }
 
-  /* 🌸 จัดฝั่งซ้ายสุด */
-  .member-left {
-    align-items: flex-start;
-    text-align: left;
-    max-width: 600px;
-  }
-
-  /* 🎀 Badge */
-  .member-badge {
-    background-color: #ff008b !important;
-    font-size: clamp(0.9rem, 2vw, 1.3rem);
-    padding: clamp(0.4rem, 1vw, 0.7rem) clamp(1rem, 2vw, 1.5rem);
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 6px rgba(255, 0, 139, 0.4);
-  }
-
-  /* 💖 ตัวอักษรหลัก */
-  .text-outline,
+  /* 🩷 ตัวหนังสือนอก badge = สีชมพู ไม่มีเงา */
   .member-points,
   .member-progress-text {
-    color: #fff;
-    font-size: clamp(0.9rem, 2vw, 1.3rem);
-    font-weight: 600;
-    text-shadow:
-      -1px -1px 0 #ff66c8,
-       1px -1px 0 #ff66c8,
-      -1px  1px 0 #ff66c8,
-       1px  1px 0 #ff66c8;
-  }
-
-  .member-info strong {
     color: #ff008b;
-    font-weight: 800;
-    text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+    text-shadow: none;
   }
 
-  /* 🌈 Progress Bar */
+  /* 🌸 Badge ระดับสมาชิก */
+  .member-badge {
+    background-color: #ffffffdd;
+    color: #ff008b !important;
+    padding: 0.5rem 1rem;
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    border-radius: 2rem;
+    box-shadow: 0 3px 6px rgba(255, 0, 139, 0.2);
+    white-space: nowrap;
+  }
+
+  /* 🌈 Progress */
   .progress {
-    border-radius: 50px;
-  }
-
-  .member-progress-bar {
-    height: clamp(8px, 1vw, 14px);
+    border-radius: 10px;
   }
 
   .member-progress {
-    background: linear-gradient(90deg, #ff008b, #ff66c8) !important;
-    border-radius: 50px;
-    transition: width 0.5s ease-in-out;
+    background: linear-gradient(90deg, #ff008b, #ff66c8);
+    border-radius: 10px;
   }
 
-  /* 🌟 ไอคอน */
+  /* 🎖️ สีไอคอนระดับ */
   .level-icon {
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+    font-size: 1.1em;
   }
-
   .text-silver { color: #c0c0c0; }
   .text-gold { color: #ffd700; }
   .text-premium { color: #ff66c8; }
 
-  /* 📱 Layout Responsive */
-  @media (max-width: 992px) {
-    .member-left {
-      padding-left: 0 !important;
-      align-items: center;
-      text-align: center;
+  /* 📱 Tablet */
+  @media (max-width: 991px) {
+    .dashboard-container {
+      margin-top: 110px;
+      margin-left: 0;
+      padding: 1.5rem;
+      justify-content: center;
+    }
+    .member-bg {
+      max-width: 100%;
+      border-radius: 1rem;
+    }
+  }
+
+  /* 📱 Mobile */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      margin-top: 95px;
+      padding: 1rem;
+      justify-content: center;
     }
 
-    .member-info {
-      flex-direction: column;
-      gap: 0.5rem;
+    .member-bg {
+      background-size: contain;
+      border-radius: 1rem;
+      filter: brightness(1);
+    }
+
+    .member-badge {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.8rem;
+      flex-wrap: nowrap;
+    }
+
+    .level-icon {
+      font-size: 0.85rem;
+    }
+
+    .member-points,
+    .member-progress-text {
+      font-size: 0.75rem;
     }
 
     .progress-wrapper {
       max-width: 90%;
-      margin: 0 auto;
+    }
+
+    .progress {
+      height: 8px;
     }
   }
 
-  @media (max-width: 768px) {
-    .member-bg {
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .member-left {
-      align-items: center;
-      text-align: center;
-    }
-
+  /* 📱 Small Mobile */
+  @media (max-width: 480px) {
     .member-badge {
-      font-size: clamp(0.85rem, 4vw, 1rem);
+      font-size: 0.65rem;
+      padding: 0.25rem 0.6rem;
     }
 
-    .text-outline,
     .member-points,
     .member-progress-text {
-      font-size: clamp(0.9rem, 4vw, 1rem);
+      font-size: 0.7rem;
     }
 
     .level-icon {
-      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-size: 0.75rem;
+    }
+
+    .progress {
+      height: 6px;
     }
   }
 </style>
+
 {% endblock %}

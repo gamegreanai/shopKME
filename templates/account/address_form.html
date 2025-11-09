@@ -1,113 +1,107 @@
 {% extends 'base/base.html' %}
 {% block title %}DDreamclinic{% endblock %}
-{% load static %}
-
 {% block content %}
+
+<!-- ✅ Container หลัก -->
 <div class="container py-5 address-container">
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
 
-  <!-- 🌸 การ์ดหลัก -->
-  <div class="card address-card border-0 shadow-lg mx-auto">
-    <div class="card-header text-center text-white py-4">
-      <h4 class="fw-bold mb-0"><i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ</h4>
-    </div>
+    <!-- 🌸 การ์ดหลัก -->
+    <div class="card address-card border-0 shadow-lg">
+      <div class="card-header text-center text-white py-4">
+        <h4 class="fw-bold mb-0">
+          <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ
+        </h4>
+      </div>
 
-    <div class="card-body p-4">
-      <form method="post" novalidate>
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-
+      <div class="card-body p-4">
         <div class="row g-4">
           <!-- บ้าน / หมู่ / ถนน -->
-          <div class="col-md-3 col-sm-6">
+          <div class="col-md-3 col-sm-6 col-12">
             <label class="form-label">เลขที่บ้าน</label>
             {{ form.house_no }}
-            {{ form.house_no.errors }}
           </div>
 
-          <div class="col-md-2 col-sm-6">
+          <div class="col-md-2 col-sm-6 col-12">
             <label class="form-label">หมู่</label>
             {{ form.moo }}
-            {{ form.moo.errors }}
           </div>
 
-          <div class="col-md-7 col-sm-12">
+          <div class="col-md-7 col-sm-12 col-12">
             <label class="form-label">ถนน</label>
             {{ form.street }}
-            {{ form.street.errors }}
           </div>
 
           <!-- แขวง / เขต / จังหวัด / รหัส -->
-          <div class="col-md-6 col-sm-12">
+          <div class="col-md-6 col-12">
             <label class="form-label">แขวง/ตำบล</label>
             {{ form.subdistrict }}
-            {{ form.subdistrict.errors }}
           </div>
 
-          <div class="col-md-6 col-sm-12">
+          <div class="col-md-6 col-12">
             <label class="form-label">เขต/อำเภอ</label>
             {{ form.district }}
-            {{ form.district.errors }}
           </div>
 
-          <div class="col-md-6 col-sm-12">
+          <div class="col-md-6 col-12">
             <label class="form-label">จังหวัด</label>
             {{ form.province }}
-            {{ form.province.errors }}
           </div>
 
-          <div class="col-md-6 col-sm-12">
+          <div class="col-md-6 col-12">
             <label class="form-label">รหัสไปรษณีย์</label>
             {{ form.postal_code }}
-            {{ form.postal_code.errors }}
           </div>
         </div>
 
         <!-- 🌸 ปุ่มบันทึก -->
         <div class="text-center mt-5">
-          <button type="submit" class="btn btn-pink fw-bold px-5 py-2">
+          <button type="submit" class="btn btn-pink px-5 py-2 fw-bold">
             <i class="fa fa-save me-2"></i> บันทึกข้อมูล
           </button>
         </div>
-      </form>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 
-<!-- 🌸 CSS -->
+<!-- 🎨 CSS -->
 <style>
   body {
     background-color: #f8f9fa;
   }
 
-  /* Container */
+  /* 🌸 Container */
   .address-container {
-    margin-top: clamp(110px, 10vw, 130px);
-    max-width: 900px;
+    margin-top: 120px;
+    margin-left: 120px;
+    max-width: calc(100% - 240px);
+    transition: all 0.3s ease;
   }
 
-  /* การ์ดหลัก */
+  /* 🌸 การ์ดหลัก */
   .address-card {
-    border-radius: 20px;
+    border-radius: 1.5rem; /* ✅ เหมือน profile_form */
     overflow: hidden;
     background: #ffffff;
     transition: all 0.3s ease-in-out;
+    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.1);
   }
 
   .address-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.15);
+    box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
   }
 
-  /* Header */
+  /* Header การ์ด */
   .address-card .card-header {
     background: linear-gradient(135deg, #ff008b, #ff66c8);
     border-bottom: none;
-  }
-
-  .address-card .card-header h4 {
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
     font-size: 1.3rem;
-    color: #fff;
-    font-weight: 700;
   }
 
   /* Label & Input */
@@ -117,16 +111,16 @@
     margin-bottom: 6px;
   }
 
-  input, select, textarea {
+  input, select {
     font-size: 1rem;
-    border-radius: 10px;
+    border-radius: 0.75rem; /* ✅ มุม input เข้ากับการ์ด */
     border: 1px solid #ddd;
     padding: 10px 14px;
     width: 100%;
     transition: all 0.2s ease;
   }
 
-  input:focus, select:focus, textarea:focus {
+  input:focus, select:focus {
     border-color: #ff008b;
     box-shadow: 0 0 5px rgba(255, 0, 139, 0.3);
     outline: none;
@@ -137,7 +131,7 @@
     background-color: #ff008b;
     border: none;
     color: white;
-    border-radius: 30px;
+    border-radius: 0.75rem;
     font-size: 1.1rem;
     transition: all 0.3s ease;
   }
@@ -147,11 +141,17 @@
     box-shadow: 0 4px 10px rgba(255, 102, 200, 0.4);
   }
 
-  /* Responsive iPad */
+  /* 📱 Tablet */
   @media (max-width: 991px) {
     .address-container {
-      margin-top: 115px;
+      margin-top: 110px;
+      margin-left: 0;
       padding: 1.5rem;
+      max-width: 100%;
+    }
+
+    .address-card {
+      border-radius: 1rem;
     }
 
     .address-card .card-header h4 {
@@ -163,19 +163,21 @@
     }
   }
 
-  /* Responsive Mobile */
+  /* 📱 มือถือ */
   @media (max-width: 768px) {
     .address-container {
-      margin-top: 100px !important;
+      margin-top: 95px !important;
+      margin-left: 0 !important;
       padding: 1rem !important;
+      max-width: 100%;
     }
 
     .address-card {
-      border-radius: 16px;
+      border-radius: 1rem;
     }
 
     .address-card .card-header h4 {
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
 
     .btn-pink {
@@ -187,6 +189,37 @@
     input, select {
       font-size: 0.9rem;
       padding: 0.6rem 0.8rem;
+      border-radius: 0.6rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+    }
+  }
+
+  /* 📱 มือถือจอเล็ก */
+  @media (max-width: 480px) {
+    .address-container {
+      padding: 0.8rem !important;
+      margin-top: 90px !important;
+    }
+
+    .address-card {
+      border-radius: 0.9rem;
+    }
+
+    .card-body {
+      padding: 1rem !important;
+    }
+
+    .btn-pink {
+      font-size: 0.95rem;
+      padding: 0.7rem;
+      border-radius: 0.6rem;
+    }
+
+    label {
+      font-size: 0.85rem;
     }
   }
 </style>
