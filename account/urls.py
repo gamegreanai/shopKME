@@ -1,6 +1,6 @@
 from django.urls import path
 from django.shortcuts import redirect
-from . import views, view_coupon
+from . import views, view_coupon,view_promotion
 
 app_name = 'account'
 
@@ -24,4 +24,11 @@ urlpatterns = [
     path('staff/edit/<int:user_id>/', views.edit_user, name='edit_user'),
     path('staff/delete/<int:user_id>/', views.delete_user, name='delete_user'),
     path('coupon/', view_coupon.coupon_staff_view, name='coupon_staff'),
+
+    path('staff/promotion/',               view_promotion.promotion_list,   name='promotion_list'),
+    path('staff/promotion/create/',        view_promotion.promotion_create, name='promotion_create'),
+    path('staff/promotion/<int:pk>/edit/', view_promotion.promotion_update, name='promotion_edit'),
+    path('staff/promotion/<int:pk>/delete/', view_promotion.promotion_delete, name='promotion_delete'),
+    path('staff/promotion/<int:pk>/toggle/', view_promotion.promotion_toggle_active, name='promotion_toggle'),
+
 ]

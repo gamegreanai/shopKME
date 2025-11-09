@@ -140,3 +140,34 @@ class CombinedProfileForm(forms.Form):
         profile.province = self.cleaned_data.get('province', '')
         profile.postal_code = self.cleaned_data.get('postal_code', '')
         profile.save()
+
+
+from django.forms import inlineformset_factory
+from .models import Promotion, PromotionImage
+
+class PromotionForm(forms.ModelForm):
+    class Meta:
+        model = Promotion
+        fields = [
+            "title", "short_text", "description",
+            "cover_image",
+            "starts_at", "ends_at",
+            "active", "priority",
+            "min_spend", 
+            # "allowed_levels",
+            
+        ]
+        widgets = {
+            "starts_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "ends_at":   forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            # "allowed_levels": forms.Textarea(attrs={"rows": 2, "placeholder": 'เช่น ["SILVER","GOLD"] หรือเว้นว่าง'}),
+            "description": forms.Textarea(attrs={"rows": 4}),
+        }
+
+PromotionImageFormSet = inlineformset_factory(
+    parent_model=Promotion,
+    model=PromotionImage,
+    fields=["image", "alt_text", "sequence"],
+    extra=1,
+    can_delete=True,
+    )

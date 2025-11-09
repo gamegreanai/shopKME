@@ -54,6 +54,7 @@
     </div>
   </div>
 </div>
+{% include "account/promotion.html" with promotions=promotions show_title=True user=request.user subtotal=cart.subtotal %}
 
 <!-- 🌸 CSS -->
 <style>

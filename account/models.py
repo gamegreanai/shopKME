@@ -7,9 +7,153 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.core.validators import MinValueValidator, MaxValueValidator,FileExtensionValidator
+from django.utils.text import slugify
 
 
 # Custom User using phone as username
+
+class Promotion(models.Model):
+    """โปรโมชันสำหรับโชว์ในหน้าเว็บ/แอป อาจผูกคูปองหรือไม่ก็ได้"""
+    title       = models.CharField(max_length=200)
+    slug        = models.SlugField(max_length=220, unique=True, blank=True)
+    short_text  = models.CharField(max_length=255, blank=True)      # คำโปรยสั้น
+    description = models.TextField(blank=True)                       # รายละเอียดยาว (เก็บเป็น HTML/Markdown ก็ได้)
+
+    # รูปหลัก
+    cover_image = models.ImageField(
+        upload_to="promotions/%Y/%m/",
+        null=True, blank=True,
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])],
+    )
+
+    # เงื่อนไขเวลา/สถานะ
+    starts_at = models.DateTimeField(default=timezone.now)
+    ends_at   = models.DateTimeField(null=True, blank=True)
+    active    = models.BooleanField(default=True)
+    priority  = models.IntegerField(default=0, help_text="เลขมากอยู่บน (สำหรับจัดลำดับแสดงผล)")
+
+    # เงื่อนไขทางธุรกิจเบื้องต้น
+    min_spend = models.DecimalField(max_digits=10, decimal_places=2, default=0,
+                                    validators=[MinValueValidator(0)])
+    allowed_levels = models.JSONField(default=list, blank=True,
+                                      help_text='ตัวอย่าง: ["SILVER","GOLD","PREMIUM"]; เว้นว่าง = ทุกเลเวล')
+
+    # ผูกคูปอง (ถ้ามี) — ไม่บังคับ
+    coupon = models.ForeignKey(
+        "Coupon",    # เปลี่ยนเป็น app label ของโมดูลที่ประกาศ Coupon
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="promotions"
+    )
+
+    # เมตา
+    created_by = models.ForeignKey( settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+                                   related_name="promotions_created")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["active", "starts_at", "ends_at"]),
+            models.Index(fields=["priority", "active"]),
+            models.Index(fields=["slug"]),
+        ]
+        ordering = ["-priority", "-starts_at", "-id"]
+
+    def __str__(self):
+        return self.title
+
+    # ---------- hooks ----------
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.title)[:200] or "promotion"
+            cand = base
+            i = 1
+            while Promotion.objects.filter(slug=cand).exclude(pk=self.pk).exists():
+                i += 1
+                cand = f"{base}-{i}"
+            self.slug = cand
+        super().save(*args, **kwargs)
+
+    # ---------- helpers ----------
+    def is_active_now(self) -> bool:
+        now = timezone.now()
+        if not self.active or self.is_deleted:
+            return False
+        if self.starts_at and now < self.starts_at:
+            return False
+        if self.ends_at and now > self.ends_at:
+            return False
+        return True
+
+    def cover_url(self) -> str:
+        return self.cover_image.url if self.cover_image else ""
+
+    def level_allowed(self, user) -> bool:
+        # อิง enum เดิมของคุณ: MembershipLevel.values
+        if not self.allowed_levels:
+            return True
+        try:
+            # ดึงแต้มจากโปรไฟล์แล้วแปลงเป็นเลเวล ด้วยฟังก์ชันเดิม
+            from .models import level_from_points  # ปรับ path ให้ตรง
+            points = getattr(getattr(user, "profile", None), "points", 0)
+            level = level_from_points(points)
+            return level in self.allowed_levels
+        except Exception:
+            return True  # ถ้าไม่มีโปรไฟล์ให้ผ่านไปก่อน
+
+    def can_show_to(self, user, subtotal=None) -> bool:
+        """ใช้เช็คก่อนแสดงผล/ให้กดรับ—โฟกัสแค่เงื่อนไขทั่วไป"""
+        if not self.is_active_now():
+            return False
+        if user and not self.level_allowed(user):
+            return False
+        if subtotal is not None and self.min_spend and subtotal < self.min_spend:
+            return False
+        return True
+
+
+class PromotionImage(models.Model):
+    """แกลเลอรีรูปของโปรโมชัน"""
+    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(
+        upload_to="promotions/gallery/%Y/%m/",
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])],
+    )
+    alt_text = models.CharField(max_length=200, blank=True)
+    sequence = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sequence", "id"]
+
+    def __str__(self):
+        return f"Image of {self.promotion_id}"
+
+    def url(self):
+        return self.image.url if self.image else ""
+
+
+class PromotionTracking(models.Model):
+    """เก็บสถิติการดู/คลิก—เผื่อทำรีพอร์ตง่าย ๆ (ไม่บังคับใช้)"""
+    VIEW  = "view"
+    CLICK = "click"
+    ACTION_CHOICES = [(VIEW, "view"), (CLICK, "click")]
+
+    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, related_name="tracks")
+    action    = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,   
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+    )
+    at        = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["promotion", "action", "at"]),
+        ]
+
 class User(AbstractUser):
     phone = models.CharField(max_length=10, unique=True)
     username = models.CharField(max_length=150, blank=True, null=True)

@@ -1,0 +1,129 @@
+{# templates/partials/promotion_detail_modal.html #}
+{% load static %}
+
+{# ต้องรับ p = Promotion #}
+<div class="modal fade" id="promotionDetailModal-{{ p.id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title d-flex align-items-center gap-2 mb-0">
+          {% if p.priority|default:0 > 0 %}<span class="badge bg-danger">HOT</span>{% endif %}
+          {{ p.title }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+      </div>
+
+      <div class="modal-body p-0">
+        {# รูป/แกลเลอรีด้านบน #}
+        <div id="promotionDetailCarousel-{{ p.id }}" class="carousel slide" data-bs-ride="false">
+          <div class="carousel-inner" style="max-height: 420px; overflow:hidden;">
+            {% if p.cover_image %}
+              <div class="carousel-item active">
+                <img src="{{ p.cover_image.url }}" class="d-block w-100" alt="{{ p.title }}" style="object-fit:cover; max-height:420px;">
+              </div>
+            {% endif %}
+            {% for img in p.images.all %}
+              <div class="carousel-item {% if not p.cover_image and forloop.first %}active{% endif %}">
+                <img src="{{ img.image.url }}" class="d-block w-100" alt="{{ img.alt_text|default:p.title }}" style="object-fit:cover; max-height:420px;">
+              </div>
+            {% empty %}
+              {% if not p.cover_image %}
+                <div class="carousel-item active">
+                  <img src="{% static 'img/promo-placeholder.webp' %}" class="d-block w-100" alt="promotion" style="object-fit:cover; max-height:420px;">
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% if p.cover_image or p.images.all %}
+          <button class="carousel-control-prev" type="button" data-bs-target="#promotionDetailCarousel-{{ p.id }}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">ก่อนหน้า</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#promotionDetailCarousel-{{ p.id }}" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">ถัดไป</span>
+          </button>
+          {% endif %}
+        </div>
+
+        {# เนื้อหา #}
+        <div class="p-3 p-md-4">
+          {% if p.short_text %}
+            <p class="text-muted mb-2">{{ p.short_text }}</p>
+          {% endif %}
+
+          {% if p.description %}
+            <div class="mb-3 prose">
+              {# ถ้าเก็บเป็น HTML และ sanitize แล้วค่อยใช้ |safe #}
+              {{ p.description|linebreaks }}
+            </div>
+          {% endif %}
+
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge bg-light text-dark border">
+              <i class="fa fa-clock-o me-1"></i>
+              {{ p.starts_at|date:"d M Y" }}{% if p.ends_at %} – {{ p.ends_at|date:"d M Y" }}{% endif %}
+            </span>
+
+            {% if p.min_spend and p.min_spend|floatformat:0 != "0" %}
+              <span class="badge bg-light text-dark border">ยอดขั้นต่ำ {{ p.min_spend }} ฿</span>
+            {% endif %}
+
+            {% if p.allowed_levels %}
+              <span class="badge bg-primary-subtle text-primary border">สำหรับ: {{ p.allowed_levels|join:", " }}</span>
+            {% else %}
+              {% comment %} <span class="badge bg-success-subtle text-success border">ทุกระดับ</span> {% endcomment %}
+            {% endif %}
+
+            {% if p.coupon %}
+              <span class="badge bg-dark-subtle text-dark border">
+                <i class="fa fa-ticket me-1"></i> คูปอง: {{ p.coupon.code }}
+              </span>
+            {% endif %}
+          </div>
+
+          {% if p.coupon %}
+            <div class="alert alert-light border d-flex align-items-start gap-3">
+              <div><i class="fa fa-info-circle mt-1"></i></div>
+              <div class="small">
+                {% if p.coupon.discount_type == 'PERCENT' %}
+                  ส่วนลด {{ p.coupon.discount_value }}%{% if p.coupon.percent_max_discount %} (สูงสุด {{ p.coupon.percent_max_discount }} ฿){% endif %}
+                {% else %}
+                  ส่วนลด {{ p.coupon.discount_value }} ฿
+                {% endif %}
+                {% if p.coupon.min_spend and p.coupon.min_spend|floatformat:0 != "0" %} • ยอดขั้นต่ำ {{ p.coupon.min_spend }} ฿{% endif %}
+                {% if p.coupon.ends_at %} • หมดอายุ {{ p.coupon.ends_at|date:"d M Y H:i" }}{% endif %}
+              </div>
+            </div>
+          {% endif %}
+
+          {# แสดงปุ่มตามสิทธิ์ (ออปชัน) #}
+          {% if can_show is not defined %}
+            {% with True as can_show %}{% endwith %}
+          {% endif %}
+
+          <div class="d-flex flex-wrap gap-2">
+            {% if can_show %}
+              {% if p.coupon %}
+                <a href="{% url 'account:coupon_staff' %}" class="btn btn-primary">
+                  <i class="fa fa-check-circle me-1"></i> ใช้คูปองนี้
+                </a>
+              {% endif %}
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
+            {% else %}
+              <button type="button" class="btn btn-secondary" disabled>
+                ไม่สามารถใช้ได้{% if reason %}: {{ reason }}{% endif %}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .prose p { margin-bottom: .75rem; }
+</style>

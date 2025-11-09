@@ -9,11 +9,10 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from django.db.models import Q, F
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import User, Profile,Coupon, CouponRedemption, PointTransaction
+from .models import User, Profile,Coupon, CouponRedemption, PointTransaction,Promotion
 from django.db import transaction 
 from decimal import Decimal
 from .forms import RegisterForm, LoginForm, ProfileForm, AddressForm, CombinedProfileForm,UserForm,ProfileAddressForm
-
 LEVELS = [
     ("Silver", 0,    500),   # [ชื่อ, floor, next_cap)
     ("Gold",   500, 1000),
@@ -338,6 +337,19 @@ def dashboard_view(request):
     """แสดงฟอร์มให้กรอก ชื่อ-นามสกุล และ ที่อยู่ ของผู้ใช้"""
     profile, _ = Profile.objects.get_or_create(user=request.user)
     meter = calc_level(getattr(profile, "points", 0))
+    now = timezone.now()
+    qs = (
+        Promotion.objects
+        .filter(active=True, is_deleted=False, starts_at__lte=now)
+        .exclude(ends_at__lt=now)
+        .prefetch_related("images", "coupon")
+        .order_by("-priority", "-starts_at", "-id")
+    )
+    paginator = Paginator(qs, 6)         
+    page = request.GET.get("page") or 1
+    promotions_page = paginator.get_page(page)
+    cart = getattr(request, "cart", None)
+    subtotal = getattr(cart, "subtotal", None)
     if request.method == 'POST':
         form = CombinedProfileForm(request.POST)
         if form.is_valid():
@@ -353,6 +365,9 @@ def dashboard_view(request):
         'form': form,
         'profile': profile,
         'meter': meter,
+        "promotions": promotions_page,
+        "cart": cart,
+        "subtotal": subtotal,
     })
 @login_required
 def redeem_view(request):
