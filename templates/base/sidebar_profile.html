@@ -1,8 +1,7 @@
 {% load static %}
 
 <style>
-  {% comment %} /*  พื้นหลังและโครงสร้าง Sidebar */
-  /* top: 100px; คือ อยู่ใต้ navbar */ {% endcomment %}
+  /* 🔹 Sidebar */
   .sidebar {
     width: 200px;
     background-color: #ffffff;
@@ -14,6 +13,7 @@
     z-index: 1040;
     overflow-y: auto;
     padding-bottom: 80px;
+    transition: all 0.3s ease;
   }
 
   .sidebar-header {
@@ -75,6 +75,7 @@
     margin-right: 10px;
   }
 
+  /* 🔹 Logout Button */
   .logout-btn {
     margin: 15px;
     border: 2px solid #198754;
@@ -92,85 +93,91 @@
     color: white;
   }
 
-  {% comment %} /*  ปรับเนื้อหาให้ไม่ทับ Sidebar */ {% endcomment %}
+  /* 🔹 Desktop (Sidebar + Main Content Alignment) */
   @media (min-width: 992px) {
     .main-content {
-      margin-left: 160px; /* ช่องว่างด้านซ้ายเท่ากับความกว้างของ Sidebar */
+      margin-left: 200px; /* ✅ ช่องว่างเท่ากับ Sidebar */
       padding: 20px;
       transition: margin-left 0.3s ease;
     }
 
-    {% comment %} /*  เพิ่มธีมสีชมพู */ {% endcomment %}
-:root {
-  --pink-color: #ff008b;
-}
+    :root {
+      --pink-color: #ff008b;
+    }
 
-{% comment %} /*  ตัวอักษรทั่วไปเป็นสีชมพู */ {% endcomment %}
-.sidebar a,
-.sidebar-section h6,
-.logout-btn,
-.footer-menu a span,
-.footer-menu a i {
-  color: var(--pink-color) !important;
-}
+    .sidebar a,
+    .sidebar-section h6,
+    .logout-btn,
+    .footer-menu a span,
+    .footer-menu a i {
+      color: var(--pink-color) !important;
+    }
 
-{% comment %} /*  เมื่อ hover → ตัวอักษรสีขาว พื้นหลังชมพู */ {% endcomment %}
-.sidebar a:hover,
-.sidebar a.active {
-  background-color: var(--pink-color) !important;
-  color: white !important;
-}
+    .sidebar a:hover,
+    .sidebar a.active {
+      background-color: var(--pink-color) !important;
+      color: white !important;
+    }
 
-.sidebar a:hover i,
-.sidebar a.active i {
-  color: white !important;
-}
+    .sidebar a:hover i,
+    .sidebar a.active i {
+      color: white !important;
+    }
 
-{% comment %} /*  ปุ่มออกจากระบบ */ {% endcomment %}
-.logout-btn {
-  border: 2px solid var(--pink-color) !important;
-  color: var(--pink-color) !important;
-}
+    .logout-btn {
+      border: 2px solid var(--pink-color) !important;
+      color: var(--pink-color) !important;
+    }
 
-.logout-btn:hover {
-  background-color: var(--pink-color) !important;
-  color: white !important;
-}
+    .logout-btn:hover {
+      background-color: var(--pink-color) !important;
+      color: white !important;
+    }
 
-{% comment %} /*  Footer menu (มือถือ / iPad) */ {% endcomment %}
-.footer-menu a {
-  color: var(--pink-color) !important;
-}
+    .footer-menu a {
+      color: var(--pink-color) !important;
+    }
 
-.footer-menu a.active {
-  background-color: var(--pink-color) !important;
-  color: white !important;
-  border-radius: 10px;
-}
+    .footer-menu a.active {
+      background-color: var(--pink-color) !important;
+      color: white !important;
+      border-radius: 10px;
+    }
 
-.footer-menu a.active i,
-.footer-menu a.active span {
-  color: white !important;
-}
+    .footer-menu a.active i,
+    .footer-menu a.active span {
+      color: white !important;
+    }
 
-.footer-menu a:hover {
-  background-color: var(--pink-color) !important;
-  color: white !important;
-  border-radius: 10px;
-}
-
+    .footer-menu a:hover {
+      background-color: var(--pink-color) !important;
+      color: white !important;
+      border-radius: 10px;
+    }
   }
 
-  {% comment %} /*  Footer Menu (Mobile / iPad) */ {% endcomment %}
+  /* 🔹 Footer Menu (มือถือแทน Sidebar) */
   .footer-menu {
     display: none;
   }
 
   @media (max-width: 991px) {
+    /* ❌ ซ่อน Sidebar บนมือถือ */
     .sidebar {
-      display: none;
+      display: none !important;
+      width: 0 !important;
+      min-height: 0 !important;
+      border: none !important;
     }
 
+    /* ✅ Main-content เต็มหน้าจอ */
+    .main-content {
+      margin-left: 0 !important;
+      padding: 15px;
+      width: 100%;
+    }
+
+    /* ✅ แสดง Footer menu แทน */
     .footer-menu {
       display: flex;
       justify-content: space-around;
@@ -206,23 +213,18 @@
     }
 
     body {
-      padding-bottom: 60px; /* ป้องกัน footer ทับเนื้อหา */
-    }
-
-    .main-content {
-      margin-left: 0; /* ✅ ไม่มี Sidebar ในมือถือ */
-      padding: 15px;
+      padding-bottom: 60px; /* ✅ ป้องกัน footer ทับเนื้อหา */
     }
   }
 
-  {% comment %} /*  สีชมพูหลักของเบอร์โทร */ {% endcomment %}
-.text-pink {
-  color: #ff008b !important;
-  font-weight: 700;
-  text-shadow: 0 0 4px rgba(255, 102, 200, 0.3); /* เพิ่มความนุ่มนวล */
-}
-
+  /* สีตัวอักษรชมพูหลัก */
+  .text-pink {
+    color: #ff008b !important;
+    font-weight: 700;
+    text-shadow: 0 0 4px rgba(255, 102, 200, 0.3);
+  }
 </style>
+
 
 {% comment %} <!--  Sidebar --> {% endcomment %}
  <div class="main-content">
@@ -241,15 +243,18 @@
     <a href="/account/dashboard/" class="{% if request.path == '/account/dashboard/' %}active{% endif %}">
       <i class="fa fa-home"></i> หน้าแรก
     </a>
+    <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
+      <i class="fa fa-gift"></i> ของรางวัล
+    </a>
     <a href="/account/profile/" class="{% if request.path == '/account/profile/' %}active{% endif %}">
       <i class="fa fa-user"></i> ข้อมูลส่วนตัว
     </a>
     <a href="/account/address/" class="{% if request.path == '/account/address/' %}active{% endif %}">
       <i class="fa fa-map-marker-alt"></i> ที่อยู่
     </a>
-    <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
-      <i class="fa fa-gift"></i> แลก Point
-    </a>
+    {% comment %} <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
+      <i class="fa fa-gift"></i> ของรางวัล
+    </a> {% endcomment %}
   </div>
 
   {% if user.is_staff or user.is_superuser %}
@@ -258,9 +263,9 @@
     <a href="/account/coupon/" class="{% if request.path == '/account/coupon/' %}active{% endif %}">
       <i class="fa fa-ticket-alt"></i> จัดการคูปอง
     </a>
-    <a href="/account/staff/promotion/" class="{% if request.path == '/account/staff/promotion/' %}active{% endif %}">
+    {% comment %} <a href="/account/staff/promotion/" class="{% if request.path == '/account/staff/promotion/' %}active{% endif %}">
       <i class="fa fa-gem"></i> จัดการโปรโมชัน
-    </a>
+    </a> {% endcomment %}
     <a href="/account/staff/points/" class="{% if request.path == '/account/staff/points/' %}active{% endif %}">
       <i class="fa fa-gem"></i> จัดการแต้มผู้ใช้
     </a>
@@ -276,6 +281,10 @@
     <i class="fa fa-home"></i>
     <span>หน้าแรก</span>
   </a>
+  <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
+    <i class="fa fa-gift"></i>
+    <span>ของรางวัล</span>
+  </a>
   <a href="/account/profile/" class="{% if request.path == '/account/profile/' %}active{% endif %}">
     <i class="fa fa-user"></i>
     <span>ข้อมูลส่วนตัว</span>
@@ -284,10 +293,10 @@
     <i class="fa fa-map-marker-alt"></i>
     <span>ที่อยู่</span>
   </a>
-  <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
+  {% comment %} <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
     <i class="fa fa-gift"></i>
-    <span>แลก Point</span>
-  </a>
+    <span>ของรางวัล</span>
+  </a> {% endcomment %}
   <a href="/account/logout/">
     <i class="fa fa-sign-out-alt"></i>
     <span>ออกจากระบบ</span>

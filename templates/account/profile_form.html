@@ -14,8 +14,7 @@
       </h4>
     </div>
 
-    {% comment %} <!--  ระยะห่างหัวข้อกับฟอร์ม --> {% endcomment %}
-    <div class="spacer my-4"></div>
+    <hr>
 
     {% comment %} <!--  ฟอร์มโปรไฟล์ --> {% endcomment %}
     <div class="profile-form bg-white p-5 rounded-4 shadow-sm">
@@ -81,6 +80,14 @@
   body {
     background-color: #f8f9fa;
   }
+
+  hr {
+  border: none;
+  border-top: 2px solid #ff008b;
+  margin: 1.5rem 0;
+  opacity: 0.5;
+}
+
 
   {% comment %} /*  พื้นที่หลัก */ {% endcomment %}
   .profile-container {
@@ -158,6 +165,8 @@
       margin-left: 0;
       padding: 1.5rem;
       max-width: 100%;
+      justify-content: center;
+      transform: translateX(-15px);
     }
 
     .profile-form {

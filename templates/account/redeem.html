@@ -3,10 +3,10 @@
 {% load static %}
 {% block content %}
 
-{% comment %} <!--  Container หลัก --> {% endcomment %}
+<!-- ✅ Container หลัก -->
 <div class="container py-5 redeem-container">
 
-  <!--  หัวข้อ -->
+  {% comment %} <!-- 🌸 หัวข้อ -->
   <div class="text-center text-white py-4 rounded-4 mb-4"
        style="background: linear-gradient(135deg, #ff008b, #ff66c8); box-shadow: 0 4px 10px rgba(255, 0, 139, 0.2);">
     <h4 class="fw-bold mb-0">
@@ -14,7 +14,7 @@
     </h4>
   </div>
 
-  {% comment %} <!--  การ์ดแสดงเลเวลสมาชิก --> {% endcomment %}
+  <!-- 🌈 การ์ดแสดงเลเวลสมาชิก -->
   <div class="member-section p-3 mb-4 rounded-4">
     <div class="fw-semibold mb-2">
       ระดับสมาชิก: {{ meter.level }}
@@ -32,200 +32,8 @@
         อยู่ระดับสูงสุดแล้ว 
       {% endif %}
     </small>
-  </div>
+  </div> {% endcomment %}
 
-  {% comment %} <!--  คูปองของฉัน --> {% endcomment %}
-  <h5 class="fw-bold text-pink mb-3">
-    <i class="fa fa-ticket-alt me-2"></i> คูปองของฉัน
-  </h5>
-  <div class="row g-3 mb-4">
-    {% for r in my_coupons %}
-      {% with c=r.coupon %}
-      <div class="col-6 col-md-4 col-lg-3">
-        <div class="card coupon-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-          {% if c.image_code and c.image_code.name %}
-            <img src="{{ c.image_code.url }}" class="card-img-top" alt="{{ c.code }}">
-          {% else %}
-            {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
-          {% endif %}
-          <div class="card-body d-flex flex-column p-2">
-            <div class="input-group input-group-sm mt-auto">
-              <input type="text" class="form-control" value="{{ c.code }}" readonly>
-              <button type="button" class="btn btn-pink"
-                onclick="navigator.clipboard.writeText('{{ c.code }}')">คัดลอก</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endwith %}
-    {% empty %}
-      <div class="col-12 text-muted text-center">ยังไม่มีคูปองที่แลกไว้</div>
-    {% endfor %}
-  </div>
-
-  {% comment %} <!--  คูปองที่แลกได้ --> {% endcomment %}
-  <h5 class="fw-bold text-pink mb-3">
-    <i class="fa fa-gift me-2"></i> คูปองที่แลกได้
-  </h5>
-  <div class="row g-3 mb-4">
-    {% for c in available %}
-    <div class="col-6 col-md-4 col-lg-3">
-      <div class="card coupon-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-        {% if c.image and c.image_code %}
-          <img src="{{ c.image.url }}" class="card-img-top" alt="{{ c.code }}">
-        {% elif c.active %}
-          {% include "account/coupon_fall.html" with c=c theme="cpn--teal" %}
-        {% else %}
-          {% include "account/coupon_fall.html" with c=c theme="cpn--light" %}
-        {% endif %}
-        <div class="card-body d-flex flex-column p-2">
-          <div class="small text-muted mb-1">แต้มที่ใช้: <strong>{{ c.req_pts }}</strong></div>
-          <br>
-          <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="redeem">
-            <input type="hidden" name="coupon_id" value="{{ c.id }}">
-            <button class="btn btn-pink btn-sm fw-semibold"
-              {% if not c.can_use or not c.enough_points %} disabled {% endif %}>
-              แลกคูปอง
-            </button>
-          </form>
-          {% if not c.active %}
-            <div class="form-text text-danger small">คูปองหมดแล้ว</div>
-          {% elif not c.enough_points %}
-            <div class="form-text text-warning small">แต้มสะสมไม่พอ</div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    {% empty %}
-    <div class="col-12 text-muted text-center">ยังไม่มีคูปองสำหรับแลก</div>
-    {% endfor %}
-  </div>
-
-  {% comment %} <!--  ประวัติการแลก --> {% endcomment %}
-  <h5 class="fw-bold text-pink mb-3">
-    <i class="fa fa-history me-2"></i> ประวัติการแลก
-  </h5>
-  <div class="table-responsive">
-    <table class="table table-hover align-middle text-center">
-      <thead class="table-pink">
-        <tr>
-          <th>คูปอง</th>
-          <th>เวลา</th>
-          <th>ออเดอร์</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in redemptions %}
-        <tr>
-          <td class="text-start">
-            {% if r.coupon.image %}
-              <img src="{{ r.coupon.image.url }}" class="me-2 rounded" style="width:36px;height:auto;">
-            {% endif %}
-            {{ r.coupon.code }}
-          </td>
-          <td>{{ r.created_at|date:"Y-m-d H:i" }}</td>
-          <td>{{ r.order_id|default:"-" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3" class="text-muted">ยังไม่มีรายการแลก</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-</div>
-
-{% comment %} <!--  CSS --> {% endcomment %}
-<style> 
-  body {
-    background-color: #f8f9fa;
-  }
-
-  .redeem-container {
-    margin-top: 120px;
-    margin-left: 120px;
-    max-width: calc(100% - 240px);
-    padding: 2rem;
-    transition: all 0.3s ease;
-  }
-
-  {% comment %} /* สีชมพู */ {% endcomment %}
-  .text-pink { color: #ff008b !important; }
-
-  .btn-pink {
-    background-color: #ff008b !important;
-    color: #fff !important;
-    border-radius: 5px;
-    border: none;
-    transition: 0.3s;
-  }
-  .btn-pink:hover {
-    background-color: #ff66c8 !important;
-    box-shadow: 0 4px 10px rgba(255, 102, 200, 0.3);
-  }
-
-  .table-pink {
-    background-color: #ffe6f5;
-    color: #ff008b;
-  }
-
-  {% comment %} /* Member Section */ {% endcomment %}
-  .member-section {
-    border-radius: 1.5rem;
-    padding: 2rem 1.5rem;
-    text-align: left;
-    color: #ff008b;
-    font-weight: 600;
-    background-image: url('/media/gardDM.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  }
-
-  .member-section .progress {
-    border-radius: 10px;
-    background-color: rgba(255,255,255,0.5);
-    height: 10px;
-    max-width: 320px;
-  }
-
-  .member-section .progress-bar {
-    background-color: #ff008b !important;
-  }
-
-  {% comment %} /* Responsive */ {% endcomment %}
-  @media (max-width: 991px) {
-    .redeem-container {
-      margin-top: 115px;
-      margin-left: 0;
-      max-width: 100%;
-      padding: 1.5rem;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .redeem-container {
-      margin-top: 95px !important;
-      margin-left: 0 !important;
-      padding: 1rem !important;
-    }
-    .member-section {
-      padding: 1.2rem 1rem;
-      border-radius: 1rem;
-      background-position: center;
-    }
-    .member-section .fw-semibold,
-    .member-section strong,
-    .member-section small {
-      font-size: 0.9rem;
-    }
-    .member-section .progress {
-      max-width: 100%;
-    }
-  }
-</style>
+  <div class="card border-0 shadow-sm overflow-hidden position-relative member-bg"> <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div> <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative member-content"> <div class="d-flex flex-column align-items-start gap-3 member-left"> <div class="member-info d-flex align-items-center flex-wrap"> <span class="badge rounded-pill shadow-sm fw-bold member-badge d-flex align-items-center gap-2"> {% if meter.level == "Silver" %} <i class="fa fa-medal level-icon text-silver"></i> {% elif meter.level == "Gold" %} <i class="fa fa-medal level-icon text-gold"></i> {% else %} <i class="fa fa-crown level-icon text-premium"></i> {% endif %} ระดับสมาชิก: {{ meter.level }} </span> </div> <p class="mt-2 mb-0 member-points"> แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts </p> <div class="progress-wrapper mt-2 w-100" style="max-width: 400px;"> <div class="d-flex justify-content-between small mb-1 member-progress-text"> <span>{{ meter.level }}</span> <span>{{ meter.progress_pct }}%</span> </div> <div class="progress bg-light bg-opacity-50 member-progress-bar"> <div class="progress-bar member-progress" style="width: {{ meter.progress_pct }}%;"></div> </div> <div class="small mt-2 fw-semibold member-progress-text"> {% if meter.next_level_name %} อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong> {% else %} อยู่ระดับสูงสุดแล้ว {% endif %} </div> </div> </div> </div> </div> <hr> <div class="text-center text-white py-4 rounded-4 mb-4"> <h5 class="fw-bold text-pink mb-3"> <i class="fa fa-gift me-2"></i> แลกของรางวัล </h5> </div> <hr> <!-- 🎟️ คูปองของฉัน --> <h5 class="fw-bold text-pink mb-3"> <i class="fa fa-ticket-alt me-2"></i> คูปองของฉัน </h5> <div class="row g-3 mb-4"> {% for r in my_coupons %} {% with c=r.coupon %} <div class="col-6 col-md-4 col-lg-3"> <div class="card coupon-card border-0 shadow-sm h-100 rounded-4 overflow-hidden"> {% if c.image_code and c.image_code.name %} <img src="{{ c.image_code.url }}" class="card-img-top" alt="{{ c.code }}"> {% else %} {% include "account/coupon_fall.html" with c=c theme="cpn--light" %} {% endif %} <div class="card-body d-flex flex-column p-2"> <div class="input-group input-group-sm mt-auto"> <input type="text" class="form-control" value="{{ c.code }}" readonly> <button type="button" class="btn btn-pink" onclick="navigator.clipboard.writeText('{{ c.code }}')">คัดลอก</button> </div> </div> </div> </div> {% endwith %} {% empty %} <div class="col-12 text-muted text-center">ยังไม่มีคูปองที่แลกไว้</div> {% endfor %} </div> <hr> <!-- 🎁 คูปองที่แลกได้ --> <h5 class="fw-bold text-pink mb-3"> <i class="fa fa-gift me-2"></i> คูปองที่แลกได้ </h5> <div class="row g-3 mb-4"> {% for c in available %} <div class="col-6 col-md-4 col-lg-3"> <div class="card coupon-card border-0 shadow-sm h-100 rounded-4 overflow-hidden"> {% if c.image and c.image_code %} <img src="{{ c.image.url }}" class="card-img-top" alt="{{ c.code }}"> {% elif c.active %} {% include "account/coupon_fall.html" with c=c theme="cpn--teal" %} {% else %} {% include "account/coupon_fall.html" with c=c theme="cpn--light" %} {% endif %} <div class="card-body d-flex flex-column p-2"> <div class="small text-muted mb-1">แต้มที่ใช้: <strong>{{ c.req_pts }}</strong></div> <br> <form method="post"> {% csrf_token %} <input type="hidden" name="action" value="redeem"> <input type="hidden" name="coupon_id" value="{{ c.id }}"> <button class="btn btn-pink btn-sm fw-semibold" {% if not c.can_use or not c.enough_points %} disabled {% endif %}> แลกคูปอง </button> </form> {% if not c.active %} <div class="form-text text-danger small">คูปองหมดแล้ว</div> {% elif not c.enough_points %} <div class="form-text text-warning small">แต้มสะสมไม่พอ</div> {% endif %} </div> </div> </div> {% empty %} <div class="col-12 text-muted text-center">ยังไม่มีคูปองสำหรับแลก</div> {% endfor %} </div> <hr> <!-- 🕒 ประวัติการแลก --> <h5 class="fw-bold text-pink mb-3"> <i class="fa fa-history me-2"></i> ประวัติการแลก </h5> <div class="table-responsive"> <table class="table table-hover align-middle text-center"> <thead class="table-pink"> <tr> <th>คูปอง</th> <th>เวลา</th> <th>ออเดอร์</th> </tr> </thead> <tbody> {% for r in redemptions %} <tr> <td class="text-start"> {% if r.coupon.image %} <img src="{{ r.coupon.image.url }}" class="me-2 rounded" style="width:36px;height:auto;"> {% endif %} {{ r.coupon.code }} </td> <td>{{ r.created_at|date:"Y-m-d H:i" }}</td> <td>{{ r.order_id|default:"-" }}</td> </tr> {% empty %} <tr><td colspan="3" class="text-muted">ยังไม่มีรายการแลก</td></tr> {% endfor %} </tbody> </table> </div> </div> <!-- 🎨 CSS --> <style> body { background-color: #f8f9fa; } .redeem-container { margin-top: 120px; margin-left: 120px; max-width: calc(100% - 240px); padding: 2rem; transition: all 0.3s ease; } hr { border: none; border-top: 2px solid #ff008b; margin: 1.5rem 0; opacity: 0.5; } .btn-pink { background-color: #ff008b !important; color: #fff !important; border-radius: 5px; border: none; transition: 0.3s; } .btn-pink:hover { background-color: #ff66c8 !important; box-shadow: 0 4px 10px rgba(255, 102, 200, 0.3); } /* ✅ การ์ดแต้มเหมือน Dashboard */ .member-bg { aspect-ratio: 2 / 1; width: 100%; border-radius: 0.75rem; background-image: url('/media/gardDM.png'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; color: white; overflow: hidden; transition: all 0.3s ease; filter: brightness(1.1); box-shadow: 0 4px 15px rgba(255, 0, 139, 0.15); } .member-bg .overlay { background: rgba(0, 0, 0, 0.08); z-index: 1; } .member-content { z-index: 2; padding: clamp(1rem, 3vw, 2.5rem); } .member-badge { font-size: 1.25rem !important; padding: 0.75rem 1.5rem !important; border-radius: 2rem !important; } .level-icon { font-size: 1.5rem !important; } .member-points { font-size: 1.2rem !important; } .member-bg .member-points, .member-bg .member-progress-text, .member-bg .member-badge, .member-bg strong, .member-bg span, .member-bg p, .member-bg h6, .member-bg h5 { color: #b8860b !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); } .progress { border-radius: 8px; height: 8px; } .member-progress { background: linear-gradient(90deg, #ff008b, #ff66c8); border-radius: 8px; } .text-silver { color: #c0c0c0; } .text-gold { color: #ffd700; } .text-premium { color: #ff66c8; } /* ✅ Responsive */ @media (max-width: 768px) { .member-badge { font-size: 0.8rem !important; padding: 0.35rem 0.75rem !important; } .member-points { font-size: 0.85rem !important; } .level-icon { font-size: 1rem !important; } } @media (max-width: 991px) { .redeem-container { margin-top: 115px; margin-left: 0; max-width: 100%; padding: 1.5rem; justify-content: center; transform: translateX(-15px); } } @media (max-width: 768px) { .redeem-container { margin-top: 95px !important; margin-left: 0 !important; padding: 1rem !important; justify-content: center; transform: translateX(-15px); } .member-bg { background-size: cover; border-radius: 0.5rem; filter: brightness(1.1); } } </style>
 
 {% endblock %}

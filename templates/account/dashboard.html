@@ -51,6 +51,7 @@
     </div>
   </div>
 </div>
+</div>
 
 {% comment %} <!--  ส่วนแสดงโปรโมชั่น -->
 <div class="promotion-section mt-5 position-relative">
@@ -236,20 +237,21 @@
 <style>
   .dashboard-container {
     margin-top: 120px;
-    margin-left: 100px;
-    margin-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
     padding: 1.5rem;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 950px;
   }
 
   .member-bg {
     aspect-ratio: 2 / 1;
     width: 100%;
-    max-width: 950px;
-    border-radius: 1.5rem;
+    border-radius: 0.75rem; 
     background-image: url('/media/gardDM.png');
-    background-size: cover;
+    background-size: cover; 
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
@@ -257,6 +259,7 @@
     overflow: hidden;
     transition: all 0.3s ease;
     filter: brightness(1.1);
+    box-shadow: 0 4px 15px rgba(255, 0, 139, 0.15);
   }
 
   .member-bg .overlay {
@@ -269,67 +272,84 @@
     padding: clamp(1rem, 3vw, 2.5rem);
   }
 
-  .member-points,
-  .member-progress-text {
-    color: #ff008b;
-    font-weight: 600;
-    font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+  .member-badge {
+    font-size: 1.25rem !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 2rem !important;
   }
 
-  .member-badge {
-    background-color: #ffffffdd;
-    color: #ff008b !important;
-    padding: 0.5rem 1rem;
-    font-size: clamp(0.85rem, 1.4vw, 1rem);
-    border-radius: 2rem;
-    box-shadow: 0 3px 6px rgba(255, 0, 139, 0.2);
+  .level-icon {
+    font-size: 1.5rem !important;
+  }
+
+  .member-points {
+    font-size: 1.2rem !important;
+  }
+
+  .member-bg .member-points,
+  .member-bg .member-progress-text,
+  .member-bg .member-badge,
+  .member-bg strong,
+  .member-bg span,
+  .member-bg p,
+  .member-bg h6,
+  .member-bg h5 {
+    color: #b8860b !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   }
 
   .progress {
-    border-radius: 10px;
+    border-radius: 8px;
+    height: 8px;
   }
 
   .member-progress {
     background: linear-gradient(90deg, #ff008b, #ff66c8);
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
+  /* 🎖️ สีระดับ */
   .text-silver { color: #c0c0c0; }
   .text-gold { color: #ffd700; }
   .text-premium { color: #ff66c8; }
 
+  /* ✅ Responsive */
   @media (max-width: 991px) {
     .dashboard-container {
       margin-top: 110px;
-      margin-left: 0;
-      padding: 1.5rem;
       justify-content: center;
-    }
-    .member-bg {
-      max-width: 100%;
-      border-radius: 1rem;
+      padding: 1.5rem;
     }
   }
 
+  /* ✅ ปรับขนาด font/badge/icon ให้เท่ากับหน้า redeem */
   @media (max-width: 768px) {
     .dashboard-container {
       margin-top: 95px;
       padding: 1rem;
       justify-content: center;
+      transform: translateX(-15px);
     }
+
     .member-bg {
-      background-size: contain;
-      border-radius: 1rem;
-      filter: brightness(1);
+      background-size: cover;
+      border-radius: 0.5rem; 
+      filter: brightness(1.1);
     }
+
     .member-badge {
-      font-size: 0.75rem;
-      padding: 0.35rem 0.8rem;
+      font-size: 0.8rem !important;
+      padding: 0.35rem 0.75rem !important;
     }
-    .member-points,
-    .member-progress-text {
-      font-size: 0.75rem;
+
+    .level-icon {
+      font-size: 1rem !important;
+    }
+
+    .member-points {
+      font-size: 0.85rem !important;
     }
   }
 </style>
+
 {% endblock %}

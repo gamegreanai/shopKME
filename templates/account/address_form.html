@@ -11,12 +11,12 @@
     {% comment %} <!--  หัวข้อ --> {% endcomment %}
     <div class="text-center text-white py-4 rounded-4 address-header">
       <h4 class="fw-bold mb-0">
-        <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ
+        <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่ของคุณ
       </h4>
     </div>
 
-    {% comment %} <!--  เว้นระยะหัวข้อกับฟอร์ม --> {% endcomment %}
-    <div class="spacer my-4"></div>
+
+    <hr>
 
     <!--  ฟอร์มกรอกที่อยู่ -->
     <div class="address-form bg-white p-5 rounded-4 shadow-sm">
@@ -74,6 +74,14 @@
   body {
     background-color: #f8f9fa;
   }
+
+  hr {
+  border: none;
+  border-top: 2px solid #ff008b;
+  margin: 1.5rem 0;
+  opacity: 0.5;
+}
+
 
   {% comment %} /*  Container หลัก */ {% endcomment %}
   .address-container {
@@ -151,6 +159,8 @@
       margin-left: 0;
       padding: 1.5rem;
       max-width: 100%;
+      justify-content: center;
+      transform: translateX(-15px);
     }
 
     .address-form {
@@ -169,6 +179,8 @@
       margin-left: 0 !important;
       padding: 1rem !important;
       max-width: 100%;
+      justify-content: center;
+      transform: translateX(-15px);
     }
 
     .address-form {
@@ -197,6 +209,8 @@
     .address-container {
       padding: 0.8rem !important;
       margin-top: 90px !important;
+      justify-content: center;
+      transform: translateX(-15px);
     }
 
     .address-form {
