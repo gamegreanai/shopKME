@@ -1,7 +1,7 @@
 {% load static %}
 
 <style>
-  /*  Navbar ปรับขนาดและความสมดุล */
+  {% comment %} /*  Navbar ปรับขนาดและความสมดุล */ {% endcomment %}
   .navbar {
     background-color: #ffe8f0;
     height: 110px; /* ✅ เพิ่มความสูงให้โลโก้พอดี */
@@ -15,7 +15,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
-  /*  โลโก้ใหญ่อยู่ตรงกลาง */
+  {% comment %} /*  โลโก้ใหญ่อยู่ตรงกลาง */ {% endcomment %}
   .navbar-brand {
     position: absolute;
     left: 50%;
@@ -26,20 +26,20 @@
     gap: 10px;
   }
 
-  /*  ปรับขนาดโลโก้ */
+  {% comment %} /*  ปรับขนาดโลโก้ */ {% endcomment %}
   .navbar-brand img {
-    height: 80px !important; /* ✅ ใหญ่ขึ้นแต่ยังอยู่ในกรอบ */
+    height: 80px !important; 
     width: auto;
   }
 
-  /*  ข้อความชื่อคลินิก */
+  {% comment %} /*  ข้อความชื่อคลินิก */ {% endcomment %}
   .navbar-brand span {
-    font-size: 2rem;           /* ✅ ขนาดใหญ่พอดีกับโลโก้ */
+    font-size: 2rem;           
     color: #ff008b !important;
     font-weight: 700;
   }
 
-  /*  ปิด hover effect */
+  {% comment %} /*  ปิด hover effect */ {% endcomment %}
   .navbar a:hover,
   .navbar-brand:hover span {
     color: #ff008b !important;
@@ -47,7 +47,7 @@
     transition: none !important;
   }
 
-  /* 📱 Responsive สำหรับมือถือ */
+  {% comment %} /*  Responsive สำหรับมือถือ */ {% endcomment %}
   @media (max-width: 991px) {
     .navbar {
       height: 90px;
@@ -71,11 +71,11 @@
   }
 </style>
 
-<!-- ✅ Navbar -->
+{% comment %} <!--  Navbar --> {% endcomment %}
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container-fluid d-flex align-items-center justify-content-between">
 
-    <!-- โลโก้ -->
+    {% comment %} <!-- โลโก้ --> {% endcomment %}
     <a class="navbar-brand d-flex align-items-center" href="#">
       <img src="/media/DMC.PNG" alt="DMC">
       <span class="ms-2 fw-bold">D'Dreamclinic</span>

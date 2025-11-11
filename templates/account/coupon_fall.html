@@ -1,5 +1,5 @@
 <style>
-/* 🌸 Coupon Card - Compact & Responsive */
+{% comment %} /*  Coupon Card - Compact & Responsive */ {% endcomment %}
 .cpn {
   --cpn-bg: #ff008b;
   --cpn-fg: #ffffff;
@@ -25,12 +25,12 @@
   box-shadow: 0 6px 16px rgba(255, 0, 139, 0.2);
 }
 
-/* 🎨 สีธีม */
+{% comment %} /*  สีธีม */ {% endcomment %}
 .cpn--warn { --cpn-bg:#f5a623; --cpn-side:#e09313; --cpn-fg:#ffffff; }
 .cpn--red  { --cpn-bg:#f44336; --cpn-side:#d33125; --cpn-fg:#ffffff; }
 .cpn--light{ --cpn-bg:#ffffff; --cpn-side:#f0f2f5; --cpn-fg:#222222; }
 
-/* 🎟 ส่วนซ้ายและขวา */
+{% comment %} /* 🎟 ส่วนซ้ายและขวา */ {% endcomment %}
 .cpn__left {
   background: var(--cpn-bg);
   color: var(--cpn-fg);
@@ -48,7 +48,7 @@
   gap: 3px;
 }
 
-/* รูเจาะข้างคูปอง */
+{% comment %} /* รูเจาะข้างคูปอง */ {% endcomment %}
 .cpn::before, .cpn::after {
   content:"";
   position:absolute; top:50%; transform:translateY(-50%);
@@ -59,7 +59,7 @@
 .cpn::before{ left:-7px; }
 .cpn::after { right:-7px; }
 
-/* 🎯 ปรับขนาดตัวหนังสือให้พอดี (เฉพาะ Desktop) */
+{% comment %} /*  ปรับขนาดตัวหนังสือให้พอดี (เฉพาะ Desktop) */ {% endcomment %}
 @media (min-width: 993px) {
   .cpn__kicker { font-size: 0.6rem; letter-spacing: .1em; font-weight: 500; }
   .cpn__off { font-size: 1.2rem; font-weight: 400; line-height: 1; }
@@ -71,7 +71,7 @@
   }
 }
 
-/* ✅ Tablet */
+{% comment %} /*  Tablet */ {% endcomment %}
 @media (max-width: 992px) {
   .cpn {
     grid-template-columns: 1fr 70px;
@@ -83,7 +83,7 @@
   .cpn__desc, .cpn__code { font-size: 0.7rem; }
 }
 
-/* ✅ Mobile */
+{% comment %} /*  Mobile */ {% endcomment %}
 @media (max-width: 768px) {
   .cpn {
     grid-template-columns: 1fr;
@@ -109,7 +109,7 @@
   .cpn::before, .cpn::after { display: none; }
 }
 
-/* ✅ Small Mobile */
+{% comment %} /*  Small Mobile */ {% endcomment %}
 @media (max-width: 480px) {
   .cpn {
     border-radius: 8px;

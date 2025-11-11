@@ -4,13 +4,13 @@
 
 {% block content %}
 <div class="main-wrapper">
-  <!-- ✅ Navbar -->
+  {% comment %} <!--  Navbar --> {% endcomment %}
   {% include 'base/navbar.html' %}
 
-  <!-- ✅ Sidebar -->
+  {% comment %} <!--  Sidebar --> {% endcomment %}
   {% include 'account/sidebar_profile.html' %}
 
-  <!-- ✅ เนื้อหา (Redeem หรือ Dashboard) -->
+  {% comment %} <!--  เนื้อหา (Redeem หรือ Dashboard) --> {% endcomment %}
   <div class="main-content container-fluid py-4">
     <div class="card border-0 shadow-sm rounded-4 mb-4">
       <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
@@ -36,7 +36,7 @@
   </div>
 </div>
 
-<!-- 🌸 CSS ปรับ Layout ให้สมบูรณ์ -->
+{% comment %} <!--  CSS ปรับ Layout ให้สมบูรณ์ --> {% endcomment %}
 <style>
   body {
     background-color: #f8f9fa;
@@ -45,14 +45,14 @@
     overflow-x: hidden;
   }
 
-  /* ✅ จัด Layout รวมทั้งหมด */
+  {% comment %} /*  จัด Layout รวมทั้งหมด */ {% endcomment %}
   .main-wrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
   }
 
-  /* ✅ Navbar */
+  {% comment %} /*  Navbar */ {% endcomment %}
   .navbar {
     position: fixed !important;
     top: 0;
@@ -62,7 +62,7 @@
     z-index: 1100;
   }
 
-  /* ✅ Sidebar */
+  {% comment %} /*  Sidebar */ {% endcomment %}
   .sidebar {
     position: fixed !important;
     top: 110px; /* อยู่ใต้ Navbar */
@@ -75,7 +75,7 @@
     z-index: 1040;
   }
 
-  /* ✅ เนื้อหา */
+  {% comment %} /*  เนื้อหา */ {% endcomment %}
   .main-content {
     margin-top: 130px; /* ป้องกัน Navbar ทับ */
     margin-left: 280px; /* ป้องกัน Sidebar ทับ */
@@ -83,7 +83,7 @@
     transition: all 0.3s ease;
   }
 
-  /* ✅ Responsive (Tablet / Mobile) */
+  {% comment %} /*  Responsive (Tablet / Mobile) */ {% endcomment %}
   @media (max-width: 991px) {
     .sidebar {
       display: none !important;
@@ -107,7 +107,7 @@
     }
   }
 
-  /* ✅ ปรับขนาดองค์ประกอบตามหน้าจอจริง */
+  {% comment %} /*  ปรับขนาดองค์ประกอบตามหน้าจอจริง */ {% endcomment %}
   .card {
     border-radius: clamp(10px, 2vw, 18px);
   }

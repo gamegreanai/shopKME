@@ -6,7 +6,7 @@
 {% block content %}
 <div class="container dashboard-container">
 
-  <!-- 🔹 การ์ดระดับสมาชิก -->
+  {% comment %} <!--  การ์ดระดับสมาชิก --> {% endcomment %}
   <div class="card border-0 shadow-sm overflow-hidden position-relative member-bg">
     <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
 
@@ -43,7 +43,7 @@
             {% if meter.next_level_name %}
               อีก <strong>{{ meter.remain_to_next }}</strong> คะแนน เพื่ออัปเป็น <strong>{{ meter.next_level_name }}</strong>
             {% else %}
-              อยู่ระดับสูงสุดแล้ว 🎉
+              อยู่ระดับสูงสุดแล้ว 
             {% endif %}
           </div>
         </div>
@@ -52,7 +52,7 @@
   </div>
 </div>
 
-{% comment %} <!-- 🌸 ส่วนแสดงโปรโมชั่น -->
+{% comment %} <!--  ส่วนแสดงโปรโมชั่น -->
 <div class="promotion-section mt-5 position-relative">
   <h5 class="fw-bold text-pink mb-3">โปรโมชั่น</h5>
 
@@ -87,7 +87,7 @@
       {% endfor %}
     </div>
 
-    <!-- 🔹 ปุ่มเลื่อนซ้าย-ขวา -->
+    <!--  ปุ่มเลื่อนซ้าย-ขวา -->
     <button class="btn-slide promo-prev" id="promo-prev">
       <i class="bi bi-arrow-left-circle-fill"></i>
     </button>
@@ -97,9 +97,9 @@
   </div>
 </div>
 
-<!-- ✅ CSS สำหรับส่วนโปรโมชั่น -->
+<!--  CSS สำหรับส่วนโปรโมชั่น -->
 <style>
-  /* ✅ สีพื้นหลังแบบหน้า Home */
+  /*  สีพื้นหลังแบบหน้า Home */
   body {
     background-color: #fff0f6 !important; /* สีชมพูอ่อนแบบหน้า home */
     overflow-x: hidden;
@@ -189,7 +189,7 @@
   }
 </style>
 
-<!-- ✅ JavaScript slide -->
+<!--  JavaScript slide -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const slider = document.querySelector(".promo-slider");
@@ -232,7 +232,7 @@
   });
 </script> {% endcomment %}
 
-<!-- ✅ CSS ของหน้า Dashboard -->
+<!--  CSS ของหน้า Dashboard -->
 <style>
   .dashboard-container {
     margin-top: 120px;

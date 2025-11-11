@@ -2,26 +2,26 @@
 {% block title %}DDreamclinic{% endblock %}
 {% block content %}
 
-<!-- ✅ Container หลัก -->
+{% comment %} <!--  Container หลัก --> {% endcomment %}
 <div class="container py-5 profile-container">
   <form method="post" novalidate>
     {% csrf_token %}
 
-    <!-- 🌸 หัวข้อ -->
+    {% comment %} <!--  หัวข้อ --> {% endcomment %}
     <div class="text-center text-white py-4 rounded-4 profile-header">
       <h4 class="fw-bold mb-0">
         <i class="fa fa-user-circle me-2"></i> ข้อมูลโปรไฟล์ของคุณ
       </h4>
     </div>
 
-    <!-- 🌿 ระยะห่างหัวข้อกับฟอร์ม -->
+    {% comment %} <!--  ระยะห่างหัวข้อกับฟอร์ม --> {% endcomment %}
     <div class="spacer my-4"></div>
 
-    <!-- 🌸 ฟอร์มโปรไฟล์ -->
+    {% comment %} <!--  ฟอร์มโปรไฟล์ --> {% endcomment %}
     <div class="profile-form bg-white p-5 rounded-4 shadow-sm">
       <div class="row g-4">
 
-        <!-- 🧩 คำนำหน้า เพศ โทรศัพท์ -->
+        {% comment %} <!--  คำนำหน้า เพศ โทรศัพท์ --> {% endcomment %}
         <div class="col-md-3 col-sm-6 col-12">
           <label class="form-label">คำนำหน้าชื่อ</label>
           {{ pform.title }}
@@ -46,7 +46,7 @@
           {{ pform.phone.errors }}
         </div>
 
-        <!-- 🧩 ข้อมูลผู้ใช้ -->
+        {% comment %} <!--  ข้อมูลผู้ใช้ --> {% endcomment %}
         <div class="col-md-4 col-sm-6 col-12">
           <label class="form-label">ชื่อ</label>
           {{ uform.first_name }}
@@ -65,7 +65,7 @@
           {{ uform.email.errors }}
         </div>
 
-        <!-- 🌸 ปุ่มบันทึก -->
+        {% comment %} <!--  ปุ่มบันทึก --> {% endcomment %}
         <div class="col-12 text-center mt-4">
           <button type="submit" class="btn btn-pink px-5 py-2 fw-bold">
             <i class="fa fa-save me-2"></i> บันทึกข้อมูล
@@ -76,13 +76,13 @@
   </form>
 </div>
 
-<!-- 🎨 CSS -->
+{% comment %} <!--  CSS --> {% endcomment %}
 <style>
   body {
     background-color: #f8f9fa;
   }
 
-  /* ✅ พื้นที่หลัก */
+  {% comment %} /*  พื้นที่หลัก */ {% endcomment %}
   .profile-container {
     margin-top: 120px;
     margin-left: 120px;
@@ -90,18 +90,18 @@
     transition: all 0.3s ease;
   }
 
-  /* 🌸 Header */
+  {% comment %} /*  Header */ {% endcomment %}
   .profile-header {
     background: linear-gradient(135deg, #ff008b, #ff66c8);
     box-shadow: 0 4px 12px rgba(255, 0, 139, 0.25);
   }
 
-  /* 🌿 ระยะห่างระหว่างหัวข้อกับฟอร์ม */
+  {% comment %} /*  ระยะห่างระหว่างหัวข้อกับฟอร์ม */ {% endcomment %}
   .spacer {
     height: 30px;
   }
 
-  /* 🌸 ฟอร์มโปรไฟล์ */
+  {% comment %} /*  ฟอร์มโปรไฟล์ */ {% endcomment %}
   .profile-form {
     border-radius: 1.2rem;
     background: #ffffff;
@@ -114,7 +114,7 @@
     box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
   }
 
-  /* Label & Input */
+  {% comment %} /* Label & Input */ {% endcomment %}
   label {
     font-weight: 600;
     color: #333;
@@ -136,7 +136,7 @@
     outline: none;
   }
 
-  /* ปุ่มชมพู */
+  {% comment %} /* ปุ่มชมพู */ {% endcomment %}
   .btn-pink {
     background-color: #ff008b;
     border: none;
@@ -151,7 +151,7 @@
     box-shadow: 0 4px 10px rgba(255, 102, 200, 0.4);
   }
 
-  /* 📱 Tablet */
+  {% comment %} /* 📱 Tablet */ {% endcomment %}
   @media (max-width: 991px) {
     .profile-container {
       margin-top: 110px;
@@ -169,7 +169,7 @@
     }
   }
 
-  /* 📱 มือถือ */
+  {% comment %} /* 📱 มือถือ */ {% endcomment %}
   @media (max-width: 768px) {
     .profile-container {
       margin-top: 95px !important;
@@ -199,7 +199,7 @@
     }
   }
 
-  /* 📱 มือถือจอเล็ก */
+  {% comment %} /* 📱 มือถือจอเล็ก */ {% endcomment %}
   @media (max-width: 480px) {
     .profile-container {
       padding: 0.8rem !important;

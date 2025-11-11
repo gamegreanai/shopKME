@@ -3,10 +3,10 @@
 {% load static %}
 {% block content %}
 
-<!-- ✅ Container หลัก -->
+{% comment %} <!--  Container หลัก --> {% endcomment %}
 <div class="container py-5 redeem-container">
 
-  <!-- 🌸 หัวข้อ -->
+  <!--  หัวข้อ -->
   <div class="text-center text-white py-4 rounded-4 mb-4"
        style="background: linear-gradient(135deg, #ff008b, #ff66c8); box-shadow: 0 4px 10px rgba(255, 0, 139, 0.2);">
     <h4 class="fw-bold mb-0">
@@ -14,7 +14,7 @@
     </h4>
   </div>
 
-  <!-- 🌈 การ์ดแสดงเลเวลสมาชิก -->
+  {% comment %} <!--  การ์ดแสดงเลเวลสมาชิก --> {% endcomment %}
   <div class="member-section p-3 mb-4 rounded-4">
     <div class="fw-semibold mb-2">
       ระดับสมาชิก: {{ meter.level }}
@@ -34,7 +34,7 @@
     </small>
   </div>
 
-  <!--  คูปองของฉัน -->
+  {% comment %} <!--  คูปองของฉัน --> {% endcomment %}
   <h5 class="fw-bold text-pink mb-3">
     <i class="fa fa-ticket-alt me-2"></i> คูปองของฉัน
   </h5>
@@ -63,7 +63,7 @@
     {% endfor %}
   </div>
 
-  <!-- 🌸 คูปองที่แลกได้ -->
+  {% comment %} <!--  คูปองที่แลกได้ --> {% endcomment %}
   <h5 class="fw-bold text-pink mb-3">
     <i class="fa fa-gift me-2"></i> คูปองที่แลกได้
   </h5>
@@ -103,7 +103,7 @@
     {% endfor %}
   </div>
 
-  <!-- 🌸 ประวัติการแลก -->
+  {% comment %} <!--  ประวัติการแลก --> {% endcomment %}
   <h5 class="fw-bold text-pink mb-3">
     <i class="fa fa-history me-2"></i> ประวัติการแลก
   </h5>
@@ -137,7 +137,7 @@
 
 </div>
 
-<!-- 🌸 CSS -->
+{% comment %} <!--  CSS --> {% endcomment %}
 <style> 
   body {
     background-color: #f8f9fa;
@@ -151,7 +151,7 @@
     transition: all 0.3s ease;
   }
 
-  /* สีชมพู */
+  {% comment %} /* สีชมพู */ {% endcomment %}
   .text-pink { color: #ff008b !important; }
 
   .btn-pink {
@@ -171,7 +171,7 @@
     color: #ff008b;
   }
 
-  /* Member Section */
+  {% comment %} /* Member Section */ {% endcomment %}
   .member-section {
     border-radius: 1.5rem;
     padding: 2rem 1.5rem;
@@ -196,7 +196,7 @@
     background-color: #ff008b !important;
   }
 
-  /* Responsive */
+  {% comment %} /* Responsive */ {% endcomment %}
   @media (max-width: 991px) {
     .redeem-container {
       margin-top: 115px;

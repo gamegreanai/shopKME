@@ -116,7 +116,7 @@
                     <button class="btn btn-outline-primary btn-sm">สลับสถานะ</button>
                   </form>
 
-                  <!-- ปุ่มลบ -->
+                  {% comment %} <!-- ปุ่มลบ --> {% endcomment %}
               <form method="POST" style="display:inline;" onsubmit="return confirm('ยืนยันลบคูปองนี้หรือไม่?');">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete">
@@ -256,7 +256,7 @@
   
     file.onchange = () => {
       if (file.files && file.files.length > 0) {
-        applyStagedState(kind, true, false); // clear remove flag
+        applyStagedState(kind, true, false); 
       }
     };
   }
@@ -274,7 +274,7 @@
     this.querySelector('#edit_name').value = name;
     this.querySelector('#edit_code').value = code;
     this.querySelector('#edit_required_points').value = pts;
-    this.querySelector('#edit_expires_at').value = exp;   // ต้องเป็น YYYY-MM-DDTHH:MM
+    this.querySelector('#edit_expires_at').value = exp;
     this.querySelector('#edit_description').value = desc;
     const img   = btn.getAttribute('data-image') || '';
     const imgQr = btn.getAttribute('data-image_code') || '';

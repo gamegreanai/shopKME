@@ -1,7 +1,8 @@
 {% load static %}
 
 <style>
-  /* 🎨 พื้นหลังและโครงสร้าง Sidebar */
+  {% comment %} /*  พื้นหลังและโครงสร้าง Sidebar */
+  /* top: 100px; คือ อยู่ใต้ navbar */ {% endcomment %}
   .sidebar {
     width: 200px;
     background-color: #ffffff;
@@ -9,7 +10,7 @@
     min-height: 100vh;
     position: fixed;
     left: 0;
-    top: 100px; /* ✅ อยู่ใต้ navbar */
+    top: 100px;
     z-index: 1040;
     overflow-y: auto;
     padding-bottom: 80px;
@@ -91,7 +92,7 @@
     color: white;
   }
 
-  /* ✅ ปรับเนื้อหาให้ไม่ทับ Sidebar */
+  {% comment %} /*  ปรับเนื้อหาให้ไม่ทับ Sidebar */ {% endcomment %}
   @media (min-width: 992px) {
     .main-content {
       margin-left: 160px; /* ช่องว่างด้านซ้ายเท่ากับความกว้างของ Sidebar */
@@ -99,12 +100,12 @@
       transition: margin-left 0.3s ease;
     }
 
-    /* 🌸 เพิ่มธีมสีชมพู */
+    {% comment %} /*  เพิ่มธีมสีชมพู */ {% endcomment %}
 :root {
   --pink-color: #ff008b;
 }
 
-/* 🩷 ตัวอักษรทั่วไปเป็นสีชมพู */
+{% comment %} /*  ตัวอักษรทั่วไปเป็นสีชมพู */ {% endcomment %}
 .sidebar a,
 .sidebar-section h6,
 .logout-btn,
@@ -113,7 +114,7 @@
   color: var(--pink-color) !important;
 }
 
-/* 🌸 เมื่อ hover → ตัวอักษรสีขาว พื้นหลังชมพู */
+{% comment %} /*  เมื่อ hover → ตัวอักษรสีขาว พื้นหลังชมพู */ {% endcomment %}
 .sidebar a:hover,
 .sidebar a.active {
   background-color: var(--pink-color) !important;
@@ -125,7 +126,7 @@
   color: white !important;
 }
 
-/* 🌸 ปุ่มออกจากระบบ */
+{% comment %} /*  ปุ่มออกจากระบบ */ {% endcomment %}
 .logout-btn {
   border: 2px solid var(--pink-color) !important;
   color: var(--pink-color) !important;
@@ -136,7 +137,7 @@
   color: white !important;
 }
 
-/* 🌸 Footer menu (มือถือ / iPad) */
+{% comment %} /*  Footer menu (มือถือ / iPad) */ {% endcomment %}
 .footer-menu a {
   color: var(--pink-color) !important;
 }
@@ -160,7 +161,7 @@
 
   }
 
-  /* ✅ Footer Menu (Mobile / iPad) */
+  {% comment %} /*  Footer Menu (Mobile / iPad) */ {% endcomment %}
   .footer-menu {
     display: none;
   }
@@ -214,7 +215,7 @@
     }
   }
 
-  /* 🌸 สีชมพูหลักของเบอร์โทร */
+  {% comment %} /*  สีชมพูหลักของเบอร์โทร */ {% endcomment %}
 .text-pink {
   color: #ff008b !important;
   font-weight: 700;
@@ -223,7 +224,7 @@
 
 </style>
 
-<!-- 🔹 Sidebar -->
+{% comment %} <!--  Sidebar --> {% endcomment %}
  <div class="main-content">
 <div class="sidebar shadow-sm">
 
@@ -244,7 +245,7 @@
       <i class="fa fa-user"></i> ข้อมูลส่วนตัว
     </a>
     <a href="/account/address/" class="{% if request.path == '/account/address/' %}active{% endif %}">
-      <i class="fa fa-map-marker-alt"></i> ที่อยู่จัดส่ง
+      <i class="fa fa-map-marker-alt"></i> ที่อยู่
     </a>
     <a href="/account/redeem/" class="{% if request.path == '/account/redeem/' %}active{% endif %}">
       <i class="fa fa-gift"></i> แลก Point
@@ -269,7 +270,7 @@
   <a href="/account/logout/" class="logout-btn">ออกจากระบบ</a>
 </div>
 
-<!-- 🔹 Footer Menu (มือถือ / iPad) -->
+{% comment %} <!--  Footer Menu (มือถือ / iPad) --> {% endcomment %}
 <nav class="footer-menu">
   <a href="/account/dashboard/" class="{% if request.path == '/account/dashboard/' %}active{% endif %}">
     <i class="fa fa-home"></i>
@@ -294,7 +295,7 @@
 </nav>
 </div>
 
-<!-- 🔹 Script: คำทักทาย -->
+{% comment %} <!--  Script: คำทักทาย --> {% endcomment %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const greetingEl = document.getElementById("greeting");

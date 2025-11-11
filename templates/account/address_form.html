@@ -2,26 +2,26 @@
 {% block title %}DDreamclinic{% endblock %}
 {% block content %}
 
-<!-- ✅ Container หลัก -->
+{% comment %} <!--  Container หลัก --> {% endcomment %}
 <div class="container py-5 address-container">
   <form method="post" novalidate>
     {% csrf_token %}
     {{ form.non_field_errors }}
 
-    <!-- 🌸 หัวข้อ -->
+    {% comment %} <!--  หัวข้อ --> {% endcomment %}
     <div class="text-center text-white py-4 rounded-4 address-header">
       <h4 class="fw-bold mb-0">
         <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ
       </h4>
     </div>
 
-    <!-- 🌿 เว้นระยะหัวข้อกับฟอร์ม -->
+    {% comment %} <!--  เว้นระยะหัวข้อกับฟอร์ม --> {% endcomment %}
     <div class="spacer my-4"></div>
 
-    <!-- 🌸 ฟอร์มกรอกที่อยู่ -->
+    <!--  ฟอร์มกรอกที่อยู่ -->
     <div class="address-form bg-white p-5 rounded-4 shadow-sm">
       <div class="row g-4">
-        <!-- บ้าน / หมู่ / ถนน -->
+        {% comment %} <!-- บ้าน / หมู่ / ถนน --> {% endcomment %}
         <div class="col-md-3 col-sm-6 col-12">
           <label class="form-label">เลขที่บ้าน</label>
           {{ form.house_no }}
@@ -37,7 +37,7 @@
           {{ form.street }}
         </div>
 
-        <!-- แขวง / เขต / จังหวัด / รหัส -->
+        {% comment %} <!-- แขวง / เขต / จังหวัด / รหัส --> {% endcomment %}
         <div class="col-md-6 col-12">
           <label class="form-label">แขวง/ตำบล</label>
           {{ form.subdistrict }}
@@ -58,7 +58,7 @@
           {{ form.postal_code }}
         </div>
 
-        <!-- 🌸 ปุ่มบันทึก -->
+        {% comment %} <!--  ปุ่มบันทึก --> {% endcomment %}
         <div class="col-12 text-center mt-4">
           <button type="submit" class="btn btn-pink px-5 py-2 fw-bold">
             <i class="fa fa-save me-2"></i> บันทึกข้อมูล
@@ -69,13 +69,13 @@
   </form>
 </div>
 
-<!-- 🎨 CSS -->
+{% comment %} <!--  CSS --> {% endcomment %}
 <style>
   body {
     background-color: #f8f9fa;
   }
 
-  /* ✅ Container หลัก */
+  {% comment %} /*  Container หลัก */ {% endcomment %}
   .address-container {
     margin-top: 120px;
     margin-left: 120px;
@@ -83,18 +83,18 @@
     transition: all 0.3s ease;
   }
 
-  /* 🌸 หัวข้อ */
+  {% comment %} /*  หัวข้อ */ {% endcomment %}
   .address-header {
     background: linear-gradient(135deg, #ff008b, #ff66c8);
     box-shadow: 0 4px 10px rgba(255, 0, 139, 0.2);
   }
 
-  /* 🌿 ช่องว่างระหว่างหัวข้อกับฟอร์ม */
+  {% comment %} /* 🌿 ช่องว่างระหว่างหัวข้อกับฟอร์ม */ {% endcomment %}
   .spacer {
     height: 25px;
   }
 
-  /* 🌸 กล่องฟอร์ม */
+  {% comment %} /*  กล่องฟอร์ม */ {% endcomment %}
   .address-form {
     border-radius: 1.5rem;
     background: #ffffff;
@@ -107,7 +107,7 @@
     box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
   }
 
-  /* Label & Input */
+  {% comment %} /* Label & Input */ {% endcomment %}
   label {
     font-weight: 600;
     color: #333;
@@ -129,7 +129,7 @@
     outline: none;
   }
 
-  /* ปุ่มชมพู */
+  {% comment %} /* ปุ่มชมพู */ {% endcomment %}
   .btn-pink {
     background-color: #ff008b;
     border: none;
@@ -144,7 +144,7 @@
     box-shadow: 0 4px 10px rgba(255, 102, 200, 0.4);
   }
 
-  /* 📱 Tablet */
+  {% comment %} /* 📱 Tablet */ {% endcomment %}
   @media (max-width: 991px) {
     .address-container {
       margin-top: 110px;
@@ -162,7 +162,7 @@
     }
   }
 
-  /* 📱 มือถือ */
+  {% comment %} /* 📱 มือถือ */ {% endcomment %}
   @media (max-width: 768px) {
     .address-container {
       margin-top: 95px !important;
@@ -192,7 +192,7 @@
     }
   }
 
-  /* 📱 มือถือจอเล็ก */
+  {% comment %} /* 📱 มือถือจอเล็ก */ {% endcomment %}
   @media (max-width: 480px) {
     .address-container {
       padding: 0.8rem !important;

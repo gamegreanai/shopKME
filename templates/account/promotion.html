@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <!-- ✅ ส่วนสไลด์แนวนอน -->
+  {% comment %} <!--  ส่วนสไลด์แนวนอน --> {% endcomment %}
   <div class="promo-slider-wrapper position-relative overflow-hidden">
     <div class="promo-slider d-flex gap-3">
       {% for p in promotions %}
@@ -49,9 +49,9 @@
   </div>
 </div>
 
-<!-- ✅ CSS ปลอดภัย -->
+{% comment %} <!--  CSS ปลอดภัย --> {% endcomment %}
 <style>
-  /* ✅ สีหลัก */
+  {% comment %} /*  สีหลัก */ {% endcomment %}
   .text-pink { color: #e91e63 !important; }
   .btn-pink {
     background-color: #e91e63;
@@ -72,7 +72,7 @@
     color: #fff;
   }
 
-  /* ✅ โครง slider */
+  {% comment %} /*  โครง slider */ {% endcomment %}
   .promo-slider-wrapper {
     position: relative;
     width: 100%;
@@ -105,7 +105,7 @@
     overflow: hidden;
   }
 
-  /* ✅ มือถือและแท็บเล็ต */
+  {% comment %} /*  มือถือและแท็บเล็ต */ {% endcomment %}
   @media (max-width: 991px) {
     .promo-slider {
       display: grid;
@@ -125,7 +125,7 @@
     }
   }
 
-  /* ✅ ปรับ spacing ในมือถือ */
+  {% comment %} /*  ปรับ spacing ในมือถือ */ {% endcomment %}
   @media (max-width: 576px) {
     .promo-slider {
       grid-template-columns: repeat(2, 1fr);
@@ -134,7 +134,7 @@
   }
 </style>
 
-<!-- ✅ JavaScript ควบคุมการเลื่อน (Desktop เท่านั้น) -->
+{% comment %} <!--  JavaScript ควบคุมการเลื่อน (Desktop เท่านั้น) --> {% endcomment %}
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const slider = document.querySelector(".promo-slider");
@@ -145,7 +145,7 @@
     if (!slider || !cards.length) return;
 
     let currentIndex = 0;
-    let cardWidth = cards[0].offsetWidth + 24; // รวมช่องว่าง
+    {% comment %} let cardWidth = cards[0].offsetWidth + 24; // รวมช่องว่าง {% endcomment %}
     const cardsPerView = 3;
 
     function updateSlider() {

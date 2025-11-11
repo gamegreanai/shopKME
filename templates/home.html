@@ -4,19 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DDreamclinic</title>
+  <title>D'Dreamclinic</title>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    /*  ฟอนต์หลัก */
+    {% comment %} /*  ฟอนต์หลัก */ {% endcomment %}
     body, h1, h4, p, label, button, small, input, span {
       font-family: 'Prompt', sans-serif !important;
     }
 
-    /*  พื้นหลังและจัดกลาง */
+    {% comment %} /*  พื้นหลังและจัดกลาง */ {% endcomment %}
     body {
       background-color: #fff0f6;
       display: flex;
@@ -26,7 +26,7 @@
       margin: 0;
     }
 
-    /*  กล่องหลัก */
+    {% comment %} /*  กล่องหลัก */ {% endcomment %}
     .main-container {
       text-align: center;
       width: 100%;
@@ -34,7 +34,7 @@
       padding: 60px 20px;
     }
 
-    /*  โลโก้ */
+    {% comment %} /*  โลโก้ */ {% endcomment %}
     .icon-circle {
       position: relative;
       width: 80px;
@@ -60,7 +60,7 @@
       transition: 0.3s ease;
     }
 
-    /*  ขนาดเฉพาะจอ */
+    {% comment %} /*  ขนาดเฉพาะจอ */ {% endcomment %}
     @media (min-width: 992px) {
       .icon-circle {
         width: 70px;
@@ -81,7 +81,7 @@
       }
     }
 
-    /* 🌸 ชื่อและคำโปรย */
+    {% comment %} /*  ชื่อและคำโปรย */ {% endcomment %}
     .clinic-title h1 {
       font-weight: 700;
       color: #e91e63;
@@ -94,7 +94,7 @@
       margin-bottom: 40px;
     }
 
-    /* 🌸 กล่องฟอร์ม */
+    {% comment %} /*  กล่องฟอร์ม */ {% endcomment %}
     .content-box {
       background: #fff;
       border-radius: 20px;
@@ -109,7 +109,7 @@
       box-shadow: 0 0 30px rgba(233, 30, 99, 0.25);
     }
 
-    /* 🌸 Label และ Input */
+    {% comment %} /*  Label และ Input */ {% endcomment %}
     .form-label {
       color: #e91e63 !important;
       font-weight: 500;
@@ -126,7 +126,7 @@
       box-shadow: 0 0 6px rgba(233, 30, 99, 0.3);
     }
 
-    /* 🌸 ปุ่มหลัก */
+    {% comment %} /*  ปุ่มหลัก */ {% endcomment %}
     .btn-pink {
       background-color: #e91e63 !important;
       color: white !important;
@@ -143,7 +143,7 @@
       border: 1px solid #e91e63 !important;
     }
 
-    /* 🌸 ปุ่ม toggle */
+    {% comment %} /*  ปุ่ม toggle */ {% endcomment %}
     .toggle-btn {
       background: none;
       border: none;
@@ -160,13 +160,13 @@
       padding: 2px 8px;
     }
 
-    /* ข้อความฟีดแบ็ก */
+    {% comment %} /* ข้อความฟีดแบ็ก */ {% endcomment %}
     #phone-feedback {
       font-size: 0.85rem;
       transition: 0.3s;
     }
 
-    /* 🌸 Responsive */
+    {% comment %} /*  Responsive */ {% endcomment %}
     @media (max-width: 576px) {
       .main-container {
         padding: 40px 15px;
@@ -182,22 +182,22 @@
 </head>
 <body>
   <div class="main-container">
-    <!-- โลโก้ -->
+    {% comment %} <!-- โลโก้ --> {% endcomment %}
     <div class="icon-circle">
       <img src="/media/DMC.PNG" alt="DMC">
     </div>
 
-    <!-- ชื่อร้าน -->
+    {% comment %} <!-- ชื่อร้าน --> {% endcomment %}
     <div class="clinic-title">
       <h1 class="fw-bold">D'Dream clinic</h1>
       <p class="lead">สมัครสมาชิกเพื่อสะสมพอยท์และแลกของรางวัล</p>
     </div>
 
-    <!-- ฟอร์ม -->
+    {% comment %} <!-- ฟอร์ม --> {% endcomment %}
     <div class="content-box" id="auth-box">
       <h4 class="text-center fw-bold mb-4" id="form-title">เข้าสู่ระบบ</h4>
 
-      <!-- ฟอร์มสมัคร -->
+      {% comment %} <!-- ฟอร์มสมัคร --> {% endcomment %}
       <form id="register-form" style="display:none;">
         {% csrf_token %}
         <div class="mb-3">
@@ -212,7 +212,7 @@
         <button type="submit" class="btn btn-pink w-100" id="btn-register" disabled>สมัครสมาชิก</button>
       </form>
 
-      <!-- ฟอร์มล็อกอิน -->
+      {% comment %} <!-- ฟอร์มล็อกอิน --> {% endcomment %}
       <form id="login-form">
         {% csrf_token %}
         <div class="mb-3">
@@ -235,7 +235,7 @@
     </div>
   </div>
 
-  <!-- ⚡ JavaScript (ของคุณเดิม ไม่เปลี่ยน logic) -->
+  {% comment %} <!--  JavaScript (ของคุณเดิม ไม่เปลี่ยน logic) --> {% endcomment %}
   <script>
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
@@ -246,9 +246,9 @@
     const phoneFeedback = document.getElementById('phone-feedback');
     const btnRegister = document.getElementById('btn-register');
 
-    let isLoginMode = true; // ✅ เปิดเว็บมาก่อนเป็นโหมด "เข้าสู่ระบบ"
+    let isLoginMode = true; 
 
-    // ✅ toggle ฟอร์ม
+    {% comment %} // ✅ toggle ฟอร์ม {% endcomment %}
     function switchForm() {
       if (isLoginMode) {
         registerForm.style.display = 'block';
@@ -272,7 +272,7 @@
       switchForm();
     });
 
-    // ✅ ล็อกอิน
+    {% comment %} // ✅ ล็อกอิน {% endcomment %}
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const phone = document.getElementById('login-phone').value.trim();
@@ -289,7 +289,7 @@
       if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 1200);
     });
 
-    // ✅ สมัครสมาชิก
+    {% comment %} //  สมัครสมาชิก {% endcomment %}
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const phone = document.getElementById('register-phone').value.trim();
@@ -308,7 +308,7 @@
       if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 1200);
     });
 
-    // ✅ ฟังก์ชันอ่าน CSRF Token
+    {% comment %} //  ฟังก์ชันอ่าน CSRF Token {% endcomment %}
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -324,7 +324,7 @@
       return cookieValue;
     }
 
-    // ✅ ตรวจเบอร์ซ้ำแบบเรียลไทม์
+    {% comment %} //  ตรวจเบอร์ซ้ำแบบเรียลไทม์ {% endcomment %}
     registerPhone.addEventListener('input', async () => {
       const phone = registerPhone.value.trim();
       if (phone.length !== 10 || !/^[0-9]+$/.test(phone)) {

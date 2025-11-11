@@ -1,4 +1,4 @@
-{# templates/account/staff/promotion_manage.html #}
+{% comment %} {# templates/account/staff/promotion_manage.html #} {% endcomment %}
 {% extends 'base/base.html' %}
 {% load static %}
 
@@ -9,7 +9,7 @@
 {% block content %}
 <div class="container py-3 " style="margin-top:100px">
 
-  {# ===================== LIST MODE ===================== #}
+  {% comment %} {# ===================== LIST MODE ===================== #} {% endcomment %}
   {% if mode == 'list' %}
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h5 class="mb-0">โปรโมชัน</h5>
@@ -94,7 +94,7 @@
       {% endif %}
     {% endif %}
 
-  {# ===================== CREATE / EDIT FORM MODE ===================== #}
+  {% comment %} {# ===================== CREATE / EDIT FORM MODE ===================== #} {% endcomment %}
   {% elif mode == 'create' or mode == 'edit' %}
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h5 class="mb-0">{% if mode == 'create' %}สร้างโปรโมชัน{% else %}แก้ไขโปรโมชัน{% endif %}</h5>

@@ -7,13 +7,13 @@
     <i class="fa fa-coins me-2"></i> จัดการแต้มผู้ใช้
   </h4>
 
-  <!-- 🔍 Search bar -->
+  <!--  Search bar -->
   <form method="get" class="d-flex mb-3">
     <input type="text" name="q" value="{{ query }}" class="form-control me-2" placeholder="ค้นหาชื่อหรือเบอร์โทร...">
     <button type="submit" class="btn btn-success"><i class="fa fa-search me-1"></i> ค้นหา</button>
   </form>
 
-  <!-- 🧾 ตารางผู้ใช้ -->
+  <!--  ตารางผู้ใช้ -->
   <form method="post">
     {% csrf_token %}
     <div class="card shadow-sm mb-4">
@@ -54,7 +54,7 @@
           </tbody>
         </table>
 
-        <!-- 🔹 Pagination: รายชื่อผู้ใช้ -->
+        <!--  Pagination: รายชื่อผู้ใช้ -->
         {% if profiles.has_other_pages %}
         <div class="d-flex justify-content-center mt-3">
           <nav>
@@ -92,7 +92,7 @@
     </div>
   </form>
 
-  <!-- 📜 ประวัติการทำรายการ -->
+  <!--  ประวัติการทำรายการ -->
   <div class="card shadow-sm">
     <div class="card-header bg-secondary text-white">
       <i class="fa fa-history me-2"></i> ประวัติการปรับแต้มล่าสุด
@@ -129,7 +129,7 @@
         </tbody>
       </table>
 
-      <!-- 🔹 Pagination: ประวัติการปรับแต้ม -->
+      <!--  Pagination: ประวัติการปรับแต้ม -->
       {% if history.has_other_pages %}
       <div class="d-flex justify-content-center mt-3">
         <nav>
@@ -161,7 +161,7 @@
   </div>
 </div>
 
-<!-- ✅ JavaScript -->
+<!--  JavaScript -->
 <script>
   // เลือกทั้งหมด
   document.getElementById("select-all").addEventListener("change", function() {
@@ -169,13 +169,13 @@
   });
 </script>
 
-<!-- ✅ ป้องกันเนื้อหาทับ Navbar -->
+<!--  ป้องกันเนื้อหาทับ Navbar -->
 <style>
   .container {
     margin-top: clamp(110px, 10vw, 130px);
   }
 
-  /* 📱 iPad */
+  {% comment %} /* 📱 iPad */ {% endcomment %}
   @media (max-width: 991px) {
     .container {
       margin-top: 115px;
@@ -183,7 +183,7 @@
     }
   }
 
-  /* 📱 มือถือ */
+  {% comment %} /*  มือถือ */ {% endcomment %}
   @media (max-width: 768px) {
     .container {
       margin-top: 100px !important;
