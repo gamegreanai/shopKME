@@ -1,6 +1,8 @@
 {% extends 'base/base.html' %} 
 {% load static %}
 {% block title %}DDreamclinic{% endblock %}
+{% url 'promotion_detail' pk=p.id %}
+
 
 {% block content %}
 <div class="container dashboard-container">
@@ -11,7 +13,7 @@
 
     <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative member-content">
       
-      <!-- 🔸 ฝั่งซ้าย: ข้อมูลเลเวล -->
+      <!--  ฝั่งซ้าย: ข้อมูลเลเวล -->
       <div class="d-flex flex-column align-items-start gap-3 member-left">
         
         <!-- 🏅 ป้ายระดับสมาชิก -->
@@ -54,9 +56,196 @@
     </div>
   </div>
 </div>
-{% include "account/promotion.html" with promotions=promotions show_title=True user=request.user subtotal=cart.subtotal %}
+<!-- 🌸 ส่วนแสดงโปรโมชั่น -->
+<div class="promotion-section mt-5 position-relative">
+  <h5 class="fw-bold text-pink mb-3">โปรโมชั่น</h5>
 
-<!-- 🌸 CSS -->
+  <!-- ✅ พื้นที่สำหรับ slide -->
+  <div class="promo-slider-wrapper position-relative overflow-hidden">
+    <div class="promo-slider d-flex gap-3">
+      {% for p in promotions %}
+      {% if p.is_active_now %}
+      <div class="promo-card card shadow-sm border-0">
+        <div class="ratio ratio-16x9 position-relative">
+          {% if p.cover_image %}
+          <img src="{{ p.cover_image.url }}" class="card-img-top" alt="{{ p.title }}">
+          {% else %}
+          <img src="{% static 'img/promo-placeholder.webp' %}" class="card-img-top" alt="Promotion">
+          {% endif %}
+        </div>
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title fw-bold text-pink">{{ p.title }}</h6>
+          {% if p.short_text %}
+          <p class="text-muted small clamp-2">{{ p.short_text }}</p>
+          {% endif %}
+          <div class="mt-auto">
+            <button class="btn btn-pink btn-sm w-100"
+              data-bs-toggle="modal"
+              data-bs-target="#promotionDetailModal-{{ p.id }}">
+              รายละเอียด
+            </button>
+          </div>
+        </div>
+      </div>
+      {% include "account/promotion_detail_modal.html" with p=p %}
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- 🔹 ปุ่มเลื่อนซ้าย-ขวา -->
+    <button class="btn btn-slide promo-prev" id="promo-prev">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+    <button class="btn btn-slide promo-next" id="promo-next">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ✅ CSS สำหรับส่วนโปรโมชั่น -->
+<style>
+  .text-pink { color: #e91e63 !important; }
+  .btn-pink {
+    background-color: #e91e63;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+  }
+  .btn-pink:hover { background-color: #d81b60; }
+
+  .promotion-section {
+    max-width: 950px;
+    margin: 2rem auto;
+  }
+
+  /* ✅ Slide view บน Desktop */
+  .promo-slider-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .promo-slider {
+    display: flex;
+    transition: transform 0.4s ease;
+  }
+
+  .promo-card {
+    flex: 0 0 calc(33.333% - 1rem);
+    min-width: 300px;
+    max-width: 320px;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .promo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(233, 30, 99, 0.2);
+  }
+
+  /* 🔹 ปุ่มเลื่อนซ้าย-ขวา ลอยอยู่บนภาพ */
+  .btn-slide {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(233, 30, 99, 0.8);
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+  .btn-slide:hover {
+    background-color: rgba(233, 30, 99, 1);
+    transform: translateY(-50%) scale(1.1);
+  }
+  .promo-prev { left: -20px; }
+  .promo-next { right: -20px; }
+
+  .clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ✅ มือถือและแท็บเล็ต = Grid 2x2 */
+  @media (max-width: 991px) {
+    .promo-slider {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      transform: none !important;
+    }
+    .promo-card {
+      width: 100%;
+      min-width: auto;
+      max-width: none;
+    }
+    .btn-slide {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .promo-slider {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+  }
+</style>
+
+<!-- ✅ JavaScript slide -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const slider = document.querySelector(".promo-slider");
+    const cards = document.querySelectorAll(".promo-card");
+    const prevBtn = document.getElementById("promo-prev");
+    const nextBtn = document.getElementById("promo-next");
+
+    if (!slider || !cards.length) return;
+
+    let currentIndex = 0;
+    let cardWidth = cards[0].offsetWidth + 24;
+    const cardsPerView = 3;
+
+    function updateSlider() {
+      if (window.innerWidth > 991) {
+        slider.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+      } else {
+        slider.style.transform = "none";
+      }
+    }
+
+    nextBtn?.addEventListener("click", () => {
+      if (currentIndex < cards.length - cardsPerView) {
+        currentIndex++;
+        updateSlider();
+      }
+    });
+
+    prevBtn?.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlider();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      cardWidth = cards[0].offsetWidth + 24;
+      updateSlider();
+    });
+  });
+</script>
+
+
+<!--  CSS -->
 <style>
   body {
     background-color: #f8f9fa;
@@ -73,7 +262,7 @@
     justify-content: flex-start;
   }
 
-  /* 🌸 การ์ดพื้นหลัง */
+  /*  การ์ดพื้นหลัง */
   .member-bg {
     aspect-ratio: 2 / 1;
     width: 100%;
@@ -100,7 +289,7 @@
     padding: clamp(1rem, 3vw, 2.5rem);
   }
 
-  /* 🩷 ตัวหนังสือนอก badge = สีชมพู ไม่มีเงา */
+  /*  ตัวหนังสือนอก badge = สีชมพู ไม่มีเงา */
   .member-points,
   .member-progress-text {
     color: #ff008b;
@@ -109,7 +298,7 @@
     text-shadow: none;
   }
 
-  /* 🌸 Badge ระดับสมาชิก */
+  /*  Badge ระดับสมาชิก */
   .member-badge {
     background-color: #ffffffdd;
     color: #ff008b !important;

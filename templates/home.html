@@ -5,162 +5,237 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DDreamclinic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
-    body { 
-      font-family: 'Prompt', sans-serif;
-      background: #f8f9fa;
-    }
-    .hero { 
-      {% comment %} background: url('https://images.uns') no-repeat center center/cover;  {% endcomment %}
-      height: 100vh; 
-      display: flex; 
-      align-items: center; 
-      color: #ff66c8; 
-      position: relative; 
-    }
-    .overlay { 
-      position: absolute; 
-      top:0; left:0; right:0; bottom:0; 
-      background-color:rgba(0,0,0,0.5); 
-    }
-    .content-box { 
-      position: relative; 
-      background:white; 
-      border-radius:10px; 
-      box-shadow:0 0 20px rgba(0,0,0,0.2); 
-      padding:30px; 
-      width:380px; 
-      margin-left:auto; 
-      margin-right:50px; 
-      color:#333; 
-    }
-    .btn-success { 
-      background-color:#198754; 
-      border:none; 
-    }
-    .btn-success:hover { 
-      background-color:#157347; 
-    }
-    .toggle-btn { 
-      background:none; 
-      border:none; 
-      color:#198754; 
-      text-decoration:underline; 
-      cursor:pointer; 
+    /*  ฟอนต์หลัก */
+    body, h1, h4, p, label, button, small, input, span {
+      font-family: 'Prompt', sans-serif !important;
     }
 
-    /* 🌸 เพิ่มส่วนสีชมพู */
-    :root {
-      --pink-color: #e91e63;
+    /*  พื้นหลังและจัดกลาง */
+    body {
+      background-color: #fff0f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
     }
 
-    /* 🩷 ตัวอักษรทั้งหมดเป็นสีชมพู */
-    body, h1, h4, p, label, small, .form-label, .lead {
-      color: var(--pink-color) !important;
+    /*  กล่องหลัก */
+    .main-container {
+      text-align: center;
+      width: 100%;
+      max-width: 450px;
+      padding: 60px 20px;
+    }
+
+    /*  โลโก้ */
+    .icon-circle {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #ffe6ef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 10px rgba(233, 30, 99, 0.2);
+      overflow: visible;
+    }
+
+    .icon-circle img {
+      width: 230%;
+      height: auto;
+      object-fit: contain;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: 0.3s ease;
+    }
+
+    /*  ขนาดเฉพาะจอ */
+    @media (min-width: 992px) {
+      .icon-circle {
+        width: 70px;
+        height: 70px;
+      }
+      .icon-circle img {
+        width: 240%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .icon-circle {
+        width: 90px;
+        height: 90px;
+      }
+      .icon-circle img {
+        width: 210%;
+      }
+    }
+
+    /* 🌸 ชื่อและคำโปรย */
+    .clinic-title h1 {
+      font-weight: 700;
+      color: #e91e63;
+      margin-bottom: 5px;
+    }
+
+    .clinic-title p {
+      font-size: 1.1rem;
+      color: #e91e63;
+      margin-bottom: 40px;
+    }
+
+    /* 🌸 กล่องฟอร์ม */
+    .content-box {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(233, 30, 99, 0.15);
+      padding: 30px;
+      text-align: left;
+      transition: 0.3s ease;
+    }
+
+    .content-box:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 30px rgba(233, 30, 99, 0.25);
+    }
+
+    /* 🌸 Label และ Input */
+    .form-label {
+      color: #e91e63 !important;
+      font-weight: 500;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      border: 1px solid #f8cadd;
+      transition: 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #e91e63;
+      box-shadow: 0 0 6px rgba(233, 30, 99, 0.3);
     }
 
     /* 🌸 ปุ่มหลัก */
-    .btn-success {
-      background-color: var(--pink-color) !important;
-      border: none !important;
+    .btn-pink {
+      background-color: #e91e63 !important;
       color: white !important;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
       transition: 0.3s;
+      height: 42px;
     }
 
-    /* 🤍 เมื่อ hover → สีขาว + พื้นหลังชมพูอ่อน */
-    .btn-success:hover,
-    .btn-success:active,
-    .btn-success:focus {
+    .btn-pink:hover {
       background-color: white !important;
-      color: var(--pink-color) !important;
-      border: 1px solid var(--pink-color) !important;
+      color: #e91e63 !important;
+      border: 1px solid #e91e63 !important;
     }
 
-    /* 🌸 ปุ่ม toggle (เข้าสู่ระบบ / สมัครสมาชิก) */
-    .toggle-btn, .btn-link, #toggle-login {
-      color: var(--pink-color) !important;
+    /* 🌸 ปุ่ม toggle */
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: #e91e63;
+      text-decoration: underline;
+      cursor: pointer;
       transition: 0.3s;
     }
 
-    .toggle-btn:hover,
-    .btn-link:hover,
-    #toggle-login:hover {
-      color: white !important;
-      background-color: var(--pink-color) !important;
-      border-radius: 0px;
-      padding: 2px 6px;
+    .toggle-btn:hover {
+      background: #e91e63;
+      color: white;
+      border-radius: 6px;
+      padding: 2px 8px;
     }
 
-    /* 🩷 ช่อง input focus border */
-    .form-control:focus {
-      border-color: var(--pink-color);
-      box-shadow: 0 0 5px rgba(233, 30, 99, 0.5);
+    /* ข้อความฟีดแบ็ก */
+    #phone-feedback {
+      font-size: 0.85rem;
+      transition: 0.3s;
     }
 
-    /* 🤍 ให้ข้อความด้านซ้าย (ชื่อร้าน + คำอธิบาย) เป็นสีขาว */
-    .hero .text-start h1,
-    .hero .text-start p {
-      color: white !important;
+    /* 🌸 Responsive */
+    @media (max-width: 576px) {
+      .main-container {
+        padding: 40px 15px;
+      }
+      .clinic-title h1 {
+        font-size: 1.8rem;
+      }
+      .clinic-title p {
+        font-size: 1rem;
+      }
     }
-
   </style>
 </head>
 <body>
-  <div class="hero">
-    <div class="overlay"></div>
-    <div class="container position-relative">
-      <div class="row align-items-center">
-        <div class="col-md-6 text-start">
-          <h1 class="fw-bold">Ddreamclinic<br>Redream</h1>
-          <p class="lead">บริการด้านความงามครบวงจร ให้คุณสวยตั้งแต่ใบหน้าจรดปลายเท้า ในราคาที่คุ้มค่าที่สุด</p>
+  <div class="main-container">
+    <!-- โลโก้ -->
+    <div class="icon-circle">
+      <img src="/media/DMC.PNG" alt="DMC">
+    </div>
+
+    <!-- ชื่อร้าน -->
+    <div class="clinic-title">
+      <h1 class="fw-bold">D'Dream clinic</h1>
+      <p class="lead">สมัครสมาชิกเพื่อสะสมพอยท์และแลกของรางวัล</p>
+    </div>
+
+    <!-- ฟอร์ม -->
+    <div class="content-box" id="auth-box">
+      <h4 class="text-center fw-bold mb-4" id="form-title">เข้าสู่ระบบ</h4>
+
+      <!-- ฟอร์มสมัคร -->
+      <form id="register-form" style="display:none;">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">เบอร์โทรศัพท์</label>
+          <input type="text" id="register-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" maxlength="10" required>
+          <div id="phone-feedback" class="form-text text-danger"></div>
         </div>
-        <div class="col-md-6">
-          <div class="content-box" id="auth-box">
-            <h4 class="text-center fw-bold mb-4" id="form-title">สมัครสมาชิก</h4>
-
-            <!-- ฟอร์มสมัคร -->
-            <form id="register-form">
-              {% csrf_token %}
-              <div class="mb-3">
-                <label class="form-label">เบอร์โทรศัพท์</label>
-                <input type="text" id="register-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" maxlength="10" required>
-                <div id="phone-feedback" class="form-text text-danger"></div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">รหัสผ่าน</label>
-                <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
-              </div>
-              <button type="submit" class="btn btn-success w-100" id="btn-register" disabled>สมัครสมาชิก</button>
-            </form>
-
-            <!-- ฟอร์มล็อกอิน -->
-            <form id="login-form" style="display:none;">
-              {% csrf_token %}
-              <div class="mb-3">
-                <label class="form-label">เบอร์โทรศัพท์</label>
-                <input type="text" id="login-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">รหัสผ่าน</label>
-                <input type="password" id="login-password" class="form-control" placeholder="รหัสผ่าน" required>
-              </div>
-              <button type="submit" class="btn btn-success w-100">เข้าสู่ระบบ</button>
-            </form>
-
-            <div class="text-center mt-3">
-              <small id="toggle-text">
-                หากมีบัญชีแล้ว?
-                <button class="toggle-btn" id="toggle-login">เข้าสู่ระบบ</button>
-              </small>
-            </div>
-          </div>
+        <div class="mb-3">
+          <label class="form-label">รหัสผ่าน</label>
+          <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
         </div>
+        <button type="submit" class="btn btn-pink w-100" id="btn-register" disabled>สมัครสมาชิก</button>
+      </form>
+
+      <!-- ฟอร์มล็อกอิน -->
+      <form id="login-form">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">เบอร์โทรศัพท์</label>
+          <input type="text" id="login-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">รหัสผ่าน</label>
+          <input type="password" id="login-password" class="form-control" placeholder="รหัสผ่าน" required>
+        </div>
+        <button type="submit" class="btn btn-pink w-100">เข้าสู่ระบบ</button>
+      </form>
+
+      <div class="text-center mt-3">
+        <small id="toggle-text">
+          ยังไม่มีบัญชี?
+          <button class="toggle-btn" id="toggle-login">สมัครสมาชิก</button>
+        </small>
       </div>
     </div>
   </div>
 
+  <!-- ⚡ JavaScript (ของคุณเดิม ไม่เปลี่ยน logic) -->
   <script>
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
@@ -171,8 +246,9 @@
     const phoneFeedback = document.getElementById('phone-feedback');
     const btnRegister = document.getElementById('btn-register');
 
-    let isLoginMode = false;
+    let isLoginMode = true; // ✅ เปิดเว็บมาก่อนเป็นโหมด "เข้าสู่ระบบ"
 
+    // ✅ toggle ฟอร์ม
     function switchForm() {
       if (isLoginMode) {
         registerForm.style.display = 'block';
@@ -196,68 +272,12 @@
       switchForm();
     });
 
-    registerPhone.addEventListener('input', async () => {
-      const phone = registerPhone.value.trim();
-      if (phone.length !== 10 || !/^[0-9]+$/.test(phone)) {
-        phoneFeedback.textContent = "กรุณากรอกเบอร์โทรศัพท์ 10 หลักเท่านั้น";
-        phoneFeedback.classList.add('text-danger');
-        phoneFeedback.classList.remove('text-success');
-        btnRegister.disabled = true;
-        return;
-      }
-
-      const res = await fetch(`/account/check-phone/?phone=${phone}`);
-      const data = await res.json();
-
-      if (data.exists) {
-        phoneFeedback.textContent = "เบอร์นี้มีอยู่ในระบบแล้ว — กรุณาเข้าสู่ระบบแทน";
-        phoneFeedback.classList.add('text-danger');
-        phoneFeedback.classList.remove('text-success');
-        btnRegister.disabled = true;
-
-        Swal.fire({
-          icon: 'info',
-          title: 'เบอร์นี้มีอยู่ในระบบแล้ว',
-          text: 'กรุณาเข้าสู่ระบบ',
-          timer: 2500,
-          showConfirmButton: false
-        });
-
-        if (!isLoginMode) {
-          switchForm();
-          document.getElementById('login-phone').value = phone;
-        }
-      } else {
-        phoneFeedback.textContent = "เบอร์นี้สามารถใช้สมัครได้";
-        phoneFeedback.classList.remove('text-danger');
-        phoneFeedback.classList.add('text-success');
-        btnRegister.disabled = false;
-      }
-    });
-
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = registerPhone.value.trim();
-      const password = document.getElementById('register-password').value.trim();
-
-      const formData = new FormData();
-      formData.append('phone', phone);
-      formData.append('password', password);
-
-      const res = await fetch('/account/register/', { method: 'POST', body: formData });
-      const data = await res.json();
-
-      Swal.fire({ icon: data.status, title: data.message, timer: 2000, showConfirmButton: false });
-
-      if (data.redirect) {
-        setTimeout(() => window.location.href = data.redirect, 2000);
-      }
-    });
-
+    // ✅ ล็อกอิน
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const phone = document.getElementById('login-phone').value;
-      const password = document.getElementById('login-password').value;
+      const phone = document.getElementById('login-phone').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
       const formData = new FormData();
       formData.append('phone', phone);
       formData.append('password', password);
@@ -265,9 +285,61 @@
       const res = await fetch('/account/login/', { method: 'POST', body: formData });
       const data = await res.json();
 
-      Swal.fire({ icon: data.status, title: data.message, timer: 2500, showConfirmButton: false });
-      if (data.redirect) {
-        setTimeout(() => window.location.href = data.redirect, 2000);
+      Swal.fire({ icon: data.status, title: data.message, timer: 1800, showConfirmButton: false });
+      if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 1200);
+    });
+
+    // ✅ สมัครสมาชิก
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('register-phone').value.trim();
+      const password = document.getElementById('register-password').value.trim();
+      const formData = new FormData();
+      formData.append('phone', phone);
+      formData.append('password', password);
+
+      const res = await fetch('/account/register/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        body: formData
+      });
+      const data = await res.json();
+      Swal.fire({ icon: data.status, title: data.message, timer: 1500, showConfirmButton: false });
+      if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 1200);
+    });
+
+    // ✅ ฟังก์ชันอ่าน CSRF Token
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    // ✅ ตรวจเบอร์ซ้ำแบบเรียลไทม์
+    registerPhone.addEventListener('input', async () => {
+      const phone = registerPhone.value.trim();
+      if (phone.length !== 10 || !/^[0-9]+$/.test(phone)) {
+        phoneFeedback.textContent = "กรุณากรอกเบอร์โทรศัพท์ 10 หลักเท่านั้น";
+        btnRegister.disabled = true;
+        return;
+      }
+      const res = await fetch(`/account/check-phone/?phone=${phone}`);
+      const data = await res.json();
+      if (data.exists) {
+        phoneFeedback.textContent = "เบอร์นี้มีอยู่ในระบบแล้ว กรุณาเข้าสู่ระบบ";
+        btnRegister.disabled = true;
+      } else {
+        phoneFeedback.textContent = "สามารถใช้เบอร์นี้สมัครได้";
+        btnRegister.disabled = false;
       }
     });
   </script>

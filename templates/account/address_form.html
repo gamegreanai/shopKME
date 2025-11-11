@@ -8,56 +8,58 @@
     {% csrf_token %}
     {{ form.non_field_errors }}
 
-    <!-- 🌸 การ์ดหลัก -->
-    <div class="card address-card border-0 shadow-lg">
-      <div class="card-header text-center text-white py-4">
-        <h4 class="fw-bold mb-0">
-          <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ
-        </h4>
-      </div>
+    <!-- 🌸 หัวข้อ -->
+    <div class="text-center text-white py-4 rounded-4 address-header">
+      <h4 class="fw-bold mb-0">
+        <i class="fa fa-map-marker-alt me-2"></i> ที่อยู่จัดส่งของคุณ
+      </h4>
+    </div>
 
-      <div class="card-body p-4">
-        <div class="row g-4">
-          <!-- บ้าน / หมู่ / ถนน -->
-          <div class="col-md-3 col-sm-6 col-12">
-            <label class="form-label">เลขที่บ้าน</label>
-            {{ form.house_no }}
-          </div>
+    <!-- 🌿 เว้นระยะหัวข้อกับฟอร์ม -->
+    <div class="spacer my-4"></div>
 
-          <div class="col-md-2 col-sm-6 col-12">
-            <label class="form-label">หมู่</label>
-            {{ form.moo }}
-          </div>
+    <!-- 🌸 ฟอร์มกรอกที่อยู่ -->
+    <div class="address-form bg-white p-5 rounded-4 shadow-sm">
+      <div class="row g-4">
+        <!-- บ้าน / หมู่ / ถนน -->
+        <div class="col-md-3 col-sm-6 col-12">
+          <label class="form-label">เลขที่บ้าน</label>
+          {{ form.house_no }}
+        </div>
 
-          <div class="col-md-7 col-sm-12 col-12">
-            <label class="form-label">ถนน</label>
-            {{ form.street }}
-          </div>
+        <div class="col-md-2 col-sm-6 col-12">
+          <label class="form-label">หมู่</label>
+          {{ form.moo }}
+        </div>
 
-          <!-- แขวง / เขต / จังหวัด / รหัส -->
-          <div class="col-md-6 col-12">
-            <label class="form-label">แขวง/ตำบล</label>
-            {{ form.subdistrict }}
-          </div>
+        <div class="col-md-7 col-sm-12 col-12">
+          <label class="form-label">ถนน</label>
+          {{ form.street }}
+        </div>
 
-          <div class="col-md-6 col-12">
-            <label class="form-label">เขต/อำเภอ</label>
-            {{ form.district }}
-          </div>
+        <!-- แขวง / เขต / จังหวัด / รหัส -->
+        <div class="col-md-6 col-12">
+          <label class="form-label">แขวง/ตำบล</label>
+          {{ form.subdistrict }}
+        </div>
 
-          <div class="col-md-6 col-12">
-            <label class="form-label">จังหวัด</label>
-            {{ form.province }}
-          </div>
+        <div class="col-md-6 col-12">
+          <label class="form-label">เขต/อำเภอ</label>
+          {{ form.district }}
+        </div>
 
-          <div class="col-md-6 col-12">
-            <label class="form-label">รหัสไปรษณีย์</label>
-            {{ form.postal_code }}
-          </div>
+        <div class="col-md-6 col-12">
+          <label class="form-label">จังหวัด</label>
+          {{ form.province }}
+        </div>
+
+        <div class="col-md-6 col-12">
+          <label class="form-label">รหัสไปรษณีย์</label>
+          {{ form.postal_code }}
         </div>
 
         <!-- 🌸 ปุ่มบันทึก -->
-        <div class="text-center mt-5">
+        <div class="col-12 text-center mt-4">
           <button type="submit" class="btn btn-pink px-5 py-2 fw-bold">
             <i class="fa fa-save me-2"></i> บันทึกข้อมูล
           </button>
@@ -73,7 +75,7 @@
     background-color: #f8f9fa;
   }
 
-  /* 🌸 Container */
+  /* ✅ Container หลัก */
   .address-container {
     margin-top: 120px;
     margin-left: 120px;
@@ -81,27 +83,28 @@
     transition: all 0.3s ease;
   }
 
-  /* 🌸 การ์ดหลัก */
-  .address-card {
-    border-radius: 1.5rem; /* ✅ เหมือน profile_form */
-    overflow: hidden;
-    background: #ffffff;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.1);
-  }
-
-  .address-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
-  }
-
-  /* Header การ์ด */
-  .address-card .card-header {
+  /* 🌸 หัวข้อ */
+  .address-header {
     background: linear-gradient(135deg, #ff008b, #ff66c8);
-    border-bottom: none;
-    border-top-left-radius: 1.5rem;
-    border-top-right-radius: 1.5rem;
-    font-size: 1.3rem;
+    box-shadow: 0 4px 10px rgba(255, 0, 139, 0.2);
+  }
+
+  /* 🌿 ช่องว่างระหว่างหัวข้อกับฟอร์ม */
+  .spacer {
+    height: 25px;
+  }
+
+  /* 🌸 กล่องฟอร์ม */
+  .address-form {
+    border-radius: 1.5rem;
+    background: #ffffff;
+    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .address-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
   }
 
   /* Label & Input */
@@ -113,7 +116,7 @@
 
   input, select {
     font-size: 1rem;
-    border-radius: 0.75rem; /* ✅ มุม input เข้ากับการ์ด */
+    border-radius: 0.75rem;
     border: 1px solid #ddd;
     padding: 10px 14px;
     width: 100%;
@@ -150,12 +153,8 @@
       max-width: 100%;
     }
 
-    .address-card {
-      border-radius: 1rem;
-    }
-
-    .address-card .card-header h4 {
-      font-size: 1.2rem;
+    .address-form {
+      padding: 2rem;
     }
 
     input, select {
@@ -172,12 +171,8 @@
       max-width: 100%;
     }
 
-    .address-card {
-      border-radius: 1rem;
-    }
-
-    .address-card .card-header h4 {
-      font-size: 1rem;
+    .address-form {
+      padding: 1.5rem;
     }
 
     .btn-pink {
@@ -204,12 +199,8 @@
       margin-top: 90px !important;
     }
 
-    .address-card {
-      border-radius: 0.9rem;
-    }
-
-    .card-body {
-      padding: 1rem !important;
+    .address-form {
+      padding: 1rem;
     }
 
     .btn-pink {
@@ -223,4 +214,5 @@
     }
   }
 </style>
+
 {% endblock %}

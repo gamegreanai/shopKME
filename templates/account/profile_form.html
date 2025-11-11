@@ -7,63 +7,66 @@
   <form method="post" novalidate>
     {% csrf_token %}
 
-    <!-- 🌸 การ์ดโปรไฟล์หลัก -->
-    <div class="card profile-card border-0 shadow-lg">
-      <div class="card-header text-center text-white py-4">
-        <h4 class="fw-bold mb-0">
-          <i class="fa fa-user-circle me-2"></i> ข้อมูลโปรไฟล์ของคุณ
-        </h4>
-      </div>
+    <!-- 🌸 หัวข้อ -->
+    <div class="text-center text-white py-4 rounded-4 profile-header">
+      <h4 class="fw-bold mb-0">
+        <i class="fa fa-user-circle me-2"></i> ข้อมูลโปรไฟล์ของคุณ
+      </h4>
+    </div>
 
-      <div class="card-body p-4">
-        <div class="row g-4">
-          <!-- 🧩 คำนำหน้า เพศ โทรศัพท์ -->
-          <div class="col-md-3 col-sm-6 col-12">
-            <label class="form-label">คำนำหน้าชื่อ</label>
-            {{ pform.title }}
-            {{ pform.title.errors }}
-          </div>
+    <!-- 🌿 ระยะห่างหัวข้อกับฟอร์ม -->
+    <div class="spacer my-4"></div>
 
-          <div class="col-md-3 col-sm-6 col-12">
-            <label class="form-label">เพศ</label>
-            {{ pform.gender }}
-            {{ pform.gender.errors }}
-          </div>
+    <!-- 🌸 ฟอร์มโปรไฟล์ -->
+    <div class="profile-form bg-white p-5 rounded-4 shadow-sm">
+      <div class="row g-4">
 
-          <div class="col-md-6 col-sm-12 col-12">
-            <label class="form-label">เบอร์โทรศัพท์</label>
-            {% if pform.phone.value %}
-              <input type="text" name="{{ pform.phone.name }}" 
-                     value="{% if pform.phone.value|stringformat:'s'|slice:':1' != '0' %}0{{ pform.phone.value }}{% else %}{{ pform.phone.value }}{% endif %}" 
-                     class="form-control" maxlength="10" pattern="[0-9]{10}" title="กรุณากรอกเบอร์โทรศัพท์ 10 หลัก" />
-            {% else %}
-              {{ pform.phone }}
-            {% endif %}
-            {{ pform.phone.errors }}
-          </div>
+        <!-- 🧩 คำนำหน้า เพศ โทรศัพท์ -->
+        <div class="col-md-3 col-sm-6 col-12">
+          <label class="form-label">คำนำหน้าชื่อ</label>
+          {{ pform.title }}
+          {{ pform.title.errors }}
+        </div>
 
-          <!-- 🧩 ข้อมูลผู้ใช้ -->
-          <div class="col-md-4 col-sm-6 col-12">
-            <label class="form-label">ชื่อ</label>
-            {{ uform.first_name }}
-            {{ uform.first_name.errors }}
-          </div>
+        <div class="col-md-3 col-sm-6 col-12">
+          <label class="form-label">เพศ</label>
+          {{ pform.gender }}
+          {{ pform.gender.errors }}
+        </div>
 
-          <div class="col-md-4 col-sm-6 col-12">
-            <label class="form-label">นามสกุล</label>
-            {{ uform.last_name }}
-            {{ uform.last_name.errors }}
-          </div>
+        <div class="col-md-6 col-sm-12 col-12">
+          <label class="form-label">เบอร์โทรศัพท์</label>
+          {% if pform.phone.value %}
+            <input type="text" name="{{ pform.phone.name }}" 
+                   value="{% if pform.phone.value|stringformat:'s'|slice:':1' != '0' %}0{{ pform.phone.value }}{% else %}{{ pform.phone.value }}{% endif %}" 
+                   class="form-control" maxlength="10" pattern="[0-9]{10}" title="กรุณากรอกเบอร์โทรศัพท์ 10 หลัก" />
+          {% else %}
+            {{ pform.phone }}
+          {% endif %}
+          {{ pform.phone.errors }}
+        </div>
 
-          <div class="col-md-4 col-sm-12 col-12">
-            <label class="form-label">อีเมล</label>
-            {{ uform.email }}
-            {{ uform.email.errors }}
-          </div>
+        <!-- 🧩 ข้อมูลผู้ใช้ -->
+        <div class="col-md-4 col-sm-6 col-12">
+          <label class="form-label">ชื่อ</label>
+          {{ uform.first_name }}
+          {{ uform.first_name.errors }}
+        </div>
+
+        <div class="col-md-4 col-sm-6 col-12">
+          <label class="form-label">นามสกุล</label>
+          {{ uform.last_name }}
+          {{ uform.last_name.errors }}
+        </div>
+
+        <div class="col-md-4 col-sm-12 col-12">
+          <label class="form-label">อีเมล</label>
+          {{ uform.email }}
+          {{ uform.email.errors }}
         </div>
 
         <!-- 🌸 ปุ่มบันทึก -->
-        <div class="text-center mt-5">
+        <div class="col-12 text-center mt-4">
           <button type="submit" class="btn btn-pink px-5 py-2 fw-bold">
             <i class="fa fa-save me-2"></i> บันทึกข้อมูล
           </button>
@@ -79,7 +82,7 @@
     background-color: #f8f9fa;
   }
 
-  /* 🌸 Container หลัก */
+  /* ✅ พื้นที่หลัก */
   .profile-container {
     margin-top: 120px;
     margin-left: 120px;
@@ -87,27 +90,28 @@
     transition: all 0.3s ease;
   }
 
-  /* 🌸 การ์ดโปรไฟล์ */
-.profile-card {
-  border-radius: 1rem;
-  overflow: hidden;
-  background: #ffffff;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 8px 25px rgba(255, 0, 139, 0.1); /* เพิ่มความนุ่ม */
-}
-
-.profile-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
-}
-
-  /* 🌸 Header การ์ด */
-  .profile-card .card-header {
+  /* 🌸 Header */
+  .profile-header {
     background: linear-gradient(135deg, #ff008b, #ff66c8);
-    border-bottom: none;
-    border-top-left-radius: 1rem;  /* ✅ โค้งเหมือน body */
-    border-top-right-radius: 1rem; /* ✅ โค้งเหมือน body */
-    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(255, 0, 139, 0.25);
+  }
+
+  /* 🌿 ระยะห่างระหว่างหัวข้อกับฟอร์ม */
+  .spacer {
+    height: 30px;
+  }
+
+  /* 🌸 ฟอร์มโปรไฟล์ */
+  .profile-form {
+    border-radius: 1.2rem;
+    background: #ffffff;
+    box-shadow: 0 8px 25px rgba(255, 0, 139, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .profile-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 0, 139, 0.2);
   }
 
   /* Label & Input */
@@ -119,7 +123,7 @@
 
   input, select {
     font-size: 1rem;
-    border-radius: 0.75rem; /* ✅ มุม input โค้งละมุน */
+    border-radius: 0.75rem;
     border: 1px solid #ddd;
     padding: 10px 14px;
     width: 100%;
@@ -137,7 +141,7 @@
     background-color: #ff008b;
     border: none;
     color: white;
-    border-radius: 0.75rem; /* ✅ มุมปุ่มเข้ากับการ์ด */
+    border-radius: 0.75rem;
     font-size: 1.1rem;
     transition: all 0.3s ease;
   }
@@ -156,12 +160,8 @@
       max-width: 100%;
     }
 
-    .profile-card {
-      border-radius: 1rem; /* ✅ ลดมุมลงในแท็บเล็ต */
-    }
-
-    .profile-card .card-header h4 {
-      font-size: 1.2rem;
+    .profile-form {
+      padding: 2rem;
     }
 
     input, select {
@@ -178,12 +178,8 @@
       max-width: 100%;
     }
 
-    .profile-card {
-      border-radius: 1rem; /* ✅ มุมเดียวกับมือถือหน้า Dashboard */
-    }
-
-    .profile-card .card-header h4 {
-      font-size: 1rem;
+    .profile-form {
+      padding: 1.5rem;
     }
 
     .btn-pink {
@@ -203,19 +199,15 @@
     }
   }
 
-  /* 📱 มือถือจอเล็กพิเศษ */
+  /* 📱 มือถือจอเล็ก */
   @media (max-width: 480px) {
     .profile-container {
       padding: 0.8rem !important;
       margin-top: 90px !important;
     }
 
-    .profile-card {
-      border-radius: 0.9rem; /* ✅ ยังคงสวยแม้จอเล็ก */
-    }
-
-    .card-body {
-      padding: 1rem !important;
+    .profile-form {
+      padding: 1rem;
     }
 
     .btn-pink {
@@ -229,4 +221,5 @@
     }
   }
 </style>
+
 {% endblock %}

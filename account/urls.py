@@ -30,5 +30,6 @@ urlpatterns = [
     path('staff/promotion/<int:pk>/edit/', view_promotion.promotion_update, name='promotion_edit'),
     path('staff/promotion/<int:pk>/delete/', view_promotion.promotion_delete, name='promotion_delete'),
     path('staff/promotion/<int:pk>/toggle/', view_promotion.promotion_toggle_active, name='promotion_toggle'),
-
+    path('promotion/<int:pk>/', view_promotion.promotion_detail, name='promotion_detail'),
+    
 ]

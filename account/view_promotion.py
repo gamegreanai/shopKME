@@ -133,3 +133,8 @@ def promotion_toggle_active(request, pk):
     promo.save(update_fields=["active"])
     messages.success(request, f"อัปเดตสถานะเป็น {'เปิด' if promo.active else 'ปิด'} แล้ว")
     return redirect("account:promotion_list")
+
+def promotion_detail(request, pk):
+    """หน้าแสดงรายละเอียดโปรโมชัน"""
+    promo = get_object_or_404(Promotion, pk=pk, is_deleted=False, active=True)
+    return render(request, "account/promotion_detail_modal.html", {"promotion": promo})
