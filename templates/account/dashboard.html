@@ -3,7 +3,6 @@
 {% block title %}DDreamclinic{% endblock %}
 {% url 'promotion_detail' pk=p.id %}
 
-
 {% block content %}
 <div class="container dashboard-container">
 
@@ -13,10 +12,8 @@
 
     <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative member-content">
       
-      <!--  ฝั่งซ้าย: ข้อมูลเลเวล -->
       <div class="d-flex flex-column align-items-start gap-3 member-left">
         
-        <!-- 🏅 ป้ายระดับสมาชิก -->
         <div class="member-info d-flex align-items-center flex-wrap">
           <span class="badge rounded-pill shadow-sm fw-bold member-badge d-flex align-items-center gap-2">
             {% if meter.level == "Silver" %}
@@ -30,12 +27,10 @@
           </span>
         </div>
 
-        <!-- 💎 แต้มสะสม -->
         <p class="mt-2 mb-0 member-points">
           แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
         </p>
 
-        <!-- 🌈 Progress -->
         <div class="progress-wrapper mt-2 w-100" style="max-width: 400px;">
           <div class="d-flex justify-content-between small mb-1 member-progress-text">
             <span>{{ meter.level }}</span>
@@ -56,11 +51,11 @@
     </div>
   </div>
 </div>
-<!-- 🌸 ส่วนแสดงโปรโมชั่น -->
+
+{% comment %} <!-- 🌸 ส่วนแสดงโปรโมชั่น -->
 <div class="promotion-section mt-5 position-relative">
   <h5 class="fw-bold text-pink mb-3">โปรโมชั่น</h5>
 
-  <!-- ✅ พื้นที่สำหรับ slide -->
   <div class="promo-slider-wrapper position-relative overflow-hidden">
     <div class="promo-slider d-flex gap-3">
       {% for p in promotions %}
@@ -93,17 +88,23 @@
     </div>
 
     <!-- 🔹 ปุ่มเลื่อนซ้าย-ขวา -->
-    <button class="btn btn-slide promo-prev" id="promo-prev">
-      <i class="bi bi-chevron-left"></i>
+    <button class="btn-slide promo-prev" id="promo-prev">
+      <i class="bi bi-arrow-left-circle-fill"></i>
     </button>
-    <button class="btn btn-slide promo-next" id="promo-next">
-      <i class="bi bi-chevron-right"></i>
+    <button class="btn-slide promo-next" id="promo-next">
+      <i class="bi bi-arrow-right-circle-fill"></i>
     </button>
   </div>
 </div>
 
 <!-- ✅ CSS สำหรับส่วนโปรโมชั่น -->
 <style>
+  /* ✅ สีพื้นหลังแบบหน้า Home */
+  body {
+    background-color: #fff0f6 !important; /* สีชมพูอ่อนแบบหน้า home */
+    overflow-x: hidden;
+  }
+
   .text-pink { color: #e91e63 !important; }
   .btn-pink {
     background-color: #e91e63;
@@ -118,7 +119,6 @@
     margin: 2rem auto;
   }
 
-  /* ✅ Slide view บน Desktop */
   .promo-slider-wrapper {
     position: relative;
     width: 100%;
@@ -132,7 +132,7 @@
 
   .promo-card {
     flex: 0 0 calc(33.333% - 1rem);
-    min-width: 300px;
+    min-width: 280px;
     max-width: 320px;
     border-radius: 1rem;
     overflow: hidden;
@@ -144,29 +144,25 @@
     box-shadow: 0 8px 18px rgba(233, 30, 99, 0.2);
   }
 
-  /* 🔹 ปุ่มเลื่อนซ้าย-ขวา ลอยอยู่บนภาพ */
   .btn-slide {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(233, 30, 99, 0.8);
-    color: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    background: none;
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #e91e63;
+    font-size: 3rem;
+    cursor: pointer;
     z-index: 10;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
   }
   .btn-slide:hover {
-    background-color: rgba(233, 30, 99, 1);
+    color: #ff66a3;
     transform: translateY(-50%) scale(1.1);
   }
-  .promo-prev { left: -20px; }
-  .promo-next { right: -20px; }
+  .promo-prev { left: -50px; }
+  .promo-next { right: -50px; }
 
   .clamp-2 {
     display: -webkit-box;
@@ -175,10 +171,9 @@
     overflow: hidden;
   }
 
-  /* ✅ มือถือและแท็บเล็ต = Grid 2x2 */
-  @media (max-width: 991px) {
+  @media (max-width: 767px) {
     .promo-slider {
-      display: grid;
+      display: grid !important;
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
       transform: none !important;
@@ -190,13 +185,6 @@
     }
     .btn-slide {
       display: none !important;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .promo-slider {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.8rem;
     }
   }
 </style>
@@ -216,7 +204,7 @@
     const cardsPerView = 3;
 
     function updateSlider() {
-      if (window.innerWidth > 991) {
+      if (window.innerWidth > 767) {
         slider.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
       } else {
         slider.style.transform = "none";
@@ -242,17 +230,10 @@
       updateSlider();
     });
   });
-</script>
+</script> {% endcomment %}
 
-
-<!--  CSS -->
+<!-- ✅ CSS ของหน้า Dashboard -->
 <style>
-  body {
-    background-color: #f8f9fa;
-    overflow-x: hidden;
-  }
-
-  /* ✅ Container */
   .dashboard-container {
     margin-top: 120px;
     margin-left: 100px;
@@ -262,7 +243,6 @@
     justify-content: flex-start;
   }
 
-  /*  การ์ดพื้นหลัง */
   .member-bg {
     aspect-ratio: 2 / 1;
     width: 100%;
@@ -289,16 +269,13 @@
     padding: clamp(1rem, 3vw, 2.5rem);
   }
 
-  /*  ตัวหนังสือนอก badge = สีชมพู ไม่มีเงา */
   .member-points,
   .member-progress-text {
     color: #ff008b;
     font-weight: 600;
     font-size: clamp(0.9rem, 1.6vw, 1.1rem);
-    text-shadow: none;
   }
 
-  /*  Badge ระดับสมาชิก */
   .member-badge {
     background-color: #ffffffdd;
     color: #ff008b !important;
@@ -306,10 +283,8 @@
     font-size: clamp(0.85rem, 1.4vw, 1rem);
     border-radius: 2rem;
     box-shadow: 0 3px 6px rgba(255, 0, 139, 0.2);
-    white-space: nowrap;
   }
 
-  /* 🌈 Progress */
   .progress {
     border-radius: 10px;
   }
@@ -319,15 +294,10 @@
     border-radius: 10px;
   }
 
-  /* 🎖️ สีไอคอนระดับ */
-  .level-icon {
-    font-size: 1.1em;
-  }
   .text-silver { color: #c0c0c0; }
   .text-gold { color: #ffd700; }
   .text-premium { color: #ff66c8; }
 
-  /* 📱 Tablet */
   @media (max-width: 991px) {
     .dashboard-container {
       margin-top: 110px;
@@ -341,64 +311,25 @@
     }
   }
 
-  /* 📱 Mobile */
   @media (max-width: 768px) {
     .dashboard-container {
       margin-top: 95px;
       padding: 1rem;
       justify-content: center;
     }
-
     .member-bg {
       background-size: contain;
       border-radius: 1rem;
       filter: brightness(1);
     }
-
     .member-badge {
       font-size: 0.75rem;
       padding: 0.35rem 0.8rem;
-      flex-wrap: nowrap;
     }
-
-    .level-icon {
-      font-size: 0.85rem;
-    }
-
     .member-points,
     .member-progress-text {
       font-size: 0.75rem;
-    }
-
-    .progress-wrapper {
-      max-width: 90%;
-    }
-
-    .progress {
-      height: 8px;
-    }
-  }
-
-  /* 📱 Small Mobile */
-  @media (max-width: 480px) {
-    .member-badge {
-      font-size: 0.65rem;
-      padding: 0.25rem 0.6rem;
-    }
-
-    .member-points,
-    .member-progress-text {
-      font-size: 0.7rem;
-    }
-
-    .level-icon {
-      font-size: 0.75rem;
-    }
-
-    .progress {
-      height: 6px;
     }
   }
 </style>
-
 {% endblock %}
