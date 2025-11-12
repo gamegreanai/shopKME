@@ -15,7 +15,7 @@
       <div class="d-flex flex-column align-items-start gap-3 member-left">
         
         <div class="member-info d-flex align-items-center flex-wrap">
-          <span class="badge rounded-pill shadow-sm fw-bold member-badge d-flex align-items-center gap-2">
+          <span class="badge rounded-pill shadow-sm fw-bold member-badge d-flex align-items-center gap-1">
             {% if meter.level == "Silver" %}
               <i class="fa fa-medal level-icon text-silver"></i>
             {% elif meter.level == "Gold" %}
@@ -27,11 +27,11 @@
           </span>
         </div>
 
-        <p class="mt-2 mb-0 member-points">
+        <p class=" mb-0 member-points">
           แต้มสะสม: <strong>{{ meter.points|default:0 }}</strong> pts
         </p>
 
-        <div class="progress-wrapper mt-2 w-100" style="max-width: 400px;">
+        <div class="progress-wrapper w-100" style="max-width: 200px;">
           <div class="d-flex justify-content-between small mb-1 member-progress-text">
             <span>{{ meter.level }}</span>
             <span>{{ meter.progress_pct }}%</span>
@@ -51,8 +51,24 @@
     </div>
   </div>
 </div>
-</div>
 
+  <div class="text-center text-white rounded-4">
+  <h6 class="fw-normal text-pink mb-3">
+    <i class="fa me-2"></i> D'DREAM CLINIC
+  </h6>
+  </div>
+
+  <div class="text-center">
+  <tr>
+    <td colspan="3" class="text-muted">D'Dream ดีดรีมคลินิกเวชกรรม คลินิกที่ให้บริการด้านการดูแลรักษาผิวหนัง และความงาม มีบริการให้คำปรึกษา
+       ดูแล และฉีดโดยแพทย์ผู้เชี่ยวชาญทุกเคส ตอบโจทย์ความต้องการในทุกศาสตร์ความงาม ช่วยดูแลผิวให้กับทุกช่วงวัย
+        เพื่อความงามอย่างเป็นธรรมชาติในแบบของตัวคุณเอง เน้นประสิทธิภาพ และ คุณภาพ
+        ทางด้านการดูแลอย่างใกล้ชิดโดยทีมแพทย์เฉพาะด้าน ผลิตภัณฑ์ที่ใช้ ภายในคลินิก
+         มีคุณภาพเป็นของแท้ผ่าน อย. ไทย การันตีด้านความปลอดภัย</td>
+  </tr>
+  </div>
+</div>
+<hr>
 {% comment %} <!--  ส่วนแสดงโปรโมชั่น -->
 <div class="promotion-section mt-5 position-relative">
   <h5 class="fw-bold text-pink mb-3">โปรโมชั่น</h5>
@@ -267,6 +283,13 @@
     z-index: 1;
   }
 
+  hr {
+    border: none;
+    border-top: 2px solid #ff008b;
+    margin: 1.5rem 0;
+    opacity: 0.5;
+  }
+
   .member-content {
     z-index: 2;
     padding: clamp(1rem, 3vw, 2.5rem);
@@ -284,6 +307,10 @@
 
   .member-points {
     font-size: 1.2rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .member-bg .member-points,
@@ -308,12 +335,12 @@
     border-radius: 8px;
   }
 
-  /* 🎖️ สีระดับ */
+  {% comment %} /* 🎖️ สีระดับ */ {% endcomment %}
   .text-silver { color: #c0c0c0; }
   .text-gold { color: #ffd700; }
   .text-premium { color: #ff66c8; }
 
-  /* ✅ Responsive */
+  {% comment %} /* ✅ Responsive: Tablet */ {% endcomment %}
   @media (max-width: 991px) {
     .dashboard-container {
       margin-top: 110px;
@@ -322,7 +349,7 @@
     }
   }
 
-  /* ✅ ปรับขนาด font/badge/icon ให้เท่ากับหน้า redeem */
+  {% comment %} /* ✅ Responsive: Mobile (เท่ากับหน้า Redeem) */ {% endcomment %}
   @media (max-width: 768px) {
     .dashboard-container {
       margin-top: 95px;
@@ -338,18 +365,47 @@
     }
 
     .member-badge {
-      font-size: 0.8rem !important;
-      padding: 0.35rem 0.75rem !important;
+      font-size: 0.6rem !important;
+      padding: 0.25rem 0.5rem !important;
+      border-radius: 1rem !important;
     }
 
     .level-icon {
-      font-size: 1rem !important;
+      font-size: 0.75rem !important;
     }
 
     .member-points {
-      font-size: 0.85rem !important;
+      font-size: 0.6rem !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    {% comment %} /* 🔹 ปรับพื้นที่ภายในการ์ดให้ข้อความไม่ล้นขอบ */ {% endcomment %}
+    .member-bg .member-content {
+      font-size: 0.4rem !important;
+      padding: 0.6rem 0.8rem !important;
+      line-height: 1.2 !important;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    {% comment %} /* 🔹 ลดขนาดข้อความอื่น ๆ ภายในการ์ด */ {% endcomment %}
+    .member-bg strong,
+    .member-bg span,
+    .member-bg small,
+    .member-bg .member-progress-text {
+      font-size: 0.55rem !important;
+      line-height: 1.2 !important;
+    }
+
+    {% comment %} /* 🔹 ปรับ progress bar ให้เหมาะกับการ์ดขนาดเล็ก */ {% endcomment %}
+    .member-bg .progress {
+      height: 5px !important;
+      border-radius: 5px !important;
     }
   }
 </style>
+
 
 {% endblock %}

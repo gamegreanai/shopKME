@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #เป็นlib เสริฟไฟล์ พวกstaticไปยังเซิฟโดยไม่ต้องให้เซิฟสร้างให้
     'shopKME.middleware.ProfileCompletionMiddleware',
 
 ]
@@ -81,8 +81,20 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        
     }
 }
+
+# DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'your_database_name',
+#             'USER': 'your_database_user',
+#             'PASSWORD': 'your_database_password',
+#             'HOST': 'localhost',  # Or your database server's IP/hostname
+#             'PORT': '5432',      # Or your database server's port
+#         }
+#     }
 
 
 # Password validation
