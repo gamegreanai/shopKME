@@ -208,9 +208,14 @@
           <div id="phone-feedback" class="form-text text-danger"></div>
         </div>
         <div class="mb-3">
+          <label class="form-label">อีเมล</label>
+          <input type="email" id="register-email" class="form-control" placeholder="กรอกอีเมลของคุณ" required>
+        </div>
+        <div class="mb-3">
           <label class="form-label">รหัสผ่าน</label>
           <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
         </div>
+        
         <button type="submit" class="btn btn-pink w-100" id="btn-register" disabled>สมัครสมาชิก</button>
       </form>
 
@@ -228,12 +233,29 @@
         <button type="submit" class="btn btn-pink w-100">เข้าสู่ระบบ</button>
       </form>
 
-      <div class="text-center mt-3">
-        <small id="toggle-text">
-          ยังไม่มีบัญชี?
-          <button class="toggle-btn" id="toggle-login">สมัครสมาชิก</button>
-        </small>
+      <div class="text-center mt-3" id="toggle-container">
+        <button class="toggle-btn" id="show-forgot">ลืมรหัสผ่าน?</button>
+        <button class="toggle-btn" id="show-register">สมัครสมาชิก</button>
+        <button class="toggle-btn" id="show-login" style="display:none;">เข้าสู่ระบบ</button>
       </div>
+
+      {% comment %} <!-- 🔹 ฟอร์มลืมรหัสผ่าน --> {% endcomment %}
+  <form id="forgot-form" method="post" action="/account/forgot_password/" style="display:none;">
+        {% csrf_token %}
+        <h5 class="text-center mb-3 text-pink fw-semibold">ลืมรหัสผ่าน</h5>
+        <input type="text" name="phone" class="form-control mb-3" placeholder="เบอร์โทรศัพท์" required>
+        <input type="email" name="email" class="form-control mb-3" placeholder="อีเมล" required>
+        <input type="password" name="password" class="form-control mb-3" placeholder="รหัสผ่านใหม่" required>
+        <input type="password" name="confirm_password" class="form-control mb-3" placeholder="ยืนยันรหัสผ่านใหม่" required>
+        <button type="submit" class="btn btn-pink w-100">ยืนยันเปลี่ยนรหัสผ่าน</button>
+        <!-- bottom toggles for forgot form (hidden by default, shown when forgot is active) -->
+        <div class="text-center mt-3 forgot-bottom-toggle" style="display:none;">
+          <button class="toggle-btn" id="forgot-bottom-login">เข้าสู่ระบบ</button>
+          <button class="toggle-btn" id="forgot-bottom-register">สมัครสมาชิก</button>
+        </div>
+        
+      </form>
+
     </div>
   </div>
 
@@ -241,76 +263,20 @@
   <script>
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
-    const toggleBtn = document.getElementById('toggle-login');
-    const title = document.getElementById('form-title');
-    const toggleText = document.getElementById('toggle-text');
+  const forgotForm = document.getElementById('forgot-form');
+  const showRegisterBtn = document.getElementById('show-register');
+  const showForgotBtn = document.getElementById('show-forgot');
+  const showLoginBtn = document.getElementById('show-login');
+  const title = document.getElementById('form-title');
     const registerPhone = document.getElementById('register-phone');
     const phoneFeedback = document.getElementById('phone-feedback');
     const btnRegister = document.getElementById('btn-register');
+  const toggleContainer = document.getElementById('toggle-container');
+  const forgotBottom = document.querySelector('.forgot-bottom-toggle');
+  const forgotBottomLogin = document.getElementById('forgot-bottom-login');
+  const forgotBottomRegister = document.getElementById('forgot-bottom-register');
 
-    let isLoginMode = true; 
-
-    {% comment %} // ✅ toggle ฟอร์ม {% endcomment %}
-    function switchForm() {
-      if (isLoginMode) {
-        registerForm.style.display = 'block';
-        loginForm.style.display = 'none';
-        title.textContent = 'สมัครสมาชิก';
-        toggleText.childNodes[0].textContent = 'หากมีบัญชีแล้ว? ';
-        toggleBtn.textContent = 'เข้าสู่ระบบ';
-        isLoginMode = false;
-      } else {
-        registerForm.style.display = 'none';
-        loginForm.style.display = 'block';
-        title.textContent = 'เข้าสู่ระบบ';
-        toggleText.childNodes[0].textContent = 'ยังไม่มีบัญชี? ';
-        toggleBtn.textContent = 'สมัครสมาชิก';
-        isLoginMode = true;
-      }
-    }
-
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchForm();
-    });
-
-    {% comment %} // ✅ ล็อกอิน {% endcomment %}
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('login-phone').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-
-      const formData = new FormData();
-      formData.append('phone', phone);
-      formData.append('password', password);
-
-      const res = await fetch('/account/login/', { method: 'POST', body: formData });
-      const data = await res.json();
-
-      Swal.fire({ icon: data.status, title: data.message, timer: 1800, showConfirmButton: false });
-      if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 1200);
-    });
-
-    {% comment %} //  สมัครสมาชิก {% endcomment %}
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('register-phone').value.trim();
-      const password = document.getElementById('register-password').value.trim();
-      const formData = new FormData();
-      formData.append('phone', phone);
-      formData.append('password', password);
-
-      const res = await fetch('/account/register/', {
-        method: 'POST',
-        headers: { 'X-CSRFToken': getCookie('csrftoken') },
-        body: formData
-      });
-      const data = await res.json();
-      Swal.fire({ icon: data.status, title: data.message, timer: 1500, showConfirmButton: false });
-      if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 1200);
-    });
-
-    {% comment %} //  ฟังก์ชันอ่าน CSRF Token {% endcomment %}
+    // helper to read CSRF cookie
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -326,7 +292,135 @@
       return cookieValue;
     }
 
-    {% comment %} //  ตรวจเบอร์ซ้ำแบบเรียลไทม์ {% endcomment %}
+    // show specific form
+    function showLogin() {
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+      forgotForm.style.display = 'none';
+      title.textContent = 'เข้าสู่ระบบ';
+      // show: forgot + register
+      showForgotBtn.style.display = '';
+      showRegisterBtn.style.display = '';
+      showLoginBtn.style.display = 'none';
+      // top toggle visible, hide bottom
+      if (toggleContainer) toggleContainer.style.display = '';
+      if (forgotBottom) forgotBottom.style.display = 'none';
+    }
+
+    function showRegister() {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      forgotForm.style.display = 'none';
+      title.textContent = 'สมัครสมาชิก';
+      // show: forgot + login
+      showForgotBtn.style.display = '';
+      showRegisterBtn.style.display = 'none';
+      showLoginBtn.style.display = '';
+      // top toggle visible, hide bottom
+      if (toggleContainer) toggleContainer.style.display = '';
+      if (forgotBottom) forgotBottom.style.display = 'none';
+    }
+
+    function showForgot() {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'none';
+      forgotForm.style.display = 'block';
+      title.textContent = 'ลืมรหัสผ่าน';
+      // show: login + register
+      showForgotBtn.style.display = 'none';
+      showRegisterBtn.style.display = '';
+      showLoginBtn.style.display = '';
+      // hide top toggle, show bottom toggles under forgot form
+      if (toggleContainer) toggleContainer.style.display = 'none';
+      if (forgotBottom) forgotBottom.style.display = '';
+    }
+
+  // wire buttons (top)
+  showRegisterBtn.addEventListener('click', (e) => { e.preventDefault(); showRegister(); });
+  showForgotBtn.addEventListener('click', (e) => { e.preventDefault(); showForgot(); });
+  showLoginBtn.addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+  // wire bottom buttons inside forgot form (mirror actions)
+  if (forgotBottomLogin) forgotBottomLogin.addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+  if (forgotBottomRegister) forgotBottomRegister.addEventListener('click', (e) => { e.preventDefault(); showRegister(); });
+
+
+    // login submit (with error handling + cookies)
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('login-phone').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      const formData = new FormData();
+      formData.append('phone', phone);
+      formData.append('password', password);
+
+      try {
+        const res = await fetch('/account/login/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData,
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        Swal.fire({ icon: data.status || 'info', title: data.message || 'ดำเนินการเสร็จ', timer: 1800, showConfirmButton: false });
+        if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 800);
+      } catch (err) {
+        console.error('Login error:', err);
+        Swal.fire({ icon: 'error', title: 'ไม่สามารถเข้าสู่ระบบได้', text: 'โปรดลองใหม่ หรือเช็คการเชื่อมต่อเซิร์ฟเวอร์', timer: 2000, showConfirmButton: false });
+      }
+    });
+
+    // register submit (with error handling + cookies)
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('register-phone').value.trim();
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value.trim();
+      const formData = new FormData();
+      formData.append('phone', phone);
+      formData.append('email', email);
+      formData.append('password', password);
+
+      try {
+        const res = await fetch('/account/register/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData,
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        Swal.fire({ icon: data.status || 'info', title: data.message || 'ดำเนินการเสร็จ', timer: 1500, showConfirmButton: false });
+        if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 800);
+      } catch (err) {
+        console.error('Register error:', err);
+        Swal.fire({ icon: 'error', title: 'สมัครสมาชิกไม่สำเร็จ', text: 'โปรดลองใหม่ หรือเช็คการเชื่อมต่อเซิร์ฟเวอร์', timer: 2000, showConfirmButton: false });
+      }
+    });
+
+    // forgot password submit -> post to form action (with error handling + cookies)
+    forgotForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const action = form.getAttribute('action') || '/account/forgot_password/';
+
+      try {
+        const res = await fetch(action, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData,
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        Swal.fire({ icon: data.status || 'info', title: data.message || 'ดำเนินการเสร็จ', timer: 1800, showConfirmButton: false });
+        if (data.redirect) setTimeout(() => (window.location.href = data.redirect), 800);
+      } catch (err) {
+        console.error('Forgot error:', err);
+        Swal.fire({ icon: 'error', title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ', text: 'โปรดลองใหม่ หรือเช็คการเชื่อมต่อเซิร์ฟเวอร์', timer: 2000, showConfirmButton: false });
+      }
+    });
+
+    //  ตรวจเบอร์ซ้ำแบบเรียลไทม์ (register)
     registerPhone.addEventListener('input', async () => {
       const phone = registerPhone.value.trim();
       if (phone.length !== 10 || !/^[0-9]+$/.test(phone)) {
@@ -344,6 +438,9 @@
         btnRegister.disabled = false;
       }
     });
+
+    // initialize buttons visibility according to initial form (login)
+    showLogin();
   </script>
 </body>
 </html>

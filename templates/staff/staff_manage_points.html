@@ -25,7 +25,7 @@
               <th>ชื่อผู้ใช้</th>
               <th>เบอร์โทรศัพท์</th>
               <th>แต้มปัจจุบัน</th>
-              <th>แก้ไข</th>
+              <th>แก้ไขข้อมูล</th>
               <th>ลบออกจากระบบ</th>
             </tr>
           </thead>
@@ -38,7 +38,7 @@
               <td><span class="badge bg-success fs-6">{{ p.points }}</span></td>
               <td>
                 <a href="{% url 'account:edit_user' p.user.id %}" class="btn btn-warning btn-sm">
-                  <i class="fa fa-edit"></i> แก้ไข
+                  <i class="fa fa-edit"></i> แก้ไขข้อมูล
                 </a>
               </td>
               <td>

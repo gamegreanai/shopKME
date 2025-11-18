@@ -1,4 +1,5 @@
 {% load static %}
+{% load phone_filters %}
 
 <style>
   /* 🔹 Sidebar */
@@ -9,7 +10,7 @@
     min-height: 100vh;
     position: fixed;
     left: 0;
-    top: 100px;
+    top: 95px;
     z-index: 1040;
     overflow-y: auto;
     padding-bottom: 80px;
@@ -233,7 +234,7 @@
     <div class="p-3 rounded">
       <center><small>ยินดีตอนรับ</small>
       <h5 id="greeting" class="fw-bold mb-1">สวัสดี</h5>
-      <h4 class="fw-bold text-pink">{{ user.phone|default:"099-XXX-XXXX" }}</h4>
+        <h4 class="fw-bold text-pink">{{ user.phone|mask_phone|default:"099-99X-XX99" }}</h4>
 </center>
     </div>
   </a>
@@ -262,6 +263,9 @@
     <h6>สำหรับผู้ดูแล</h6>
     <a href="/account/coupon/" class="{% if request.path == '/account/coupon/' %}active{% endif %}">
       <i class="fa fa-ticket-alt"></i> จัดการคูปอง
+    </a>
+    <a href="/account/coupon/slide/" class="{% if request.path == '/account/coupon/slide/' %}active{% endif %}">
+      <i class="fa fa-images"></i> คูปองสไลด์
     </a>
     {% comment %} <a href="/account/staff/promotion/" class="{% if request.path == '/account/staff/promotion/' %}active{% endif %}">
       <i class="fa fa-gem"></i> จัดการโปรโมชัน

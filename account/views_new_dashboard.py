@@ -1,0 +1,23 @@
+# This is the dashboard_view function to add to views.py after logout_view
+
+@login_required
+def dashboard_view(request):
+    """หน้า dashboard หลักสำหรับผู้ใช้ที่ล็อกอินแล้ว"""
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    meter = calc_level(profile.points)
+    
+    # ดึงโปรโมชั่นที่ active ทั้งหมด
+    promotions = Promotion.objects.filter(
+        active=True,
+        is_deleted=False,
+        starts_at__lte=timezone.now()
+    ).exclude(
+        ends_at__lt=timezone.now()
+    ).order_by('-priority', '-starts_at')
+    
+    context = {
+        'profile': profile,
+        'meter': meter,
+        'promotions': promotions,
+    }
+    return render(request, 'account/dashboard.html', context)

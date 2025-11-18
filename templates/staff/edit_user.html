@@ -1,0 +1,102 @@
+{% extends 'base/base.html' %}
+{% block title %}แก้ไขข้อมูลผู้ใช้{% endblock %}
+{% block content %}
+<div class="container">
+  <h4 class="fw-bold text-success mb-3 mt-4">
+    <i class="fa fa-user-edit me-2"></i> แก้ไขข้อมูลผู้ใช้
+  </h4>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">ชื่อ</label>
+            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">นามสกุล</label>
+            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">เบอร์โทรศัพท์</label>
+            <input type="text" name="phone" class="form-control" value="{{ user.phone }}" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">อีเมล</label>
+            <input type="email" name="email" class="form-control" value="{{ user.email }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">แต้มสะสม</label>
+            <input type="number" name="points" class="form-control" value="{{ profile.points|default:0 }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">คำนำหน้า</label>
+            <select name="title" class="form-select">
+              {% for k,v in profile.TITLE_CHOICES %}
+                <option value="{{ k }}" {% if profile.title == k %}selected{% endif %}>{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">เพศ</label>
+            <select name="gender" class="form-select">
+              {% for k,v in profile.GENDER_CHOICES %}
+                <option value="{{ k }}" {% if profile.gender == k %}selected{% endif %}>{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">บ้านเลขที่</label>
+            <input type="text" name="house_no" class="form-control" value="{{ profile.house_no }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">หมู่</label>
+            <input type="text" name="moo" class="form-control" value="{{ profile.moo }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">ถนน</label>
+            <input type="text" name="street" class="form-control" value="{{ profile.street }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">แขวง/ตำบล</label>
+            <input type="text" name="subdistrict" class="form-control" value="{{ profile.subdistrict }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">เขต/อำเภอ</label>
+            <input type="text" name="district" class="form-control" value="{{ profile.district }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">จังหวัด</label>
+            <input type="text" name="province" class="form-control" value="{{ profile.province }}">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">รหัสไปรษณีย์</label>
+            <input type="text" name="postal_code" class="form-control" value="{{ profile.postal_code }}">
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <a href="{% url 'account:staff_manage_points' %}" class="btn btn-secondary">
+            <i class="fa fa-arrow-left me-1"></i> กลับ
+          </a>
+          <button type="submit" class="btn btn-success">
+            <i class="fa fa-save me-1"></i> บันทึก
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .container { margin-top: clamp(110px, 10vw, 130px); }
+</style>
+{% endblock %}

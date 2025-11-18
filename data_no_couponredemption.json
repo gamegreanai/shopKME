@@ -1,0 +1,1587 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "0",
+      "permissions": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        25,
+        26,
+        27,
+        28,
+        37,
+        38,
+        39,
+        40,
+        21,
+        22,
+        23,
+        24,
+        1,
+        2,
+        3,
+        4,
+        9,
+        10,
+        11,
+        12,
+        5,
+        6,
+        7,
+        8,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ]
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "9vzvb4k2a2thjmnt8ye5xw57fmfi81o6",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGllLdv1ZSnrOYPkXHEC2FCcV4u4kUgpoZ-a9t3B-XYpbe57dlMRFkDj9suDjM9ddpIev9yZjq8s8Bbkn8rBd3lrKr-vR_h0U38u2RkjZGmIibQDPMAAl1jCSUmQNjhGVYWMgUELLmGEg3DhHzei1DeLzBZDINbM:1vFtT9:GtumcLmBS_U4y_Z1Xr-vbOZuqBZQ_ES0M6mlvxoThYE",
+      "expire_date": "2025-11-17T12:15:31.852Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "edkan9pxpx76u0df9ukredkypl5doep7",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGllLdv1ZSnrOYPkXHEC2FCcV4u4kUgpoZ-a9t3B-XYpbe57dlMRFkDj9suDjM9ddpIev9yZjq8s8Bbkn8rBd3lrKr-vR_h0U38u2RkjZGmIibQDPMAAl1jCSUmQNjhGVYWMgUELLmGEg3DhHzei1DeLzBZDINbM:1vJ2zw:jspTe9uqftHvUWbeP_Lip3tyv0AXL89HvCqEecM1o4U",
+      "expire_date": "2025-11-26T05:02:24.544Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "i4cewfjw6ml8h2i41ca7zng6evz3yybs",
+    "fields": {
+      "session_data": ".eJxVjM0OwiAQhN-FsyELsv3x6N1nIAu7SNXQpLQn47tLkx50jvN9M2_laVuz36osfmJ1UUadfrtA8SllB_ygcp91nMu6TEHvij5o1beZ5XU93L-DTDW3NTBHCzZxB5IGa13sCQdJSMKdA0IIpgEjSGzC6PowtnA8GwFBtOrzBf4-OF0:1vInxU:1mlwKgFa8zPcIcT4DetGMr5iah4jyIxwmiSbcwtG7yQ",
+      "expire_date": "2025-11-25T12:58:52.731Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "o79t5grafz0h00xk0gpvcvnbfpwl2mph",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGllLdv1ZSnrOYPkXHEC2FCcV4u4kUgpoZ-a9t3B-XYpbe57dlMRFkDj9suDjM9ddpIev9yZjq8s8Bbkn8rBd3lrKr-vR_h0U38u2RkjZGmIibQDPMAAl1jCSUmQNjhGVYWMgUELLmGEg3DhHzei1DeLzBZDINbM:1vGa6C:75trJIT3P2Y18GmMWYK7v8jVB1AN6hWceF9_OTrvdA0",
+      "expire_date": "2025-11-19T09:46:40.260Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "ox9h98wkeaujbpjaa1kdkgbmxrfyc61s",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGllLdv1ZSnrOYPkXHEC2FCcV4u4kUgpoZ-a9t3B-XYpbe57dlMRFkDj9suDjM9ddpIev9yZjq8s8Bbkn8rBd3lrKr-vR_h0U38u2RkjZGmIibQDPMAAl1jCSUmQNjhGVYWMgUELLmGEg3DhHzei1DeLzBZDINbM:1vJ0En:5-KyBD6Adb0Kevx4-u-aR3UsCovt7vJ-tT0_hhHPP6M",
+      "expire_date": "2025-11-26T02:05:33.931Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "rx864jpaknt2h3cf4j09sr0jxtf7poj9",
+    "fields": {
+      "session_data": ".eJxVjEEOwiAUBe_C2hBAPrQu3fcM5MEHWzU0Ke3KeHdt0oVu38y8lwjY1jFsLS9hYnERXpx-t4j0yHUHfEe9zTLNdV2mKHdFHrTJYeb8vB7u38GINn5rFJNdBxQH1tYaZmiGV05r6i0XZYtJ2XS69Dh7C1KKiSJRbxR5JvH-AP27N8Q:1vG96S:Uye7RsgJ4Yr5BZ-6HwkAyyjPi5BBRt8XfxDHp8zoH5A",
+      "expire_date": "2025-11-18T04:57:08.266Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "rzrkcfrctgj7dh84ilo500rtcih5oa6f",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGllLdv1ZSnrOYPkXHEC2FCcV4u4kUgpoZ-a9t3B-XYpbe57dlMRFkDj9suDjM9ddpIev9yZjq8s8Bbkn8rBd3lrKr-vR_h0U38u2RkjZGmIibQDPMAAl1jCSUmQNjhGVYWMgUELLmGEg3DhHzei1DeLzBZDINbM:1vG97I:BSgRWfxAL-fHBhdm_OST6E9kjcjDRyMY11n8GHmzXGI",
+      "expire_date": "2025-11-18T04:58:00.596Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "yyniaez3bhpb2l68qxvryffy08hc3eon",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGllLdv1ZSnrOYPkXHEC2FCcV4u4kUgpoZ-a9t3B-XYpbe57dlMRFkDj9suDjM9ddpIev9yZjq8s8Bbkn8rBd3lrKr-vR_h0U38u2RkjZGmIibQDPMAAl1jCSUmQNjhGVYWMgUELLmGEg3DhHzei1DeLzBZDINbM:1vGAPI:7xtRqanGeo2JtGi84rHFXOaAkELp6LMi_BB64na-arM",
+      "expire_date": "2025-11-18T06:20:40.990Z"
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 1,
+    "fields": {
+      "title": "Test",
+      "slug": "test",
+      "short_text": "",
+      "description": "",
+      "cover_image": "promotions/2025/11/4k-wallpaper-android-wallpaper-art-325044_jHgpiTz.jpg",
+      "starts_at": "2025-11-09T14:30:51Z",
+      "ends_at": null,
+      "active": false,
+      "priority": 0,
+      "min_spend": "0.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 1,
+      "created_at": "2025-11-09T14:32:14.485Z",
+      "updated_at": "2025-11-09T14:32:14.485Z",
+      "is_deleted": true
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 2,
+    "fields": {
+      "title": "Test 2",
+      "slug": "test-2",
+      "short_text": "",
+      "description": "",
+      "cover_image": "promotions/2025/11/2018-McLaren-P1-GTR-Senna-V2-1080.jpg",
+      "starts_at": "2025-11-09T14:37:34Z",
+      "ends_at": null,
+      "active": false,
+      "priority": 0,
+      "min_spend": "0.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 1,
+      "created_at": "2025-11-09T14:37:41.698Z",
+      "updated_at": "2025-11-09T14:37:41.698Z",
+      "is_deleted": true
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 3,
+    "fields": {
+      "title": "Test 3",
+      "slug": "test-3",
+      "short_text": "",
+      "description": "",
+      "cover_image": "promotions/2025/11/agriculture-apple-blur-257840.jpg",
+      "starts_at": "2025-11-09T14:37:44Z",
+      "ends_at": null,
+      "active": false,
+      "priority": 0,
+      "min_spend": "0.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 1,
+      "created_at": "2025-11-09T14:37:52.706Z",
+      "updated_at": "2025-11-09T14:37:52.706Z",
+      "is_deleted": true
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 4,
+    "fields": {
+      "title": "Tes t",
+      "slug": "tes-t",
+      "short_text": "",
+      "description": "Tets 123123y3234hfgjhgfg",
+      "cover_image": "promotions/2025/11/chloe_moretz_kick_ass_2_2013-1920x1080.jpg",
+      "starts_at": "2025-11-09T14:38:08Z",
+      "ends_at": null,
+      "active": false,
+      "priority": 0,
+      "min_spend": "0.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 1,
+      "created_at": "2025-11-09T14:38:18.107Z",
+      "updated_at": "2025-11-09T14:39:39.209Z",
+      "is_deleted": true
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 5,
+    "fields": {
+      "title": "ทรีทเม้นต์หน้าใส เพียง99/ครั้ง",
+      "slug": "99",
+      "short_text": "ทรีทเม้นต์หน้าใส",
+      "description": "ฟื้นคืนผิวใส ออร่าเนียนนุ่มชุ่มชื้น\r\n🩷โปรแกรมชาแนลหน้าใส\r\n1 ml เพียง 850 บ.\r\nทำไมต้องที่ D'dream clinic\r\n☑ประเมินโดยแพทย์ผู้มีประสบการณ์ฟรี\r\n☑ ทำหัตถการโดยแพทย์ผู้มีประสบการณ์ ทุกเคส\r\n☑ใช้ยามาตรฐานตามกฎหมาย\r\n☑ ตรวจสอบได้ ผ่าน อย.ไทย\r\n☑ดูแลหลังทำหัตถการ ไม่ทิ้งเคส\r\nสนใจทักมาจองคิว กับแอดมินได้เลยนะคะ",
+      "cover_image": "promotions/2025/11/574089064_122109344817047872_4960186699783968879_n.jpg",
+      "starts_at": "2025-11-11T03:16:50Z",
+      "ends_at": "2025-11-12T10:21:00Z",
+      "active": false,
+      "priority": 1,
+      "min_spend": "99.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T03:28:05.338Z",
+      "updated_at": "2025-11-10T03:30:18.348Z",
+      "is_deleted": true
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 6,
+    "fields": {
+      "title": "ทรีทเม้นต์หน้าใส",
+      "slug": "promotion",
+      "short_text": "ทรีทเม้นต์หน้าใส",
+      "description": "ทรีทเม้นต์หน้าใส",
+      "cover_image": "promotions/2025/11/574089064_122109344817047872_4960186699783968879_n_w9xygF9.jpg",
+      "starts_at": "2025-11-10T03:30:54Z",
+      "ends_at": "2025-11-12T10:31:00Z",
+      "active": false,
+      "priority": 1,
+      "min_spend": "99.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T03:31:34.629Z",
+      "updated_at": "2025-11-10T03:37:48.451Z",
+      "is_deleted": true
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 7,
+    "fields": {
+      "title": "ทรีทเม้นต์หน้าใส",
+      "slug": "promotion-2",
+      "short_text": "ทรีทเม้นต์",
+      "description": "ทรีทเม้นต์หน้าใส ทรีทเม้นต์หน้าใส ทรีทเม้นต์หน้าใส",
+      "cover_image": "promotions/2025/11/574089064_122109344817047872_4960186699783968879_n_g9L8yHd.jpg",
+      "starts_at": "2025-11-10T03:47:42Z",
+      "ends_at": "2025-11-11T10:48:00Z",
+      "active": true,
+      "priority": 1,
+      "min_spend": "99.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T03:49:02.615Z",
+      "updated_at": "2025-11-10T03:49:02.615Z",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 8,
+    "fields": {
+      "title": "โปรแกรม ชาแนล",
+      "slug": "promotion-3",
+      "short_text": "ชาแนล",
+      "description": "โปรแกรม ชาแนล หน้าใส ไร้สิว",
+      "cover_image": "promotions/2025/11/576878166_122110188201047872_3845344851607210247_n.jpg",
+      "starts_at": "2025-11-10T03:49:12Z",
+      "ends_at": "2025-11-11T10:50:00Z",
+      "active": true,
+      "priority": 2,
+      "min_spend": "850.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T03:51:06.560Z",
+      "updated_at": "2025-11-10T03:51:06.560Z",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 9,
+    "fields": {
+      "title": "โปรแกรม โบท็อกซ์",
+      "slug": "promotion-4",
+      "short_text": "โบท็อกซ์",
+      "description": "โปรแกรม โบท็อกซ์ เหมา50.-",
+      "cover_image": "promotions/2025/11/578225775_122110360233047872_6869219467717498568_n.jpg",
+      "starts_at": "2025-11-10T03:51:10Z",
+      "ends_at": "2025-11-11T10:51:00Z",
+      "active": true,
+      "priority": 3,
+      "min_spend": "1590.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T03:53:16.241Z",
+      "updated_at": "2025-11-10T03:53:16.241Z",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 10,
+    "fields": {
+      "title": "โปรแกรม โบริ้วรอย",
+      "slug": "promotion-5",
+      "short_text": "โบริ้วรอย",
+      "description": "โปรแกรม โบริ้วรอย 1850",
+      "cover_image": "promotions/2025/11/572908236_122109304809047872_5040074780975200910_n.jpg",
+      "starts_at": "2025-11-10T03:55:51Z",
+      "ends_at": "2025-11-11T10:57:00Z",
+      "active": true,
+      "priority": 4,
+      "min_spend": "1850.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T03:59:07.841Z",
+      "updated_at": "2025-11-10T03:59:07.841Z",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 11,
+    "fields": {
+      "title": "โปรแกรมปากสวย ก่อนลอยกระทง",
+      "slug": "promotion-6",
+      "short_text": "ปากสวย",
+      "description": "โปรแกรมปากสวย ก่อนลอยกระทง 2599.-",
+      "cover_image": "promotions/2025/11/576325849_122110036497047872_1756807888402514902_n.jpg",
+      "starts_at": "2025-11-10T04:01:18Z",
+      "ends_at": "2025-11-11T11:02:00Z",
+      "active": true,
+      "priority": 5,
+      "min_spend": "2599.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T04:04:04.951Z",
+      "updated_at": "2025-11-10T04:04:04.951Z",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.promotion",
+    "pk": 12,
+    "fields": {
+      "title": "โปรลอยกระทงจดสวย x2",
+      "slug": "x2",
+      "short_text": "ลอยกระทง",
+      "description": "โปรลอยกระทงจดสวย x2",
+      "cover_image": "promotions/2025/11/571697911_122109305871047872_1989069230169559363_n.jpg",
+      "starts_at": "2025-11-10T04:04:21Z",
+      "ends_at": "2025-11-11T11:06:00Z",
+      "active": true,
+      "priority": 6,
+      "min_spend": "3999.00",
+      "allowed_levels": [],
+      "coupon": null,
+      "created_by": 4,
+      "created_at": "2025-11-10T04:06:56.877Z",
+      "updated_at": "2025-11-10T04:06:56.877Z",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.promotionimage",
+    "pk": 1,
+    "fields": {
+      "promotion": 5,
+      "image": "promotions/gallery/2025/11/576878166_122110188201047872_3845344851607210247_n.jpg",
+      "alt_text": "ทรีทเม้นต์หน้าใส",
+      "sequence": 1
+    }
+  },
+  {
+    "model": "account.promotionimage",
+    "pk": 2,
+    "fields": {
+      "promotion": 5,
+      "image": "promotions/gallery/2025/11/574089064_122109344817047872_4960186699783968879_n.jpg",
+      "alt_text": "ทรีทเม้นต์หน้าใส",
+      "sequence": 1
+    }
+  },
+  {
+    "model": "account.promotionimage",
+    "pk": 3,
+    "fields": {
+      "promotion": 6,
+      "image": "promotions/gallery/2025/11/574089064_122109344817047872_4960186699783968879_n_LUxRzaY.jpg",
+      "alt_text": "",
+      "sequence": 0
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$TBdbeRHGWLmW7Fjzk9LIhG$2Sl3VYxWZEyz5sIoWk10jseYdx8TuIF00PX3s8E6jCg=",
+      "last_login": "2025-11-11T12:58:52.726Z",
+      "is_superuser": true,
+      "first_name": "Test",
+      "last_name": "TTT",
+      "email": "tt22@emc.cc",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-11-02T02:58:19.114Z",
+      "phone": "0123456789",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$IuxDeQegz73mKArFf7AYfZ$bEkFcRocIoJZ3R7YqtD9jUgw75VjFT6GAM9SqrMNm28=",
+      "last_login": "2025-11-04T06:05:09.362Z",
+      "is_superuser": false,
+      "first_name": "ปฏิภาณ",
+      "last_name": "ผาพา",
+      "email": "patipan.phapa@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-02T04:07:10.658Z",
+      "phone": "0994593822",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$cjjSORHfEvK30kuIG7fGBO$otCNhJFCnkrvo2jIMKOMGA7I1d0RT09KzyrK6MApvZ0=",
+      "last_login": "2025-11-12T05:02:24.511Z",
+      "is_superuser": false,
+      "first_name": "ปฏิภาณ",
+      "last_name": "ผาพา",
+      "email": "patipan.phapa@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-11-02T06:43:19.283Z",
+      "phone": "0879512117",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$niLZE5LeqmgPO9Cemo06xI$FCG1F3ZnAj//VvAPRoQ9GnEWRxpvlt9PmbE1EneJnDU=",
+      "last_login": "2025-11-02T06:51:30.919Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-02T06:51:28.738Z",
+      "phone": "0920190537",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$LSNHzXDL1T2Sq24EZ2Gbos$CM4dObhJFYz3bAOLeY6eSs+JhiKRTe/Ye/jxlzHJq1s=",
+      "last_login": "2025-11-04T04:57:08.259Z",
+      "is_superuser": false,
+      "first_name": "11",
+      "last_name": "22",
+      "email": "123@test.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-03T15:50:03.325Z",
+      "phone": "0000000000",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$gPdM7pdgmWkPi9yjPaasck$BKimUkGiNedF3GHw9wZZYtzrGz/8CZMRfiSft+J/VCU=",
+      "last_login": "2025-11-06T04:41:29.171Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T04:41:27.101Z",
+      "phone": "3333333333",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 9,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$NwWewbwRIeBPSRGrq1zUxB$u/UJTtuN7DEKhxvWYmuFyhDpI3jkM4ORimnDferrdQo=",
+      "last_login": "2025-11-06T06:56:19.823Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T06:56:17.780Z",
+      "phone": "2222222222",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 10,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$FS2JNoZiYvfmNuQmBG9Pjl$ThMgi+RMSiRhVN7OJdQLjtqVfFtqlRHi0VYCEY0RP1A=",
+      "last_login": "2025-11-06T06:56:31.654Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T06:56:29.493Z",
+      "phone": "4444444444",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 11,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$NhFApKbwH3rk7yEbpkFPEa$iusF8wwNg26V0MelfyguuKS/ARJ2Nh0G//CW41B3hrs=",
+      "last_login": "2025-11-06T06:56:41.652Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T06:56:39.588Z",
+      "phone": "5555555555",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 12,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$hSxhVPrSaBVUWZ4SfdUrFT$r7zKOuBow5cfUvEoLOt9a40TrjW3Kzz+cjs29tbXJvU=",
+      "last_login": "2025-11-06T06:56:51.782Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T06:56:49.818Z",
+      "phone": "6666666666",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 13,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$5cUIKFCn02h1PcV2oGFVOC$T7U7C4DS3OX69lw/4K3rWcZQG+LKC0x+fNOrMbK/BhE=",
+      "last_login": "2025-11-06T06:57:02.381Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T06:57:00.328Z",
+      "phone": "7777777777",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 14,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$8JOjuEaerQZywTHSG99MyF$iIicosMU5pNg05DlNtArYwGMyUL7I1xdge0nDDROIJU=",
+      "last_login": "2025-11-06T07:01:20.524Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T06:57:12.506Z",
+      "phone": "8888888888",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 15,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$SbleaeXV5c4QSVB4dbs12Z$IzWKkwVUw9zwxTzlIeAMonUDzbyH6+1+aX9ZvnJpVhM=",
+      "last_login": "2025-11-06T06:57:26.740Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-06T06:57:24.702Z",
+      "phone": "9999999999",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 16,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$cPR59a9wxv8dstB4fuWlrK$6y4VL1Y/hTWumBRtCzgGRu//JRIsUYoP7AqspbQSMQI=",
+      "last_login": "2025-11-10T10:14:59.912Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-10T10:14:58.914Z",
+      "phone": "",
+      "username": "1212121212",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 17,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$n3XsoghqPAoW6fnbGSBLcR$isBNWANkCMev6rHD4MLsMF1zVCxjS4dGbt+Kn2aJX3E=",
+      "last_login": "2025-11-10T12:30:05.488Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-10T12:29:33.628Z",
+      "phone": "1313131313",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.user",
+    "pk": 18,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$RN7RWDYZoQy0KUa0cTr1Ik$wAoVCYXYUjX2vaVs+gKpIdXej6JjqHZAUKzEfqZ0hOM=",
+      "last_login": "2025-11-10T12:34:20.458Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-11-10T12:34:01.328Z",
+      "phone": "1515151515",
+      "username": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 1,
+    "fields": {
+      "user": 4,
+      "title": "นาย",
+      "gender": "ชาย",
+      "phone": 879512117,
+      "points": 1189,
+      "house_no": "87",
+      "moo": "8",
+      "street": "ประชานสโมสร8  ซอย",
+      "subdistrict": "เมือง",
+      "district": "เมือง",
+      "province": "ขอนแก่น",
+      "postal_code": "40000"
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "title": "นาย",
+      "gender": "ชาย",
+      "phone": 994593822,
+      "points": 1770,
+      "house_no": "87",
+      "moo": "8",
+      "street": "ประชานสโมสร8  ซอย",
+      "subdistrict": "เมือง",
+      "district": "เมือง",
+      "province": "ขอนแก่น",
+      "postal_code": "40000"
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 4,
+    "fields": {
+      "user": 1,
+      "title": "นาย",
+      "gender": "ชาย",
+      "phone": 123456789,
+      "points": 769,
+      "house_no": "111",
+      "moo": "223",
+      "street": "124/10  ถ.ราษฎร์คนึง ต. ในเมือง อ. เมือง",
+      "subdistrict": "TTTT",
+      "district": "AFAFA",
+      "province": "ขอนแก่น",
+      "postal_code": "3256556"
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 5,
+    "fields": {
+      "user": 7,
+      "title": "นาย",
+      "gender": "ชาย",
+      "phone": 0,
+      "points": 1590,
+      "house_no": "1",
+      "moo": "2",
+      "street": "3",
+      "subdistrict": "1",
+      "district": "2",
+      "province": "4",
+      "postal_code": "3"
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 6,
+    "fields": {
+      "user": 8,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 7,
+    "fields": {
+      "user": 9,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 200,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 8,
+    "fields": {
+      "user": 10,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 9,
+    "fields": {
+      "user": 11,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 10,
+    "fields": {
+      "user": 12,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 11,
+    "fields": {
+      "user": 13,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 12,
+    "fields": {
+      "user": 14,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 13,
+    "fields": {
+      "user": 15,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 500,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 14,
+    "fields": {
+      "user": 16,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 15,
+    "fields": {
+      "user": 17,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.profile",
+    "pk": 16,
+    "fields": {
+      "user": 18,
+      "title": "",
+      "gender": "",
+      "phone": null,
+      "points": 0,
+      "house_no": "",
+      "moo": "",
+      "street": "",
+      "subdistrict": "",
+      "district": "",
+      "province": "",
+      "postal_code": ""
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 1,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 600,
+      "created_at": "2025-11-05T09:49:32.551Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 2,
+    "fields": {
+      "staff": 4,
+      "user": 1,
+      "action": "add",
+      "points": 300,
+      "created_at": "2025-11-05T09:49:40.935Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 3,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "add",
+      "points": 300,
+      "created_at": "2025-11-05T09:49:40.956Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 4,
+    "fields": {
+      "staff": 4,
+      "user": 1,
+      "action": "add",
+      "points": 400,
+      "created_at": "2025-11-05T09:49:52.658Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 5,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "add",
+      "points": 400,
+      "created_at": "2025-11-05T09:49:52.692Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 6,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 400,
+      "created_at": "2025-11-05T09:49:52.708Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 8,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-05T09:50:10.466Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 9,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-05T09:50:10.483Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 10,
+    "fields": {
+      "staff": 4,
+      "user": 1,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:50:22.432Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 11,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:50:22.455Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 12,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:50:22.462Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 14,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-05T09:51:10.701Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 15,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-05T09:51:10.708Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 16,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-05T09:51:10.723Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 18,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "subtract",
+      "points": 200,
+      "created_at": "2025-11-05T09:51:35.928Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 19,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "subtract",
+      "points": 200,
+      "created_at": "2025-11-05T09:51:35.945Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 20,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "subtract",
+      "points": 200,
+      "created_at": "2025-11-05T09:51:35.961Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 21,
+    "fields": {
+      "staff": 4,
+      "user": 1,
+      "action": "subtract",
+      "points": 200,
+      "created_at": "2025-11-05T09:51:35.981Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 23,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:51:55.920Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 24,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:51:55.937Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 25,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:51:55.953Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 26,
+    "fields": {
+      "staff": 4,
+      "user": 1,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:51:55.980Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 28,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:52:17.273Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 29,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:52:17.278Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 30,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:52:17.310Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 31,
+    "fields": {
+      "staff": 4,
+      "user": 1,
+      "action": "add",
+      "points": 100,
+      "created_at": "2025-11-05T09:52:17.330Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 32,
+    "fields": {
+      "staff": 4,
+      "user": 1,
+      "action": "subtract",
+      "points": 500,
+      "created_at": "2025-11-05T09:52:27.256Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 34,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "subtract",
+      "points": 500,
+      "created_at": "2025-11-05T09:52:37.169Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 35,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "subtract",
+      "points": 500,
+      "created_at": "2025-11-05T09:52:37.198Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 36,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "subtract",
+      "points": 500,
+      "created_at": "2025-11-05T09:52:37.217Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 37,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 500,
+      "created_at": "2025-11-06T04:57:55.524Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 38,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "subtract",
+      "points": 300,
+      "created_at": "2025-11-06T06:43:20.827Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 39,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "add",
+      "points": 500,
+      "created_at": "2025-11-06T08:43:54.235Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 40,
+    "fields": {
+      "staff": 4,
+      "user": 15,
+      "action": "add",
+      "points": 500,
+      "created_at": "2025-11-06T08:43:54.259Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 41,
+    "fields": {
+      "staff": 4,
+      "user": 2,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-06T08:44:40.198Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 42,
+    "fields": {
+      "staff": 4,
+      "user": 7,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-06T08:44:40.220Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 43,
+    "fields": {
+      "staff": 4,
+      "user": 9,
+      "action": "add",
+      "points": 200,
+      "created_at": "2025-11-06T08:44:40.225Z"
+    }
+  },
+  {
+    "model": "account.pointtransaction",
+    "pk": 44,
+    "fields": {
+      "staff": 4,
+      "user": 4,
+      "action": "add",
+      "points": 1000,
+      "created_at": "2025-11-10T10:13:05.206Z"
+    }
+  },
+  {
+    "model": "account.coupon",
+    "pk": 19,
+    "fields": {
+      "name": "7-11",
+      "code": "825878864529865",
+      "discount_type": "FIXED",
+      "discount_value": "0.00",
+      "percent_max_discount": null,
+      "min_spend": "0.00",
+      "starts_at": "2025-11-06T04:53:14.799Z",
+      "ends_at": "2025-11-13T11:53:00Z",
+      "active": true,
+      "note": "แลกส่วนลด",
+      "allowed_levels": [
+        "SILVER",
+        "GOLD",
+        "PREMIUM"
+      ],
+      "max_uses": null,
+      "use_count": 1,
+      "max_uses_per_user": null,
+      "stackable": false,
+      "required_points": 500,
+      "created_at": "2025-11-06T04:53:14.799Z",
+      "updated_at": "2025-11-11T09:00:27.859Z",
+      "image": "coupons/2025/11/คปอง_DK3oM8O.jpg",
+      "image_code": "coupons_qr/2025/11/825878864529865.jpg",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.coupon",
+    "pk": 21,
+    "fields": {
+      "name": "7-11",
+      "code": "825878873785189",
+      "discount_type": "FIXED",
+      "discount_value": "0.00",
+      "percent_max_discount": null,
+      "min_spend": "0.00",
+      "starts_at": "2025-11-06T04:54:31.121Z",
+      "ends_at": "2025-11-15T11:53:00Z",
+      "active": true,
+      "note": "แลกส่วนลด",
+      "allowed_levels": [
+        "SILVER",
+        "GOLD",
+        "PREMIUM"
+      ],
+      "max_uses": null,
+      "use_count": 0,
+      "max_uses_per_user": null,
+      "stackable": false,
+      "required_points": 500,
+      "created_at": "2025-11-06T04:54:31.122Z",
+      "updated_at": "2025-11-12T04:40:56.051Z",
+      "image": "coupons/2025/11/คปอง_sXaDlqO.jpg",
+      "image_code": "coupons_qr/2025/11/825878873785189.jpg",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.coupon",
+    "pk": 24,
+    "fields": {
+      "name": "Dream",
+      "code": "DM70-001",
+      "discount_type": "FIXED",
+      "discount_value": "0.00",
+      "percent_max_discount": null,
+      "min_spend": "0.00",
+      "starts_at": "2025-11-06T05:36:12.919Z",
+      "ends_at": "2025-11-15T12:00:00Z",
+      "active": false,
+      "note": "แลกส่วนลด",
+      "allowed_levels": [
+        "SILVER",
+        "GOLD",
+        "PREMIUM"
+      ],
+      "max_uses": null,
+      "use_count": 0,
+      "max_uses_per_user": null,
+      "stackable": false,
+      "required_points": 700,
+      "created_at": "2025-11-06T05:36:12.919Z",
+      "updated_at": "2025-11-12T04:40:47.524Z",
+      "image": "coupons/2025/11/DM.jpg",
+      "image_code": "coupons_qr/2025/11/DM.jpg",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.coupon",
+    "pk": 25,
+    "fields": {
+      "name": "Dream002",
+      "code": "DM70-001-2",
+      "discount_type": "FIXED",
+      "discount_value": "0.00",
+      "percent_max_discount": null,
+      "min_spend": "0.00",
+      "starts_at": "2025-11-06T05:36:44.670Z",
+      "ends_at": "2025-11-15T12:36:00Z",
+      "active": false,
+      "note": "ส่วนลด",
+      "allowed_levels": [
+        "SILVER",
+        "GOLD",
+        "PREMIUM"
+      ],
+      "max_uses": null,
+      "use_count": 0,
+      "max_uses_per_user": null,
+      "stackable": false,
+      "required_points": 300,
+      "created_at": "2025-11-06T05:36:44.670Z",
+      "updated_at": "2025-11-12T04:40:39.740Z",
+      "image": "coupons/2025/11/DM_syWVi5O.jpg",
+      "image_code": "coupons_qr/2025/11/DM_5b2bcha.jpg",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.coupon",
+    "pk": 26,
+    "fields": {
+      "name": "7-11",
+      "code": "825878864513169",
+      "discount_type": "FIXED",
+      "discount_value": "0.00",
+      "percent_max_discount": null,
+      "min_spend": "0.00",
+      "starts_at": "2025-11-12T04:31:53.175Z",
+      "ends_at": "2025-11-15T11:31:00Z",
+      "active": true,
+      "note": "",
+      "allowed_levels": [
+        "SILVER",
+        "GOLD",
+        "PREMIUM"
+      ],
+      "max_uses": null,
+      "use_count": 0,
+      "max_uses_per_user": null,
+      "stackable": false,
+      "required_points": 500,
+      "created_at": "2025-11-12T04:31:53.175Z",
+      "updated_at": "2025-11-12T04:38:48.712Z",
+      "image": "coupons/2025/11/คปอง_Ipul3HQ.jpg",
+      "image_code": "coupons_qr/2025/11/825878864513169_xmtKTyN.jpg",
+      "is_deleted": false
+    }
+  },
+  {
+    "model": "account.coupon",
+    "pk": 27,
+    "fields": {
+      "name": "7-11",
+      "code": "825878864534844",
+      "discount_type": "FIXED",
+      "discount_value": "0.00",
+      "percent_max_discount": null,
+      "min_spend": "0.00",
+      "starts_at": "2025-11-12T04:42:54.453Z",
+      "ends_at": "2025-11-15T11:42:00Z",
+      "active": true,
+      "note": "",
+      "allowed_levels": [
+        "SILVER",
+        "GOLD",
+        "PREMIUM"
+      ],
+      "max_uses": null,
+      "use_count": 0,
+      "max_uses_per_user": null,
+      "stackable": false,
+      "required_points": 500,
+      "created_at": "2025-11-12T04:42:54.463Z",
+      "updated_at": "2025-11-12T04:42:54.463Z",
+      "image": "coupons/2025/11/คปอง_uBNLgSb.jpg",
+      "image_code": "coupons_qr/2025/11/825878864534844_DGI3cmt.jpg",
+      "is_deleted": false
+    }
+  }
+]

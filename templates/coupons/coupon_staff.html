@@ -1,23 +1,199 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container py-4">
+<div class="container py-4" style="padding-top: 80px !important;">
   <h4 class="fw-bold text-success mb-3">จัดการคูปอง (Staff)</h4>
 
   <div class="card border-0 shadow-sm mb-4">
-    <div class="card-body">
-      <h5 class="fw-bold mb-3">เพิ่มคูปองใหม่</h5>
+      {# --- ฟอร์มพาร์ทเนอร์ + ตารางรายชื่อ --- #}
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="fw-semibold mb-0">พาร์ทเนอร์</h6>
+        </div>
+        <form method="post" class="row g-3" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="partner_save">
+          <input type="hidden" name="partner_category" id="partner_category_input" value="partner">
+          <input type="hidden" name="partner_subcategory" id="partner_subcategory_input" value="all">
+          
+          <div class="col-md-3">
+            <label class="form-label">ชื่อพาร์ทเนอร์</label>
+            <input class="form-control" name="partner_name" placeholder="เช่น D'DREAM Clinic" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">อัปโหลดรูปพรีวิว</label>
+            <input class="form-control" type="file" name="partner_logo" accept="image/*">
+            <div class="form-text">รองรับ jpg, png, webp ขนาดไม่เกิน 2MB</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">คูปองพาร์ทเนอร์/แต้มพอยท์</label>
+            <input class="form-control" name="partner_title" placeholder="เช่น คูปองพาร์ทเนอร์ หรือ ใช้พอยท์แลก xxxพอยท์">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">หมวดหมู่คูปอง</label>
+            <div class="d-flex gap-2 mb-1">
+              <button type="button" class="btn btn-sm btn-outline-primary partner-category-btn active" data-category="partner">คูปองพาร์ทเนอร์</button>
+              <button type="button" class="btn btn-sm btn-outline-primary partner-category-btn" data-category="ddream">คูปองดีดรีม</button>
+            </div>
+            <div id="partner_ddream_subcategory" class="d-none mt-1">
+              <div class="d-flex flex-wrap gap-1">
+                <button type="button" class="btn btn-sm btn-outline-success partner-subcategory-btn active" data-subcategory="all">ทั้งหมด</button>
+                <button type="button" class="btn btn-sm btn-outline-success partner-subcategory-btn" data-subcategory="special">พิเศษสำหรับคุณ</button>
+                <button type="button" class="btn btn-sm btn-outline-success partner-subcategory-btn" data-subcategory="used">ใช้แล้ว/หมดอายุ</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label">สาขาที่ใช้งานได้</label>
+            <textarea class="form-control" rows="2" name="partner_available_branches" placeholder="เช่น สาขาเซ็นทรัล, สาขาเมญ่า, สาขาเทอมินัล 21"></textarea>
+          </div>
+          <div class="col-12 text-end">
+            <button class="btn btn-success">บันทึกพาร์ทเนอร์</button>
+          </div>
+        </form>
+
+        <hr class="my-4">
+
+        <div class="table-responsive mt-3">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th style="width:100px;">รูปพาร์ทเนอร์</th>
+                <th>ชื่อพาร์ทเนอร์</th>
+                <th>หมวดหมู่</th>
+                <th class="text-end" style="width:200px;">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in partners %}
+                <tr id="partner_row_{{ p.id }}" {% if not p.is_active %}class="table-secondary"{% endif %}>
+                  <td>
+                    {% if p.logo %}
+                      <img src="{{ p.logo.url }}" class="img-thumbnail" style="width:80px;height:auto;{% if not p.is_active %}opacity:0.5;{% endif %}" alt="partner" id="partner_logo_{{ p.id }}">
+                    {% else %}
+                      <span class="text-muted small">ไม่มีรูป</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="partner-name-display fw-semibold" id="partner_name_display_{{ p.id }}">
+                      {{ p.name }}
+                      {% if not p.is_active %}<span class="badge bg-secondary ms-2">ปิดการมองเห็น</span>{% endif %}
+                      {% if p.title %}<div class="text-muted small">{{ p.title }}</div>{% endif %}
+                    </span>
+                    <div class="partner-name-edit d-none" id="partner_name_edit_{{ p.id }}">
+                      <input type="text" class="form-control form-control-sm mb-1" id="partner_name_input_{{ p.id }}" value="{{ p.name }}">
+                      <input type="text" class="form-control form-control-sm" id="partner_title_input_{{ p.id }}" value="{{ p.title }}" placeholder="Title/ข้อมูลเพิ่มเติม">
+                    </div>
+                  </td>
+                  <td>
+                    <span class="partner-category-display" id="partner_category_display_{{ p.id }}">
+                      {% if p.category == 'ddream' %}
+                        <span class="badge bg-success">คูปองดีดรีม</span>
+                        {% if p.subcategory == 'special' %}
+                          <span class="badge bg-warning text-dark">พิเศษสำหรับคุณ</span>
+                        {% elif p.subcategory == 'used' %}
+                          <span class="badge bg-secondary">ใช้แล้ว/หมดอายุ</span>
+                        {% else %}
+                          <span class="badge bg-info">ทั้งหมด</span>
+                        {% endif %}
+                      {% else %}
+                        <span class="badge bg-primary">คูปองพาร์ทเนอร์</span>
+                      {% endif %}
+                    </span>
+                    <div class="partner-category-edit d-none" id="partner_category_edit_{{ p.id }}">
+                      <select class="form-select form-select-sm" id="partner_cat_select_{{ p.id }}">
+                        <option value="partner" {% if p.category == 'partner' %}selected{% endif %}>คูปองพาร์ทเนอร์</option>
+                        <option value="ddream" {% if p.category == 'ddream' %}selected{% endif %}>คูปองดีดรีม</option>
+                      </select>
+                      <select class="form-select form-select-sm mt-1 {% if p.category != 'ddream' %}d-none{% endif %}" id="partner_subcat_select_{{ p.id }}">
+                        <option value="all" {% if p.subcategory == 'all' %}selected{% endif %}>ทั้งหมด</option>
+                        <option value="special" {% if p.subcategory == 'special' %}selected{% endif %}>พิเศษสำหรับคุณ</option>
+                        <option value="used" {% if p.subcategory == 'used' %}selected{% endif %}>ใช้แล้ว/หมดอายุ</option>
+                      </select>
+                      <textarea class="form-control form-control-sm mt-1" id="partner_branches_input_{{ p.id }}" rows="2" placeholder="สาขาที่ใช้งานได้">{{ p.available_branches }}</textarea>
+                    </div>
+                  </td>
+                  <td class="text-end">
+                    <div class="partner-view-mode" id="partner_view_{{ p.id }}">
+                      <button class="btn btn-warning btn-sm partner-edit-btn" data-partner-id="{{ p.id }}">แก้ไข</button>
+                      <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="partner_delete">
+                        <input type="hidden" name="partner_id" value="{{ p.id }}">
+                        <button class="btn btn-outline-danger btn-sm" onclick="return confirm('ยืนยันลบพาร์ทเนอร์นี้?')">ลบ</button>
+                      </form>
+                    </div>
+                    <div class="partner-edit-mode d-none" id="partner_edit_{{ p.id }}">
+                      <input type="file" class="form-control form-control-sm mb-1" id="partner_logo_file_{{ p.id }}" accept="image/*">
+                      <div class="d-flex gap-1 flex-wrap">
+                        <button class="btn btn-success btn-sm partner-save-btn" data-partner-id="{{ p.id }}">บันทึก</button>
+                        <button class="btn btn-secondary btn-sm partner-cancel-btn" data-partner-id="{{ p.id }}">ยกเลิก</button>
+                        <button class="btn btn-outline-warning btn-sm partner-toggle-btn" data-partner-id="{{ p.id }}" data-active="{{ p.is_active|yesno:'true,false' }}">
+                          {% if p.is_active %}ปิด{% else %}เปิด{% endif %}
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center text-muted">ยังไม่มีพาร์ทเนอร์</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        
+        {# Pagination Controls #}
+        <div class="d-flex justify-content-between align-items-center mt-3" id="partnerPaginationControls">
+          <div>
+            <span class="text-muted small">แสดง <span id="partnerShowingStart">1</span>-<span id="partnerShowingEnd">5</span> จาก <span id="partnerTotal">0</span> รายการ</span>
+          </div>
+          <div>
+            <button class="btn btn-sm btn-outline-secondary" id="partnerPrevBtn" disabled>
+              <i class="fa fa-chevron-left"></i> ก่อนหน้า
+            </button>
+            <span class="mx-2">หน้า <span id="partnerCurrentPage">1</span> / <span id="partnerTotalPages">1</span></span>
+            <button class="btn btn-sm btn-outline-secondary" id="partnerNextBtn">
+              ถัดไป <i class="fa fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
       <form method="post" class="row g-3" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="hidden" name="action" value="create">
-        <div class="col-md-4">
-          <label class="form-label">ชื่อคูปอง</label>
-          <input class="form-control" name="name" required>
+        <input type="hidden" name="partner_id" id="selected_partner_id">
+        <input type="hidden" name="coupon_category" id="coupon_category" value="partner">
+        <input type="hidden" name="coupon_subcategory" id="coupon_subcategory" value="all">
+        
+        <div class="col-12">
+          <label class="form-label">เลือกพาร์ทเนอร์</label>
+          <div class="d-flex flex-wrap gap-2">
+            {% for p in partners %}
+              <button type="button" class="btn btn-outline-secondary partner-select-btn" data-partner-id="{{ p.id }}" data-partner-name="{{ p.name }}">
+                {% if p.logo %}
+                  <img src="{{ p.logo.url }}" style="height:24px;width:auto;margin-right:8px;" alt="">
+                {% endif %}
+                {{ p.name }}
+              </button>
+            {% empty %}
+              <span class="text-muted small">ยังไม่มีพาร์ทเนอร์ กรุณาเพิ่มพาร์ทเนอร์ก่อน</span>
+            {% endfor %}
+          </div>
+          <div id="selected_partner_display" class="mt-2 d-none">
+            <span class="badge bg-success">เลือกแล้ว: <span id="selected_partner_name"></span></span>
+            <button type="button" class="btn btn-sm btn-link text-danger" id="clear_partner_btn">ยกเลิก</button>
+          </div>
         </div>
-          <div class="col-md-4">
+
+        <div class="col-md-6">
           <label class="form-label">รหัสคูปอง</label>
           <input class="form-control" name="code" required>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
           <label class="form-label">แต้มที่ต้องใช้</label>
           <input class="form-control" type="number" name="required_points" min="0" value="0" required>
         </div>
@@ -31,12 +207,6 @@
           <textarea class="form-control" rows="2" name="description"></textarea>
         </div>
       
-        <div class="col-md-4">
-          <label class="form-label">รูปคูปอง</label>
-          <input class="form-control" type="file" name="image" accept="image/*">
-          <div class="form-text">รองรับ jpg, png, webp ขนาดไม่เกิน 2MB</div>
-        </div>
-
         <div class="col-md-4">
           <label class="form-label">รูป QR Code</label>
           <input class="form-control" type="file" name="image_qr" accept="image/*">
@@ -59,6 +229,7 @@
             <tr>
               {% comment %} <th style="width:120px;">รูป</th> {% endcomment %}
               <th>ชื่อ</th>
+              <th>พาร์ทเนอร์</th>
               <th>รหัส</th>
               <th>แต้ม</th>
               <th>หมดอายุ</th>
@@ -68,7 +239,7 @@
           </thead>
           <tbody>
             {% for c in coupons %}
-            <tr>
+            <tr id="coupon_row_{{ c.id }}">
               {% comment %} <td>
                 {% if c.image and c.image_code  %}
                     <img src="{{ c.image.url }}" alt="coupon" class="img-thumbnail" style="width:100px;height:auto;">
@@ -82,6 +253,13 @@
                 {% endif %}
               </td> {% endcomment %}
                <td>{{ c.name }}</td>
+              <td>
+                {% if c.partner %}
+                  <span class="badge bg-info">{{ c.partner.name }}</span>
+                {% else %}
+                  <span class="text-muted small">ไม่ระบุ</span>
+                {% endif %}
+              </td>
               <td>{{ c.code }}</td>
               <td>
                 {% if c.required_points is not None %}
@@ -116,13 +294,15 @@
                     <button class="btn btn-outline-primary btn-sm">สลับสถานะ</button>
                   </form>
 
-                  {% comment %} <!-- ปุ่มลบ --> {% endcomment %}
+                  {% comment %} <!-- ปุ่มลบเฉพาะคูปองหมดอายุ --> {% endcomment %}
+              {% if c.ends_at and c.ends_at < now %}
               <form method="POST" style="display:inline;" onsubmit="return confirm('ยืนยันลบคูปองนี้หรือไม่?');">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="coupon_id" value="{{ c.id }}">
-                <button type="submit" class="btn btn-sm btn-danger">🗑️ ลบ</button>
+                <button type="submit" class="btn btn-sm btn-danger"> ลบ</button>
               </form>
+              {% endif %}
                 <button type="button"
                       class="btn btn-sm btn-warning"
                       data-bs-toggle="modal"
@@ -145,10 +325,26 @@
               </td>
             </tr>
             {% empty %}
-            <tr><td colspan="6" class="text-muted">ยังไม่มีคูปอง</td></tr>
+            <tr><td colspan="7" class="text-muted">ยังไม่มีคูปอง</td></tr>
             {% endfor %}
           </tbody>
         </table>
+      </div>
+      
+      {# Pagination Controls for Coupons #}
+      <div class="d-flex justify-content-between align-items-center mt-3" id="couponPaginationControls">
+        <div>
+          <span class="text-muted small">แสดง <span id="couponShowingStart">1</span>-<span id="couponShowingEnd">10</span> จาก <span id="couponTotal">0</span> รายการ</span>
+        </div>
+        <div>
+          <button class="btn btn-sm btn-outline-secondary" id="couponPrevBtn" disabled>
+            <i class="fa fa-chevron-left"></i> ก่อนหน้า
+          </button>
+          <span class="mx-2">หน้า <span id="couponCurrentPage">1</span> / <span id="couponTotalPages">1</span></span>
+          <button class="btn btn-sm btn-outline-secondary" id="couponNextBtn">
+            ถัดไป <i class="fa fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -188,7 +384,7 @@
         <label class="form-label d-block">รูปคูปอง</label>
         <div class="d-flex align-items-center gap-3">
           <img id="preview_image" src="" alt="coupon" class="img-thumbnail"
-              style="width:120px;height:auto;display:none;">
+              style="max-width:150px;max-height:150px;object-fit:contain;display:none;">
           <div class="d-flex flex-column gap-2">
             <input class="form-control" type="file" name="image" id="file_image" accept="image/*">
             <div class="d-flex gap-2">
@@ -203,7 +399,7 @@
         <label class="form-label d-block">รูป QR</label>
         <div class="d-flex align-items-center gap-3">
           <img id="preview_image_code" src="" alt="coupon-qr" class="img-thumbnail"
-              style="width:120px;height:auto;display:none;">
+              style="max-width:150px;max-height:150px;object-fit:contain;display:none;">
           <div class="d-flex flex-column gap-2">
             <input class="form-control" type="file" name="image_code" id="file_image_code" accept="image/*">
             <div class="d-flex gap-2">
@@ -221,6 +417,62 @@
             </form>
           </div>
         </div>
+
+<style>
+  /* ปรับ popup แก้ไขคูปองบนมือถือ */
+  @media (max-width: 768px) {
+    #editCouponModal .modal-dialog {
+      margin: 0.5rem !important;
+      max-width: calc(100vw - 1rem) !important;
+      max-height: calc(100vh - 1rem) !important;
+      overflow-y: auto !important;
+    }
+    
+    #editCouponModal .modal-content {
+      max-height: calc(100vh - 1rem) !important;
+    }
+    
+    #editCouponModal .modal-body {
+      padding: 0.75rem !important;
+      font-size: 0.875rem !important;
+      overflow-y: auto !important;
+      max-height: calc(100vh - 10rem) !important;
+    }
+    
+    #editCouponModal .modal-header,
+    #editCouponModal .modal-footer {
+      padding: 0.75rem !important;
+    }
+    
+    #editCouponModal .form-label {
+      font-size: 0.875rem !important;
+      margin-bottom: 0.25rem !important;
+    }
+    
+    #editCouponModal .form-control,
+    #editCouponModal .btn {
+      font-size: 0.875rem !important;
+    }
+    
+    #editCouponModal .col-6 {
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+    }
+    
+    #editCouponModal .d-flex.align-items-center {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    
+    #editCouponModal #preview_image,
+    #editCouponModal #preview_image_code {
+      max-width: 100% !important;
+      max-height: 150px !important;
+      margin-bottom: 0.5rem;
+    }
+  }
+</style>
+
 <script>
 (function() {
   const modal = document.getElementById('editCouponModal');
@@ -310,6 +562,285 @@ document.addEventListener("DOMContentLoaded", function () {
             reader.readAsDataURL(file);
         }
     });
+
+    // Partner selection
+    const partnerBtns = document.querySelectorAll('.partner-select-btn');
+    const selectedPartnerInput = document.getElementById('selected_partner_id');
+    const selectedPartnerDisplay = document.getElementById('selected_partner_display');
+    const selectedPartnerName = document.getElementById('selected_partner_name');
+    const clearPartnerBtn = document.getElementById('clear_partner_btn');
+
+    partnerBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const partnerId = this.getAttribute('data-partner-id');
+            const partnerName = this.getAttribute('data-partner-name');
+            
+            // Remove active state from all buttons
+            partnerBtns.forEach(b => b.classList.remove('active', 'btn-success'));
+            partnerBtns.forEach(b => b.classList.add('btn-outline-secondary'));
+            
+            // Set active state
+            this.classList.remove('btn-outline-secondary');
+            this.classList.add('btn-success', 'active');
+            
+            // Update hidden input and display
+            selectedPartnerInput.value = partnerId;
+            selectedPartnerName.textContent = partnerName;
+            selectedPartnerDisplay.classList.remove('d-none');
+        });
+    });
+
+    if (clearPartnerBtn) {
+        clearPartnerBtn.addEventListener('click', function() {
+            selectedPartnerInput.value = '';
+            selectedPartnerDisplay.classList.add('d-none');
+            partnerBtns.forEach(b => {
+                b.classList.remove('active', 'btn-success');
+                b.classList.add('btn-outline-secondary');
+            });
+        });
+    }
+
+    // Partner category selection
+    const partnerCategoryBtns = document.querySelectorAll('.partner-category-btn');
+    const partnerCategoryInput = document.getElementById('partner_category_input');
+    const partnerDdreamSubcategory = document.getElementById('partner_ddream_subcategory');
+
+    partnerCategoryBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            
+            // Update active state
+            partnerCategoryBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update hidden input
+            partnerCategoryInput.value = category;
+            
+            // Show/hide subcategory for DDream
+            if (category === 'ddream') {
+                partnerDdreamSubcategory.classList.remove('d-none');
+            } else {
+                partnerDdreamSubcategory.classList.add('d-none');
+            }
+        });
+    });
+
+    // Partner subcategory selection
+    const partnerSubcategoryBtns = document.querySelectorAll('.partner-subcategory-btn');
+    const partnerSubcategoryInput = document.getElementById('partner_subcategory_input');
+
+    partnerSubcategoryBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const subcategory = this.getAttribute('data-subcategory');
+            
+            // Update active state
+            partnerSubcategoryBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update hidden input
+            partnerSubcategoryInput.value = subcategory;
+        });
+    });
+
+    // Partner table edit functionality
+    document.querySelectorAll('.partner-edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const partnerId = this.getAttribute('data-partner-id');
+            // Hide view mode, show edit mode
+            document.getElementById('partner_view_' + partnerId).classList.add('d-none');
+            document.getElementById('partner_edit_' + partnerId).classList.remove('d-none');
+            document.getElementById('partner_name_display_' + partnerId).classList.add('d-none');
+            document.getElementById('partner_name_edit_' + partnerId).classList.remove('d-none');
+            document.getElementById('partner_category_display_' + partnerId).classList.add('d-none');
+            document.getElementById('partner_category_edit_' + partnerId).classList.remove('d-none');
+            
+            // Setup category change listener
+            const catSelect = document.getElementById('partner_cat_select_' + partnerId);
+            const subcatSelect = document.getElementById('partner_subcat_select_' + partnerId);
+            catSelect.addEventListener('change', function() {
+                if (this.value === 'ddream') {
+                    subcatSelect.classList.remove('d-none');
+                } else {
+                    subcatSelect.classList.add('d-none');
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll('.partner-cancel-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const partnerId = this.getAttribute('data-partner-id');
+            // Show view mode, hide edit mode
+            document.getElementById('partner_view_' + partnerId).classList.remove('d-none');
+            document.getElementById('partner_edit_' + partnerId).classList.add('d-none');
+            document.getElementById('partner_name_display_' + partnerId).classList.remove('d-none');
+            document.getElementById('partner_name_edit_' + partnerId).classList.add('d-none');
+            document.getElementById('partner_category_display_' + partnerId).classList.remove('d-none');
+            document.getElementById('partner_category_edit_' + partnerId).classList.add('d-none');
+        });
+    });
+
+    document.querySelectorAll('.partner-save-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const partnerId = this.getAttribute('data-partner-id');
+            const name = document.getElementById('partner_name_input_' + partnerId).value;
+            const title = document.getElementById('partner_title_input_' + partnerId).value;
+            const logo = document.getElementById('partner_logo_file_' + partnerId).files[0];
+            const category = document.getElementById('partner_cat_select_' + partnerId).value;
+            const subcategory = document.getElementById('partner_subcat_select_' + partnerId).value;
+            const branches = document.getElementById('partner_branches_input_' + partnerId).value;
+            
+            const formData = new FormData();
+            formData.append('action', 'partner_update');
+            formData.append('partner_id', partnerId);
+            formData.append('partner_name', name);
+            formData.append('partner_title', title);
+            formData.append('partner_category', category);
+            formData.append('partner_subcategory', subcategory);
+            formData.append('partner_available_branches', branches);
+            if (logo) {
+                formData.append('partner_logo', logo);
+            }
+            
+            fetch('', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            }).then(() => {
+                location.reload();
+            });
+        });
+    });
+
+    document.querySelectorAll('.partner-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const partnerId = this.getAttribute('data-partner-id');
+            const formData = new FormData();
+            formData.append('action', 'partner_toggle');
+            formData.append('partner_id', partnerId);
+            
+            fetch('', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            }).then(() => {
+                location.reload();
+            });
+        });
+    });
+
+    // Partner Table Pagination
+    const itemsPerPage = 5;
+    let currentPage = 1;
+    const partnerRows = document.querySelectorAll('tbody tr[id^="partner_row_"]');
+    const totalItems = partnerRows.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    function showPage(page) {
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        partnerRows.forEach((row, index) => {
+            if (index >= start && index < end) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Update pagination info
+        document.getElementById('partnerShowingStart').textContent = totalItems > 0 ? start + 1 : 0;
+        document.getElementById('partnerShowingEnd').textContent = Math.min(end, totalItems);
+        document.getElementById('partnerTotal').textContent = totalItems;
+        document.getElementById('partnerCurrentPage').textContent = page;
+        document.getElementById('partnerTotalPages').textContent = totalPages;
+
+        // Update button states
+        document.getElementById('partnerPrevBtn').disabled = page === 1;
+        document.getElementById('partnerNextBtn').disabled = page === totalPages || totalPages === 0;
+    }
+
+    // Hide pagination if 5 or fewer items
+    if (totalItems <= itemsPerPage) {
+        document.getElementById('partnerPaginationControls').style.display = 'none';
+    }
+
+    // Event listeners
+    document.getElementById('partnerPrevBtn').addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    });
+
+    document.getElementById('partnerNextBtn').addEventListener('click', function() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    });
+
+    // Initial page load
+    showPage(currentPage);
+
+    // Coupon Table Pagination
+    const couponItemsPerPage = 10;
+    let couponCurrentPage = 1;
+    const couponRows = document.querySelectorAll('tbody tr[id^="coupon_row_"]');
+    const couponTotalItems = couponRows.length;
+    const couponTotalPages = Math.ceil(couponTotalItems / couponItemsPerPage);
+
+    function showCouponPage(page) {
+        const start = (page - 1) * couponItemsPerPage;
+        const end = start + couponItemsPerPage;
+
+        couponRows.forEach((row, index) => {
+            if (index >= start && index < end) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Update pagination info
+        document.getElementById('couponShowingStart').textContent = couponTotalItems > 0 ? start + 1 : 0;
+        document.getElementById('couponShowingEnd').textContent = Math.min(end, couponTotalItems);
+        document.getElementById('couponTotal').textContent = couponTotalItems;
+        document.getElementById('couponCurrentPage').textContent = page;
+        document.getElementById('couponTotalPages').textContent = couponTotalPages;
+
+        // Update button states
+        document.getElementById('couponPrevBtn').disabled = page === 1;
+        document.getElementById('couponNextBtn').disabled = page === couponTotalPages || couponTotalPages === 0;
+    }
+
+    // Hide pagination if 10 or fewer items
+    if (couponTotalItems <= couponItemsPerPage) {
+        document.getElementById('couponPaginationControls').style.display = 'none';
+    }
+
+    // Event listeners for coupon pagination
+    document.getElementById('couponPrevBtn').addEventListener('click', function() {
+        if (couponCurrentPage > 1) {
+            couponCurrentPage--;
+            showCouponPage(couponCurrentPage);
+        }
+    });
+
+    document.getElementById('couponNextBtn').addEventListener('click', function() {
+        if (couponCurrentPage < couponTotalPages) {
+            couponCurrentPage++;
+            showCouponPage(couponCurrentPage);
+        }
+    });
+
+    // Initial coupon page load
+    showCouponPage(couponCurrentPage);
 });
 </script>
 

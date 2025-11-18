@@ -1,0 +1,40 @@
+=== Media Files Scan Report ===
+Scan Date: 2025-11-13T11:23:23.083470
+
+Total files referenced in DB: 27
+Files that exist: 23
+Files missing: 4
+Total size of existing files: 5,320,855 bytes (5.07 MB)
+
+=== EXISTING FILES ===
+coupons/2025/11/DM.jpg	45,192 bytes
+coupons/2025/11/DM_syWVi5O.jpg	45,192 bytes
+coupons/2025/11/คปอง_DK3oM8O.jpg	76,982 bytes
+coupons/2025/11/คปอง_Ipul3HQ.jpg	76,982 bytes
+coupons/2025/11/คปอง_sXaDlqO.jpg	76,982 bytes
+coupons/2025/11/คปอง_uBNLgSb.jpg	76,982 bytes
+coupons_qr/2025/11/825878864513169_xmtKTyN.jpg	123,402 bytes
+coupons_qr/2025/11/825878864529865.jpg	127,548 bytes
+coupons_qr/2025/11/825878864534844_DGI3cmt.jpg	127,297 bytes
+coupons_qr/2025/11/825878873785189.jpg	126,895 bytes
+coupons_qr/2025/11/DM.jpg	45,192 bytes
+coupons_qr/2025/11/DM_5b2bcha.jpg	45,192 bytes
+promotions/2025/11/571697911_122109305871047872_1989069230169559363_n.jpg	659,913 bytes
+promotions/2025/11/572908236_122109304809047872_5040074780975200910_n.jpg	706,396 bytes
+promotions/2025/11/574089064_122109344817047872_4960186699783968879_n.jpg	277,576 bytes
+promotions/2025/11/574089064_122109344817047872_4960186699783968879_n_g9L8yHd.jpg	277,576 bytes
+promotions/2025/11/574089064_122109344817047872_4960186699783968879_n_w9xygF9.jpg	277,576 bytes
+promotions/2025/11/576325849_122110036497047872_1756807888402514902_n.jpg	611,991 bytes
+promotions/2025/11/576878166_122110188201047872_3845344851607210247_n.jpg	203,088 bytes
+promotions/2025/11/578225775_122110360233047872_6869219467717498568_n.jpg	554,661 bytes
+promotions/gallery/2025/11/574089064_122109344817047872_4960186699783968879_n.jpg	277,576 bytes
+promotions/gallery/2025/11/574089064_122109344817047872_4960186699783968879_n_LUxRzaY.jpg	277,576 bytes
+promotions/gallery/2025/11/576878166_122110188201047872_3845344851607210247_n.jpg	203,088 bytes
+
+=== MISSING FILES ===
+promotions/2025/11/2018-McLaren-P1-GTR-Senna-V2-1080.jpg
+promotions/2025/11/4k-wallpaper-android-wallpaper-art-325044_jHgpiTz.jpg
+promotions/2025/11/agriculture-apple-blur-257840.jpg
+promotions/2025/11/chloe_moretz_kick_ass_2_2013-1920x1080.jpg
+
+=== End Report ===
