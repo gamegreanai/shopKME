@@ -8,9 +8,21 @@ class Command(BaseCommand):
         User = get_user_model()
         username = 'adminddream1'
         email = 'adminddream1@ddreamclinic.com'
-        password = 'Adminddream1'
+        password = 'Admin1'
         
-        if not User.objects.filter(username=username).exists():
+        try:
+            user = User.objects.get(username=username)
+            # ถ้ามี user อยู่แล้ว อัปเดตรหัสผ่าน
+            user.set_password(password)
+            user.email = email
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
+            self.stdout.write(self.style.SUCCESS(f'Superuser "{username}" updated successfully!'))
+            self.stdout.write(self.style.SUCCESS(f'Username: {username}'))
+            self.stdout.write(self.style.SUCCESS(f'Password: {password}'))
+        except User.DoesNotExist:
+            # ถ้ายังไม่มี user สร้างใหม่
             User.objects.create_superuser(
                 username=username,
                 email=email,
@@ -19,5 +31,3 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'Superuser "{username}" created successfully!'))
             self.stdout.write(self.style.SUCCESS(f'Username: {username}'))
             self.stdout.write(self.style.SUCCESS(f'Password: {password}'))
-        else:
-            self.stdout.write(self.style.WARNING(f'Superuser "{username}" already exists.'))

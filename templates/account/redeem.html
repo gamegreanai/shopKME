@@ -6,7 +6,13 @@
 {% comment %} <!-- ✅ Container หลัก --> {% endcomment %}
 <div class="container py-3 redeem-container">
   <div class="card border-0 shadow-sm overflow-hidden position-relative member-bg">
-    <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
+    {% if meter.level == "Silver" %}
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'gardDM.png' %}') center/cover no-repeat;"></div>
+    {% elif meter.level == "Gold" %}
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'img/bg_gold.jpg' %}') center/cover no-repeat;"></div>
+    {% else %}
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'img/bg_premium.jpg' %}') center/cover no-repeat;"></div>
+    {% endif %}
     <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative member-content" >
 
       <div class="d-flex flex-column align-items-start gap-3 member-left">
