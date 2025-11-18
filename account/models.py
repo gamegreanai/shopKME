@@ -12,6 +12,41 @@ from django.utils.text import slugify
 
 # Custom User using phone as username
 
+class Partner(models.Model):
+    CATEGORY_CHOICES = [
+        ('partner', 'คูปองพาร์ทเนอร์'),
+        ('ddream', 'คูปองดีดรีม'),
+    ]
+    SUBCATEGORY_CHOICES = [
+        ('all', 'ทั้งหมด'),
+        ('special', 'พิเศษสำหรับคุณ'),
+        ('used', 'ใช้แล้ว/หมดอายุ'),
+    ]
+    
+    name = models.CharField(max_length=150, unique=True)
+    logo = models.ImageField(
+        upload_to="partners/%Y/%m/",
+        null=True,
+        blank=True,
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])],
+    )
+    title = models.CharField(max_length=255, blank=True, help_text="ข้อมูลเพิ่มเติมเกี่ยวกับพาร์ทเนอร์")
+    available_branches = models.TextField(blank=True, help_text="สาขาที่ใช้งานได้")
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='partner')
+    subcategory = models.CharField(max_length=20, choices=SUBCATEGORY_CHOICES, default='all', blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def logo_url(self):
+        return self.logo.url if self.logo else ""
+
 class Promotion(models.Model):
     """โปรโมชันสำหรับโชว์ในหน้าเว็บ/แอป อาจผูกคูปองหรือไม่ก็ได้"""
     title       = models.CharField(max_length=200)
@@ -297,6 +332,15 @@ class Coupon(models.Model):
         null=True, blank=True,
         validators=[FileExtensionValidator(["jpg","jpeg","png","webp"])],
     )
+    available_branches = models.TextField(blank=True, help_text="สาขาที่ใช้งานได้")
+    partner = models.ForeignKey(
+        Partner,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="coupons",
+        help_text="พาร์ทเนอร์ที่เป็นเจ้าของคูปองนี้"
+    )
     is_deleted = models.BooleanField(default=False)
 
     class Meta:
@@ -389,4 +433,38 @@ class CouponRedemption(models.Model):
 
     def __str__(self):
         return f"{self.coupon.code} @ {self.user_id} ({self.discount_applied})"
+
+
+class CouponSlideImage(models.Model):
+    """Model สำหรับเก็บรูปภาพคูปองแบบสไลด์/แบนเนอร์"""
+    name = models.CharField(max_length=255, help_text="ชื่อรูปภาพ")
+    image = models.ImageField(
+        upload_to="coupon_slides/%Y/%m/",
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])],
+        help_text="รูปภาพคูปอง"
+    )
+    partner = models.ForeignKey(
+        "Partner",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="slide_images",
+        help_text="เชื่อมโยงกับพาร์ทเนอร์ (คลิกรูปจะแสดงคูปอง)"
+    )
+    sort_order = models.IntegerField(default=0, help_text="ลำดับการแสดงผล (น้อยไปมาก)")
+    is_active = models.BooleanField(default=True, help_text="สถานะการใช้งาน")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        verbose_name = "รูปภาพคูปอง"
+        verbose_name_plural = "รูปภาพคูปอง"
+
+    def __str__(self):
+        partner_info = f" ({self.partner.name})" if self.partner else ""
+        return f"{self.name}{partner_info}"
+
+    def image_url(self):
+        return self.image.url if self.image else ""
 

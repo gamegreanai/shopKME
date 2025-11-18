@@ -11,20 +11,28 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file (for local development)
+from dotenv import load_dotenv
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ms)6li4o92&#le1=@q)d#q8hja!@#%bmp-9%93#s&+&m$*3+=!'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-ms)6li4o92&#le1=@q)d#q8hja!@#%bmp-9%93#s&+&m$*3+=!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Can be overridden via environment (DEBUG=True/False)
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['*','registor.onrender.com']
+# Comma-separated list in env, fallback to local + render domain
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,registor.onrender.com').split(',')
 
 
 # Application definition
@@ -42,15 +50,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # serve static efficiently
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', #เป็นlib เสริฟไฟล์ พวกstaticไปยังเซิฟโดยไม่ต้องให้เซิฟสร้างให้
     'shopKME.middleware.ProfileCompletionMiddleware',
-
 ]
 
 ROOT_URLCONF = 'shopKME.urls'
@@ -67,6 +74,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            # Ensure custom template tag libraries are discoverable
+            'libraries': {
+                'phone_filters': 'account.templatetags.phone_filters',
+            },
         },
     },
 ]
@@ -77,24 +88,42 @@ WSGI_APPLICATION = 'shopKME.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+        
+#     }
+# }
+
+# -----------หากใช้ postgresql แบบ locals ให้เปิดบรรทัดล่างนี้แทน ---------
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ddreamPJ',
+#         'USER': 'postgres',
+#         'PASSWORD': '0994593822',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('PG_NAME', 'ddreamPJ'),
+        'USER': os.getenv('PG_USER', 'postgres'),
+        'PASSWORD': os.getenv('PG_PASSWORD', '0994593822'),
+        'HOST': os.getenv('PG_HOST', 'localhost'),
+        'PORT': os.getenv('PG_PORT', '5432'),
     }
 }
 
-# DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'your_database_name',
-#             'USER': 'your_database_user',
-#             'PASSWORD': 'your_database_password',
-#             'HOST': 'localhost',  # Or your database server's IP/hostname
-#             'PORT': '5432',      # Or your database server's port
-#         }
-#     }
+# ----------- Override from DATABASE_URL (e.g., Render) เมื่อใช้งานบน render ให้มาเปิด ---------
+db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600, ssl_require=True)
+if db_from_env:
+    DATABASES['default'] = db_from_env
 
 
 # Password validation
@@ -119,9 +148,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'th'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bangkok'
 
 USE_I18N = True
 
@@ -143,3 +172,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 AUTH_USER_MODEL = 'account.User'
+
+# Trust proxies/hosts for HTTPS redirects (Render)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+# CSRF trust based on allowed hosts (for DEBUG=False)
+CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if '.' in h]
+
+# Login URLs
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = '/account/dashboard/'
+LOGOUT_REDIRECT_URL = '/account/login/'

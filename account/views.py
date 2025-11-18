@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.utils import timezone
@@ -42,20 +42,31 @@ def calc_level(points: int):
     return {"level": "Silver", "points": p, "progress_pct": 0, "next_level_name": "Gold", "remain_to_next": max(1000-p,0)}
 
 # 🔹 สมัครสมาชิก
-@csrf_exempt
 def register_view(request):
     """สมัครสมาชิกด้วยเบอร์โทรศัพท์และรหัสผ่าน แล้วไปหน้า shop"""
     if request.method == 'POST':
         phone = request.POST.get('phone')
+        email = request.POST.get('email', '').strip()
         password = request.POST.get('password')
 
-        if not phone or not password:
-            return JsonResponse({'status': 'error', 'message': 'กรุณากรอกเบอร์โทรศัพท์และรหัสผ่าน'})
+        if not phone or not email or not password:
+            return JsonResponse({'status': 'error', 'message': 'กรุณากรอกเบอร์โทรศัพท์ อีเมล และรหัสผ่าน'})
+
+        # ตรวจสอบอีเมลรูปแบบเบื้องต้น
+        from django.core.validators import validate_email
+        from django.core.exceptions import ValidationError
+        try:
+            validate_email(email)
+        except ValidationError:
+            return JsonResponse({'status': 'error', 'message': 'รูปแบบอีเมลไม่ถูกต้อง'})
 
         if User.objects.filter(phone=phone).exists():
             return JsonResponse({'status': 'warning', 'message': 'เบอร์นี้มีอยู่แล้วในระบบ กรุณาเข้าสู่ระบบ'})
 
-        user = User.objects.create(phone=phone)
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'status': 'warning', 'message': 'อีเมลนี้มีอยู่แล้วในระบบ กรุณาเข้าสู่ระบบ'})
+
+        user = User.objects.create(phone=phone, email=email)
         user.set_password(password)
         user.save()
 
@@ -66,7 +77,7 @@ def register_view(request):
             return JsonResponse({
                 'status': 'success',
                 'message': 'สมัครสมาชิกสำเร็จ!',
-                'redirect': 'account/dashboard/'
+                'redirect': '/account/dashboard/'
             })
 
         return JsonResponse({'status': 'error', 'message': 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ'})
@@ -88,10 +99,48 @@ def login_view(request):
             return JsonResponse({
                 'status': 'success',
                 'message': 'เข้าสู่ระบบสำเร็จ!',
-                'redirect': 'account/dashboard/'
+                'redirect': '/account/dashboard/'
             })
         return JsonResponse({'status': 'error', 'message': 'เบอร์โทรศัพท์หรือรหัสผ่านไม่ถูกต้อง'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+
+
+# 🔹 ลืมรหัสผ่าน / ตั้งรหัสผ่านใหม่
+@require_POST
+def forgot_password(request):
+    phone = (request.POST.get('phone') or '').strip()
+    email = (request.POST.get('email') or '').strip()
+    password = request.POST.get('password')
+    confirm = request.POST.get('confirm_password')
+
+    if not phone or not email or not password or not confirm:
+        return JsonResponse({'status': 'error', 'message': 'กรุณากรอกข้อมูลให้ครบถ้วน'})
+    if password != confirm:
+        return JsonResponse({'status': 'error', 'message': 'รหัสผ่านทั้งสองช่องไม่ตรงกัน'})
+
+    try:
+        user = User.objects.get(phone=phone)
+    except User.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'ไม่พบบัญชีผู้ใช้จากหมายเลขโทรศัพท์นี้'})
+
+    # หากบัญชีมีอีเมลอยู่แล้ว ต้องตรงกัน; ถ้ายังว่าง อัพเดตด้วยอีเมลที่ระบุ
+    user_email = (user.email or '').strip()
+    if user_email:
+        if user_email.lower() != email.lower():
+            return JsonResponse({'status': 'error', 'message': 'เบอร์โทรและอีเมลไม่ตรงกับบัญชีนี้'})
+    else:
+        user.email = email
+
+    # ตั้งรหัสผ่านใหม่
+    user.set_password(password)
+    user.save()
+
+    # ล็อกอินให้ทันทีถ้าตรวจสอบผ่าน
+    user_auth = authenticate(request, phone=phone, password=password)
+    if user_auth is not None:
+        login(request, user_auth)
+
+    return JsonResponse({'status': 'success', 'message': 'เปลี่ยนรหัสผ่านสำเร็จ', 'redirect': '/account/dashboard/'})
 
 
 # 🔹 ออกจากระบบ
@@ -221,19 +270,62 @@ def edit_user(request, user_id):
     profile = getattr(user, 'profile', None)
 
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        phone = request.POST.get('phone')
+        first_name = (request.POST.get('first_name') or '').strip()
+        last_name = (request.POST.get('last_name') or '').strip()
+        phone = (request.POST.get('phone') or '').strip()
+        email = (request.POST.get('email') or '').strip()
         points = request.POST.get('points')
 
+        # Address fields from Profile
+        title = (request.POST.get('title') or '').strip()
+        gender = (request.POST.get('gender') or '').strip()
+        house_no = (request.POST.get('house_no') or '').strip()
+        moo = (request.POST.get('moo') or '').strip()
+        street = (request.POST.get('street') or '').strip()
+        subdistrict = (request.POST.get('subdistrict') or '').strip()
+        district = (request.POST.get('district') or '').strip()
+        province = (request.POST.get('province') or '').strip()
+        postal_code = (request.POST.get('postal_code') or '').strip()
+
+        # Basic validation
+        if not phone:
+            messages.error(request, "กรุณากรอกเบอร์โทรศัพท์")
+            return redirect('account:edit_user', user_id=user.id)
+
+        # Update user
         user.first_name = first_name
         user.last_name = last_name
         user.phone = phone
-        user.save()
+        if email:
+            user.email = email
+        try:
+            user.save()
+        except Exception as e:
+            messages.error(request, f"บันทึกข้อมูลผู้ใช้ไม่สำเร็จ: {e}")
+            return redirect('account:edit_user', user_id=user.id)
 
-        if profile:
-            profile.points = points
-            profile.save()
+        # Ensure profile exists
+        if not profile:
+            profile = Profile.objects.create(user=user)
+
+        # Convert points
+        try:
+            pts_val = int(points) if points not in (None, '') else profile.points
+        except ValueError:
+            messages.error(request, "กรุณาใส่แต้มเป็นตัวเลขเท่านั้น")
+            return redirect('account:edit_user', user_id=user.id)
+
+        profile.points = pts_val
+        profile.title = title
+        profile.gender = gender
+        profile.house_no = house_no
+        profile.moo = moo
+        profile.street = street
+        profile.subdistrict = subdistrict
+        profile.district = district
+        profile.province = province
+        profile.postal_code = postal_code
+        profile.save()
 
         messages.success(request, "แก้ไขข้อมูลผู้ใช้สำเร็จ ✅")
         return redirect('account:staff_manage_points')
@@ -437,34 +529,11 @@ def redeem_view(request):
         messages.error(request, "คำสั่งไม่ถูกต้อง")
         return redirect("account:redeem")
 
-    # --- GET: แสดงรายการคูปองที่แลกได้ + ประวัติ ---
-    now = timezone.now()
-    coupons_qs = (
-        Coupon.objects.filter(
-            active=True,
-            starts_at__lte=now
-        ).exclude(ends_at__lt=now)
-        .order_by("ends_at", "code")
-    )
+    # --- GET: แสดงพาร์ทเนอร์และประวัติเท่านั้น ---
+    # ไม่แสดงคูปองโดยตรงในหน้านี้อีกต่อไป
 
-    # 🔹 ฟิลเตอร์ให้เหลือเฉพาะ “แลกได้จริง”
-    available = []
-    for c in coupons_qs:
-        req_pts = getattr(c, "required_points", 0) or 0
-        enough_points = profile.points >= req_pts
-        can_use = c.can_user_use(request.user)
-
-        if not (enough_points and can_use and c.active):
-            continue  # ❌ ข้ามถ้าแลกไม่ได้
-
-        # ✅ เพิ่มข้อมูลไว้ให้ template ใช้
-        c.req_pts = req_pts
-        c.enough_points = enough_points
-        c.can_use = can_use
-        c.expires_at = c.ends_at
-        c.percent_off = round(req_pts / 10) if req_pts else 0
-
-        available.append(c)
+    # 🔹 ไม่แสดงคูปองโดยตรง - ลบฟังก์ชั่นนี้แล้ว
+    # คูปองจะแสดงผ่านหน้า Partner Detail เท่านั้น
 
     # 🔹 ประวัติการแลก
     redemptions = (
@@ -473,19 +542,292 @@ def redeem_view(request):
         .order_by("-created_at")
     )
 
-    # 🔹 คูปองของฉัน
+    # 🔹 คูปองของฉัน (เฉพาะที่ยังไม่หมดอายุ)
     my_coupons = (
         CouponRedemption.objects.select_related("coupon")
-        .filter(user=request.user, order_id="")
+        .filter(
+            user=request.user, 
+            order_id="",
+            coupon__ends_at__gte=timezone.now()
+        )
         .order_by("-created_at")
     )
+
+    # 🔹 ดึงพาร์ทเนอร์ที่เปิดใช้งานและจัดกลุ่มตามหมวดหมู่
+    from .models import Partner
+    partners = Partner.objects.filter(is_active=True).order_by('category', 'subcategory', 'name')
+    
+    # จัดกลุ่มพาร์ทเนอร์
+    partners_by_category = {
+        'partner': [],
+        'ddream_all': [],
+        'ddream_special': [],
+        'ddream_used': []
+    }
+    
+    for p in partners:
+        if p.category == 'partner':
+            partners_by_category['partner'].append(p)
+        elif p.category == 'ddream':
+            if p.subcategory == 'special':
+                partners_by_category['ddream_special'].append(p)
+            elif p.subcategory == 'used':
+                partners_by_category['ddream_used'].append(p)
+            else:  # 'all' or default
+                partners_by_category['ddream_all'].append(p)
+    
+    # เรียงคูปองดีดรีม/ทั้งหมด ตามคะแนนน้อยไปมาก
+    def get_min_points(partner):
+        coupons = partner.coupons.filter(is_deleted=False)
+        points_list = [c.required_points for c in coupons if c.required_points is not None]
+        min_point = min(points_list) if points_list else 9999999
+        print(f"Partner: {partner.name}, Min Points: {min_point}, Points List: {points_list}")  # Debug
+        return min_point
+    
+    partners_by_category['ddream_all'].sort(key=get_min_points)
+    print("Sorted DDream Partners:", [p.name for p in partners_by_category['ddream_all']])  # Debug
+
+    # 🔹 ดึงรูปภาพสไลด์คูปอง
+    from .models import CouponSlideImage
+    slide_images = CouponSlideImage.objects.filter(is_active=True).order_by('sort_order', 'name')
+    
+    # จัดรูปเป็นคู่ๆ สำหรับ carousel (แสดงทีละ 2 รูป)
+    slide_image_list = list(slide_images)
+    image_pairs = []
+    for i in range(0, len(slide_image_list), 2):
+        pair = {
+            'first': slide_image_list[i],
+            'second': slide_image_list[i+1] if i+1 < len(slide_image_list) else None
+        }
+        image_pairs.append(pair)
 
     context = {
         "profile": profile,
         "meter": meter,
-        "available": available,      # ✅ ตอนนี้เหลือเฉพาะที่แลกได้จริง
         "redemptions": redemptions,
         "my_coupons": my_coupons,
+        "partners_by_category": partners_by_category,
+        "slide_images": slide_image_list,
+        "image_pairs": image_pairs,
     }
     return render(request, "account/redeem.html", context)
+
+
+@login_required
+def partner_coupons_api(request, partner_id):
+    """API สำหรับดึงคูปองของพาร์ทเนอร์"""
+    from .models import Partner
+    import json
+    
+    try:
+        partner = Partner.objects.get(pk=partner_id, is_active=True)
+        coupons = partner.coupons.filter(is_deleted=False).order_by('-created_at')
+        
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        user_points = profile.points if profile else 0
+        
+        coupon_list = []
+        for c in coupons:
+            req_pts = getattr(c, 'required_points', 0) or 0
+            coupon_list.append({
+                'id': c.id,
+                'code': c.code,
+                'name': c.name,
+                'required_points': req_pts,
+                'expires_at': c.ends_at.isoformat() if c.ends_at else None,
+                'active': c.active,
+                'enough_points': user_points >= req_pts,
+                'note': c.note or '',
+                'image_code_url': c.image_code.url if c.image_code else '',
+                'available_branches': partner.available_branches or 'ใช้ได้ทุกสาขา',
+            })
+        
+        # ดึงรูปคูปองสไลด์ที่เชื่อมกับพาร์ทเนอร์นี้
+        slide_image_url = ''
+        slide_images = partner.slide_images.filter(is_active=True).order_by('sort_order').first()
+        if slide_images and slide_images.image:
+            slide_image_url = slide_images.image.url
+        
+        return JsonResponse({
+            'success': True,
+            'partner_name': partner.name,
+            'partner': {
+                'id': partner.id,
+                'name': partner.name,
+                'title': partner.title or '',
+                'available_branches': partner.available_branches or 'ใช้ได้ทุกสาขา',
+                'slide_image_url': slide_image_url,
+            },
+            'coupons': coupon_list
+        })
+    except Partner.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Partner not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@staff_member_required
+def coupon_slide_view(request):
+    """จัดการรูปภาพคูปองแบบสไลด์"""
+    from .models import CouponSlideImage, Partner
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        # การแลกคูปอง
+        if action == 'redeem':
+            profile, _ = Profile.objects.get_or_create(user=request.user)
+            cid = request.POST.get('coupon_id')
+            coupon = get_object_or_404(Coupon, pk=cid)
+
+            # ตรวจสอบสิทธิ์และแต้ม
+            if not coupon.is_active_now():
+                messages.error(request, 'คูปองนี้ไม่อยู่ในช่วงใช้งาน')
+                return redirect('account:coupon_slide')
+
+            if not coupon.can_user_use(request.user):
+                messages.error(request, 'คูปองนี้ไม่ตรงกับระดับสมาชิกของคุณหรือเกินสิทธิ์การใช้ต่อผู้ใช้')
+                return redirect('account:coupon_slide')
+
+            req_pts = getattr(coupon, 'required_points', 0) or 0
+            if profile.points < req_pts:
+                messages.error(request, 'แต้มสะสมไม่เพียงพอสำหรับการแลกคูปองนี้')
+                return redirect('account:coupon_slide')
+
+            # บันทึกแบบ atomic
+            with transaction.atomic():
+                c = Coupon.objects.select_for_update().get(pk=coupon.pk)
+                
+                if not c.active:
+                    messages.error(request, 'คูปองนี้ถูกใช้เต็มจำนวนแล้ว')
+                    return redirect('account:coupon_slide')
+
+                # หักแต้ม
+                profile.points = F('points') - req_pts
+                profile.save(update_fields=['points'])
+                profile.refresh_from_db(fields=['points'])
+
+                # บันทึกการแลก
+                redemption, created = CouponRedemption.objects.get_or_create(
+                    coupon=c,
+                    user=request.user,
+                    order_id='',
+                    defaults={'discount_applied': Decimal('0.00')},
+                )
+                
+                if not created:
+                    messages.warning(request, 'คุณได้แลกคูปองนี้ไปแล้ว')
+                    return redirect('account:coupon_slide')
+
+                # ปิดคูปอง
+                updated = Coupon.objects.filter(pk=c.pk, active=True).update(
+                    use_count=F('use_count') + 1,
+                    active=False
+                )
+                if updated == 0:
+                    messages.error(request, 'คูปองนี้ถูกใช้เต็มจำนวนแล้ว')
+                    return redirect('account:coupon_slide')
+
+            messages.success(request, 'แลกคูปองสำเร็จ ✅')
+            return redirect('account:coupon_slide')
+        
+        elif action == 'add_image':
+            name = request.POST.get('image_name', '').strip()
+            image_file = request.FILES.get('image_file')
+            sort_order = request.POST.get('sort_order', 0)
+            partner_id = request.POST.get('partner_id', '').strip()
+            
+            if name and image_file:
+                try:
+                    partner = None
+                    if partner_id:
+                        try:
+                            partner = Partner.objects.get(id=partner_id)
+                        except Partner.DoesNotExist:
+                            pass
+                    
+                    CouponSlideImage.objects.create(
+                        name=name,
+                        image=image_file,
+                        sort_order=int(sort_order) if sort_order else 0,
+                        partner=partner
+                    )
+                    messages.success(request, f'เพิ่มรูปภาพ "{name}" เรียบร้อยแล้ว')
+                except Exception as e:
+                    messages.error(request, f'เกิดข้อผิดพลาด: {str(e)}')
+            else:
+                messages.error(request, 'กรุณากรอกข้อมูลให้ครบถ้วน')
+            
+            return redirect('account:coupon_slide')
+        
+        elif action == 'edit':
+            image_id = request.POST.get('image_id')
+            image_name = request.POST.get('image_name', '').strip()
+            sort_order = request.POST.get('sort_order', 0)
+            partner_id = request.POST.get('partner_id', '').strip()
+            
+            if image_id and image_name:
+                try:
+                    img = CouponSlideImage.objects.get(id=image_id)
+                    img.name = image_name
+                    img.sort_order = int(sort_order) if sort_order else 0
+                    
+                    # อัพเดทพาร์ทเนอร์
+                    if partner_id:
+                        try:
+                            img.partner = Partner.objects.get(id=partner_id)
+                        except Partner.DoesNotExist:
+                            img.partner = None
+                    else:
+                        img.partner = None
+                    
+                    img.save()
+                    messages.success(request, 'แก้ไขข้อมูลรูปภาพเรียบร้อยแล้ว')
+                except CouponSlideImage.DoesNotExist:
+                    messages.error(request, 'ไม่พบรูปภาพนี้')
+                except Exception as e:
+                    messages.error(request, f'เกิดข้อผิดพลาด: {str(e)}')
+            
+            return redirect('account:coupon_slide')
+        
+        elif action == 'delete':
+            image_id = request.POST.get('image_id')
+            
+            if image_id:
+                try:
+                    img = CouponSlideImage.objects.get(id=image_id)
+                    img_name = img.name
+                    img.delete()
+                    messages.success(request, f'ลบรูปภาพ "{img_name}" เรียบร้อยแล้ว')
+                except CouponSlideImage.DoesNotExist:
+                    messages.error(request, 'ไม่พบรูปภาพนี้')
+                except Exception as e:
+                    messages.error(request, f'เกิดข้อผิดพลาด: {str(e)}')
+            
+            return redirect('account:coupon_slide')
+    
+    # GET request - เรียงตาม sort_order (ตัวเลขน้อยไปมาก)
+    images = list(CouponSlideImage.objects.select_related('partner').all().order_by('sort_order', 'name'))
+    
+    # ดึงรายการพาร์ทเนอร์ทั้งหมดสำหรับ dropdown
+    partners = Partner.objects.filter(is_active=True).order_by('name')
+    
+    # ดึงข้อมูล profile เพื่อแสดงแต้ม
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    
+    # จัดรูปเป็นคู่ๆ สำหรับ carousel (แสดงทีละ 2 รูป)
+    image_pairs = []
+    for i in range(0, len(images), 2):
+        pair = {
+            'first': images[i],
+            'second': images[i+1] if i+1 < len(images) else None
+        }
+        image_pairs.append(pair)
+    
+    return render(request, 'coupons/coupon_slide.html', {
+        'images': images,
+        'image_pairs': image_pairs,
+        'partners': partners,
+        'profile': profile,
+    })
 

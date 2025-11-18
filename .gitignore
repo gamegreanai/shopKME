@@ -23,8 +23,15 @@ venv/
 *.pot
 *.pyc
 local_settings.py
+db.sqlite3
 db.sqlite3-journal
-# media/
+db.bak.sqlite3
+
+# ❌ Media Files (User uploads) - ห้ามอัพ
+media/
+
+# ❌ Collected Static Files - ห้ามอัพ
+/staticfiles/
 
 
 # IDE

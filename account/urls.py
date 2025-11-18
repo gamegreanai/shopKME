@@ -15,15 +15,18 @@ urlpatterns = [
     path('add-points/', views.add_points_view, name='add_points'),
     path('points/', views.manage_points_view, name='manage_points'),
     path('check-phone/', views.check_phone, name='check_phone'),
+    path('forgot_password/', views.forgot_password, name='forgot_password'),
 
     # ✅ ใช้ view ที่มี pagination ตัวเดียวกันทั้งสองหน้า
     path('adminpanel/points/', views.staff_manage_points, name='adminpanel_manage_points'),
     path('staff/points/', views.staff_manage_points, name='staff_manage_points'),
 
     path('redeem/', views.redeem_view, name="redeem"),
+    path('partner/<int:partner_id>/coupons/', views.partner_coupons_api, name='partner_coupons_api'),
     path('staff/edit/<int:user_id>/', views.edit_user, name='edit_user'),
     path('staff/delete/<int:user_id>/', views.delete_user, name='delete_user'),
     path('coupon/', view_coupon.coupon_staff_view, name='coupon_staff'),
+    path('coupon/slide/', views.coupon_slide_view, name='coupon_slide'),
 
     path('staff/promotion/',               view_promotion.promotion_list,   name='promotion_list'),
     path('staff/promotion/create/',        view_promotion.promotion_create, name='promotion_create'),
