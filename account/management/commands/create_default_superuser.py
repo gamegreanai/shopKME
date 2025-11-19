@@ -32,11 +32,14 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'Password: {password}'))
         except User.DoesNotExist:
             # ถ้ายังไม่มี user สร้างใหม่
-            User.objects.create_superuser(
+            user = User(
                 phone=phone,
                 email=email,
-                password=password
+                is_staff=True,
+                is_superuser=True
             )
+            user.set_password(password)
+            user.save()
             self.stdout.write(self.style.SUCCESS(f'Superuser "{phone}" created successfully!'))
             self.stdout.write(self.style.SUCCESS(f'Phone: {phone}'))
             self.stdout.write(self.style.SUCCESS(f'Password: {password}'))
