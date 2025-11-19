@@ -126,7 +126,7 @@
 
   {# ---- Coupon Slide Carousel Preview ---- #}
   {% if image_pairs %}
-  <div class="card border-0 mb-4 overflow-hidden" style="background-color: #f8f9fa;">
+  <div id="coupon-slide-section" class="card border-0 mb-4 overflow-hidden" style="background-color: #f8f9fa;">
     <div id="couponSlideCarouselRedeem" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true">
       <div class="carousel-inner">
         {% for pair in image_pairs %}
@@ -381,8 +381,8 @@
         </div>
         <div class="modal-body px-4 pb-4">
           {# สถานะ #}
-          <div class="bg-success bg-opacity-10 rounded-3 p-2 mb-3 text-center">
-            <span class="badge bg-success px-3 py-2">ใช้งานได้</span>
+          <div class="rounded-3 p-2 mb-3 text-center" style="background-color: #ffe5f0;">
+            <span class="badge px-3 py-2" style="background-color: #ff008b; color: white;">ใช้งานได้</span>
           </div>
           
           {# ชื่อคูปอง #}
@@ -392,7 +392,7 @@
           <div class="bg-light rounded-3 p-3 mb-3">
             <p class="text-muted mb-2 small text-center">รหัสของรางวัล</p>
             <div class="d-flex align-items-center justify-content-center gap-2">
-              <h4 class="text-success mb-0 fw-bold" id="myCouponCode"></h4>
+              <h4 class="mb-0 fw-bold" id="myCouponCode" style="color: #ff008b;"></h4>
               <button class="btn btn-sm btn-outline-secondary" onclick="copyCouponCode()">
                 <i class="fa fa-copy"></i>
               </button>
@@ -1004,6 +1004,16 @@
         document.querySelectorAll('.coupon-top-panel').forEach(p => p.classList.add('d-none'));
         document.getElementById(target).classList.remove('d-none');
         
+        // Show/hide coupon slide based on tab
+        const slideSection = document.getElementById('coupon-slide-section');
+        if (slideSection) {
+          if (target === 'tab-dream') {
+            slideSection.style.display = 'block';
+          } else {
+            slideSection.style.display = 'none';
+          }
+        }
+        
         // Show/hide subcategory tabs based on selection
         if (target === 'tab-dream') {
           filterTabsWrapper.classList.remove('d-none');
@@ -1028,6 +1038,12 @@
     const partnerModal = document.getElementById('partnerModal');
     if (partnerModal) {
       partnerModal.addEventListener('show.bs.modal', function(event) {
+        // ซ่อน coupon slide เมื่อเปิด partner modal
+        const slideSection = document.getElementById('coupon-slide-section');
+        if (slideSection) {
+          slideSection.style.display = 'none';
+        }
+        
         const button = event.relatedTarget;
         const partnerId = button.getAttribute('data-partner-id');
         const partnerName = button.getAttribute('data-partner-name');
@@ -1176,6 +1192,17 @@
             btnUseCoupon.style.color = 'white';
             btnUseCoupon.textContent = 'ไม่สามารถโหลดข้อมูลได้';
           });
+      });
+      
+      // แสดง coupon slide กลับมาเมื่อปิด partner modal (เฉพาะแท็บ DDream)
+      partnerModal.addEventListener('hidden.bs.modal', function() {
+        const slideSection = document.getElementById('coupon-slide-section');
+        const activeTab = document.querySelector('.coupon-top-tab.active');
+        const activeTarget = activeTab ? activeTab.getAttribute('data-target') : 'tab-dream';
+        
+        if (slideSection && activeTarget === 'tab-dream') {
+          slideSection.style.display = 'block';
+        }
       });
     }
     
@@ -1392,6 +1419,12 @@
   function showPartnerPopupRedeem(partnerId) {
     if (!partnerId) return;
     
+    // ซ่อน coupon slide
+    const slideSection = document.getElementById('coupon-slide-section');
+    if (slideSection) {
+      slideSection.style.display = 'none';
+    }
+    
     fetch(`/account/partner/${partnerId}/coupons/`)
       .then(response => response.json())
       .then(data => {
@@ -1592,6 +1625,17 @@
     
     const bsModal = new bootstrap.Modal(modal);
     bsModal.show();
+    
+    // แสดง slide กลับมาเมื่อปิด modal (เฉพาะแท็บ DDream)
+    modal.addEventListener('hidden.bs.modal', function() {
+      const slideSection = document.getElementById('coupon-slide-section');
+      const activeTab = document.querySelector('.coupon-top-tab.active');
+      const activeTarget = activeTab ? activeTab.getAttribute('data-target') : 'tab-dream';
+      
+      if (slideSection && activeTarget === 'tab-dream') {
+        slideSection.style.display = 'block';
+      }
+    }, { once: true });
   }
   </script>
   

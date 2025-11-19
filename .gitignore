@@ -27,10 +27,11 @@ db.sqlite3
 db.sqlite3-journal
 db.bak.sqlite3
 
-# ❌ Media Files (User uploads) - ห้ามอัพ
-media/
+# Media Files - Allow for testing on Render Free
+# (Remove this comment when using paid plan with persistent storage)
+# media/
 
-# ❌ Collected Static Files - ห้ามอัพ
+# Collected Static Files
 /staticfiles/
 
 
