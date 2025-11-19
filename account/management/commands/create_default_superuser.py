@@ -6,9 +6,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         User = get_user_model()
-        username = 'adminddream1'
+        username = '0123456789'
         email = 'adminddream1@ddreamclinic.com'
-        password = 'Admin1'
+        password = 'Admin5421'
         
         try:
             user = User.objects.get(username=username)
