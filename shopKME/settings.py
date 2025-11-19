@@ -176,25 +176,29 @@ import cloudinary.api
 USE_CLOUDINARY = os.getenv('USE_CLOUDINARY', 'False').lower() == 'true'
 
 if USE_CLOUDINARY:
-    # เพิ่ม cloudinary apps เมื่อใช้งาน
-    INSTALLED_APPS.insert(INSTALLED_APPS.index('django.contrib.staticfiles') + 1, 'cloudinary_storage')
-    INSTALLED_APPS.insert(INSTALLED_APPS.index('cloudinary_storage') + 1, 'cloudinary')
+    # เพิ่ม cloudinary apps ที่ตำแหน่งต้นสุดของ INSTALLED_APPS
+    cloudinary_apps = ['cloudinary_storage', 'cloudinary']
+    for app in reversed(cloudinary_apps):
+        if app not in INSTALLED_APPS:
+            INSTALLED_APPS.insert(0, app)
+    
+    # Cloudinary configuration
+    cloudinary.config(
+        cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+        api_key=os.getenv('CLOUDINARY_API_KEY', ''),
+        api_secret=os.getenv('CLOUDINARY_API_SECRET', ''),
+        secure=True
+    )
     
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
         'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
         'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
-        'SECURE': True,
     }
     
-    cloudinary.config(
-        cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
-        api_key=CLOUDINARY_STORAGE['API_KEY'],
-        api_secret=CLOUDINARY_STORAGE['API_SECRET'],
-        secure=True
-    )
-    
+    # ใช้ Cloudinary เป็น default storage
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    
 else:
     # ใช้ local storage (default สำหรับ development)
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
