@@ -30,8 +30,9 @@ urlpatterns = [
     path('', home, name='home'),
 ]
 
-# Serve media files (works in both DEBUG and production)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files locally only when NOT using Cloudinary
+if not getattr(settings, 'USE_CLOUDINARY', False):
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serve static files in DEBUG mode
 if settings.DEBUG:
