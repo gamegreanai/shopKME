@@ -25,6 +25,7 @@ urlpatterns = [
     path('partner/<int:partner_id>/coupons/', views.partner_coupons_api, name='partner_coupons_api'),
     path('staff/edit/<int:user_id>/', views.edit_user, name='edit_user'),
     path('staff/delete/<int:user_id>/', views.delete_user, name='delete_user'),
+    path('staff/toggle-role/<int:user_id>/', views.toggle_user_role, name='toggle_user_role'),
     path('coupon/', view_coupon.coupon_staff_view, name='coupon_staff'),
     path('coupon/slide/', views.coupon_slide_view, name='coupon_slide'),
 

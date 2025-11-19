@@ -348,6 +348,44 @@ def delete_user(request, user_id):
 
     return redirect('account:staff_manage_points')
 
+@staff_member_required
+def toggle_user_role(request, user_id):
+    """เปลี่ยนสิทธิ์ผู้ใช้เป็น staff/admin หรือ user ปกติ"""
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+    
+    user = get_object_or_404(User, id=user_id)
+    
+    # ป้องกันไม่ให้แก้ไขตัวเอง
+    if user.id == request.user.id:
+        messages.warning(request, "⚠️ ไม่สามารถแก้ไขสิทธิ์ของตัวเองได้")
+        return redirect('account:staff_manage_points')
+    
+    action = request.POST.get('action')  # 'make_staff', 'make_admin', 'remove_staff'
+    
+    try:
+        if action == 'make_staff':
+            user.is_staff = True
+            user.is_superuser = False
+            user.save()
+            messages.success(request, f"✅ เปลี่ยน {user.phone} เป็น Staff สำเร็จ")
+        elif action == 'make_admin':
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
+            messages.success(request, f"✅ เปลี่ยน {user.phone} เป็น Admin สำเร็จ")
+        elif action == 'remove_staff':
+            user.is_staff = False
+            user.is_superuser = False
+            user.save()
+            messages.success(request, f"✅ เปลี่ยน {user.phone} เป็น User ปกติสำเร็จ")
+        else:
+            messages.error(request, "❌ คำสั่งไม่ถูกต้อง")
+    except Exception as e:
+        messages.error(request, f"เกิดข้อผิดพลาด: {str(e)}")
+    
+    return redirect('account:staff_manage_points')
+
 def staff_required(user):
     return user.is_staff or user.is_superuser
 

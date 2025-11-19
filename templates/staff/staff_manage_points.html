@@ -24,7 +24,9 @@
               <th><input type="checkbox" id="select-all"></th>
               <th>ชื่อผู้ใช้</th>
               <th>เบอร์โทรศัพท์</th>
+              <th>สิทธิ์</th>
               <th>แต้มปัจจุบัน</th>
+              <th>จัดการสิทธิ์</th>
               <th>แก้ไขข้อมูล</th>
               <th>ลบออกจากระบบ</th>
             </tr>
@@ -35,7 +37,56 @@
               <td><input type="checkbox" name="selected_users" value="{{ p.user.id }}"></td>
               <td>{{ p.user.first_name|default:"-" }} {{ p.user.last_name|default:"-" }}</td>
               <td>{{ p.user.phone }}</td>
+              <td>
+                {% if p.user.is_superuser %}
+                  <span class="badge bg-danger">Admin</span>
+                {% elif p.user.is_staff %}
+                  <span class="badge bg-info">Staff</span>
+                {% else %}
+                  <span class="badge bg-secondary">User</span>
+                {% endif %}
+              </td>
               <td><span class="badge bg-success fs-6">{{ p.points }}</span></td>
+              <td>
+                {% if p.user.id != request.user.id %}
+                <div class="dropdown">
+                  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fa fa-user-cog"></i> จัดการสิทธิ์
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <form method="post" action="{% url 'account:toggle_user_role' p.user.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="make_admin">
+                        <button type="submit" class="dropdown-item" onclick="return confirm('ยืนยันการเปลี่ยนเป็น Admin?');">
+                          ตั้งเป็น Admin
+                        </button>
+                      </form>
+                    </li>
+                    <li>
+                      <form method="post" action="{% url 'account:toggle_user_role' p.user.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="make_staff">
+                        <button type="submit" class="dropdown-item" onclick="return confirm('ยืนยันการเปลี่ยนเป็น Staff?');">
+                          ตั้งเป็น Staff
+                        </button>
+                      </form>
+                    </li>
+                    <li>
+                      <form method="post" action="{% url 'account:toggle_user_role' p.user.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="remove_staff">
+                        <button type="submit" class="dropdown-item" onclick="return confirm('ยืนยันการเปลี่ยนเป็น User ปกติ?');">
+                          เปลี่ยนเป็น User ปกติ
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+                {% else %}
+                  <span class="badge bg-warning">ตัวคุณเอง</span>
+                {% endif %}
+              </td>
               <td>
                 <a href="{% url 'account:edit_user' p.user.id %}" class="btn btn-warning btn-sm">
                   <i class="fa fa-edit"></i> แก้ไขข้อมูล
@@ -49,7 +100,7 @@
               </td>
             </tr>
             {% empty %}
-            <tr><td colspan="6" class="text-muted">ยังไม่มีข้อมูลผู้ใช้</td></tr>
+            <tr><td colspan="8" class="text-muted">ยังไม่มีข้อมูลผู้ใช้</td></tr>
             {% endfor %}
           </tbody>
         </table>
