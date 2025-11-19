@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary_storage',
-    'cloudinary',
     'account',
 ]
 
@@ -178,10 +176,9 @@ import cloudinary.api
 USE_CLOUDINARY = os.getenv('USE_CLOUDINARY', 'False').lower() == 'true'
 
 if USE_CLOUDINARY:
-    # เพิ่ม cloudinary_storage ใน INSTALLED_APPS
-    if 'cloudinary_storage' not in INSTALLED_APPS:
-        INSTALLED_APPS.insert(INSTALLED_APPS.index('django.contrib.staticfiles') + 1, 'cloudinary_storage')
-        INSTALLED_APPS.insert(INSTALLED_APPS.index('cloudinary_storage') + 1, 'cloudinary')
+    # เพิ่ม cloudinary apps เมื่อใช้งาน
+    INSTALLED_APPS.insert(INSTALLED_APPS.index('django.contrib.staticfiles') + 1, 'cloudinary_storage')
+    INSTALLED_APPS.insert(INSTALLED_APPS.index('cloudinary_storage') + 1, 'cloudinary')
     
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
