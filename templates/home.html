@@ -180,6 +180,34 @@
         font-size: 1rem;
       }
     }
+
+    {% comment %} /*  ปุ่มแสดง/ซ่อนรหัสผ่าน */ {% endcomment %}
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: 0.3s;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .password-toggle:hover {
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -213,7 +241,12 @@
         </div>
         <div class="mb-3">
           <label class="form-label">รหัสผ่าน</label>
-          <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
+          <div class="password-wrapper">
+            <input type="password" id="register-password" class="form-control" placeholder="ตั้งรหัสผ่านของคุณ" minlength="6" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('register-password', this)">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
         </div>
         
         <button type="submit" class="btn btn-pink w-100" id="btn-register" disabled>สมัครสมาชิก</button>
@@ -228,7 +261,12 @@
         </div>
         <div class="mb-3">
           <label class="form-label">รหัสผ่าน</label>
-          <input type="password" id="login-password" class="form-control" placeholder="รหัสผ่าน" required>
+          <div class="password-wrapper">
+            <input type="password" id="login-password" class="form-control" placeholder="รหัสผ่าน" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
         </div>
         <button type="submit" class="btn btn-pink w-100">เข้าสู่ระบบ</button>
       </form>
@@ -245,8 +283,18 @@
         <h5 class="text-center mb-3 text-pink fw-semibold">ลืมรหัสผ่าน</h5>
         <input type="text" name="phone" class="form-control mb-3" placeholder="เบอร์โทรศัพท์" required>
         <input type="email" name="email" class="form-control mb-3" placeholder="อีเมล" required>
-        <input type="password" name="password" class="form-control mb-3" placeholder="รหัสผ่านใหม่" required>
-        <input type="password" name="confirm_password" class="form-control mb-3" placeholder="ยืนยันรหัสผ่านใหม่" required>
+        <div class="password-wrapper mb-3">
+          <input type="password" id="forgot-password" name="password" class="form-control" placeholder="รหัสผ่านใหม่" required>
+          <button type="button" class="password-toggle" onclick="togglePassword('forgot-password', this)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+        <div class="password-wrapper mb-3">
+          <input type="password" id="forgot-confirm-password" name="confirm_password" class="form-control" placeholder="ยืนยันรหัสผ่านใหม่" required>
+          <button type="button" class="password-toggle" onclick="togglePassword('forgot-confirm-password', this)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
         <button type="submit" class="btn btn-pink w-100">ยืนยันเปลี่ยนรหัสผ่าน</button>
         <!-- bottom toggles for forgot form (hidden by default, shown when forgot is active) -->
         <div class="text-center mt-3 forgot-bottom-toggle" style="display:none;">
@@ -261,6 +309,22 @@
 
   {% comment %} <!--  JavaScript (ของคุณเดิม ไม่เปลี่ยน logic) --> {% endcomment %}
   <script>
+    // ฟังก์ชันแสดง/ซ่อนรหัสผ่าน
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      const icon = button.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
+    }
+
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
   const forgotForm = document.getElementById('forgot-form');
