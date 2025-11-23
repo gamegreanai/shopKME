@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 {% block content %}
 <div class="container py-4" style="padding-top: 80px !important;">
-  <h4 class="fw-bold text-success mb-3">จัดการรูปภาพคูปอง</h4>
+  <h4 class="fw-bold mb-3" style="color: #ff008b;">จัดการรูปภาพคูปอง</h4>
 
   <!-- Preview Carousel Section -->
   <div class="card border-0 shadow-sm mb-4">
@@ -46,11 +46,11 @@
         
         <!-- Carousel Controls -->
         <button class="carousel-control-prev" type="button" data-bs-target="#couponSlideCarousel" data-bs-slide="prev" style="width: 8%;">
-          <span class="carousel-control-prev-icon bg-success rounded-circle p-3" aria-hidden="true"></span>
+          <span class="carousel-control-prev-icon rounded-circle p-3" aria-hidden="true" style="background-color: #ff008b;"></span>
           <span class="visually-hidden">Previous</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#couponSlideCarousel" data-bs-slide="next" style="width: 8%;">
-          <span class="carousel-control-next-icon bg-success rounded-circle p-3" aria-hidden="true"></span>
+          <span class="carousel-control-next-icon rounded-circle p-3" aria-hidden="true" style="background-color: #ff008b;"></span>
           <span class="visually-hidden">Next</span>
         </button>
         
@@ -86,7 +86,7 @@
         <div class="col-md-4">
           <label class="form-label fw-semibold">ลำดับการแสดงผล</label>
           <input type="number" class="form-control" name="sort_order" placeholder="10, 20, 30..." value="0" required>
-          <div class="form-text">เรียงจากน้อยไปมาก เช่น 10, 20, 30</div>
+          <div class="form-text">เรียงจากน้อยไปมาก เช่น 1, 2, 3</div>
         </div>
         
         <div class="col-md-4">
@@ -116,7 +116,7 @@
         </div>
         
         <div class="col-12 text-end">
-          <button type="submit" class="btn btn-success">
+          <button type="submit" class="btn" style="background-color: #ff008b; color: white; border: none;">
             <i class="fa fa-save me-2"></i>บันทึกรูปภาพ
           </button>
         </div>
@@ -172,14 +172,14 @@
               </td>
               <td class="text-end">
                 <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ img.id }}" data-name="{{ img.name }}" data-sort-order="{{ img.sort_order }}" data-partner-id="{% if img.partner %}{{ img.partner.id }}{% endif %}">
-                    <i class="fa fa-edit"></i>
+                  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ img.id }}" data-name="{{ img.name }}" data-sort-order="{{ img.sort_order }}" data-partner-id="{% if img.partner %}{{ img.partner.id }}{% endif %}" data-img-url="{{ img.image.url }}" title="แก้ไขข้อมูล">
+                    <i class="fa fa-edit"></i> แก้ไข
                   </button>
-                  <form method="post" class="d-inline" onsubmit="return confirm('ยืนยันการลบรูปภาพนี้?');">
+                  <form method="post" class="d-inline" onsubmit="return confirm('ยืนยันการลบรูปภาพนี้?\n\n{{ img.name }}\n\nการดำเนินการนี้ไม่สามารถย้อนกลับได้');">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="image_id" value="{{ img.id }}">
-                    <button type="submit" class="btn btn-outline-danger">
+                    <button type="submit" class="btn btn-outline-danger" title="ลบรูปภาพ">
                       <i class="fa fa-trash"></i>
                     </button>
                   </form>
@@ -214,30 +214,35 @@
   </div>
 </div>
 
-{# Modal สำหรับแก้ไขชื่อ #}
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+{# Modal สำหรับแก้ไขข้อมูลรูปภาพ #}
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+  <div class="modal-dialog modal-lg" style="margin-top: 80px;">
     <div class="modal-content">
-      <form method="post">
+      <form method="post" enctype="multipart/form-data" id="editImageForm">
         {% csrf_token %}
         <input type="hidden" name="action" value="edit">
         <input type="hidden" name="image_id" id="editImageId">
         
-        <div class="modal-header">
-          <h5 class="modal-title">แก้ไขข้อมูลรูปภาพ</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title"><i class="fa fa-edit me-2"></i>แก้ไขข้อมูลรูปภาพ</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         
         <div class="modal-body">
+          <!-- ชื่อรูปภาพ -->
           <div class="mb-3">
             <label class="form-label fw-semibold">ชื่อรูปภาพ</label>
             <input type="text" class="form-control" name="image_name" id="editImageName" required>
           </div>
+          
+          <!-- ลำดับการแสดงผล -->
           <div class="mb-3">
             <label class="form-label fw-semibold">ลำดับการแสดงผล</label>
             <input type="number" class="form-control" name="sort_order" id="editSortOrder" required>
-            <div class="form-text">เรียงจากน้อยไปมาก เช่น 10, 20, 30</div>
+            <div class="form-text">เรียงจากน้อยไปมาก เช่น 1, 2, 3</div>
           </div>
+          
+          <!-- เชื่อมโยงพาร์ทเนอร์ -->
           <div class="mb-3">
             <label class="form-label fw-semibold">เชื่อมโยงกับพาร์ทเนอร์</label>
             <select class="form-select" name="partner_id" id="editPartnerId">
@@ -248,11 +253,40 @@
             </select>
             <div class="form-text">เมื่อคลิกรูปจะแสดงป๊อปอัพคูปองของพาร์ทเนอร์นี้</div>
           </div>
+          
+          <hr class="my-4">
+          
+          <!-- เปลี่ยนรูปภาพ (Optional) -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              <i class="fa fa-image me-2 text-success"></i>เปลี่ยนรูปภาพ (ถ้าต้องการ)
+            </label>
+            <input type="file" class="form-control" name="new_image_file" id="editNewImageFile" accept="image/*">
+            <div class="form-text">หากต้องการเปลี่ยนรูป กรุณาเลือกไฟล์ใหม่ (jpg, png, webp ไม่เกิน 5MB)</div>
+          </div>
+          
+          <!-- แสดง Preview รูปใหม่ -->
+          <div id="editNewImagePreview" class="d-none">
+            <label class="form-label fw-semibold text-success">
+              <i class="fa fa-check-circle me-2"></i>ตัวอย่างรูปภาพใหม่
+            </label>
+            <div class="border rounded p-3 bg-light text-center">
+              <img id="editNewPreviewImg" src="" alt="New Preview" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+            </div>
+            <div class="alert alert-warning mt-2 mb-0">
+              <i class="fa fa-exclamation-triangle me-2"></i>
+              <small>รูปภาพเก่าจะถูกลบและแทนที่ด้วยรูปใหม่</small>
+            </div>
+          </div>
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-          <button type="submit" class="btn btn-success">บันทึก</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fa fa-times me-2"></i>ยกเลิก
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa fa-save me-2"></i>บันทึกการแก้ไข
+          </button>
         </div>
       </form>
     </div>
@@ -303,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Edit Modal
+  // Edit Modal - รวมทั้งข้อมูลและรูปภาพ
   const editModal = document.getElementById('editModal');
   if (editModal) {
     editModal.addEventListener('show.bs.modal', function(event) {
@@ -312,11 +346,45 @@ document.addEventListener('DOMContentLoaded', function() {
       const imageName = button.getAttribute('data-name');
       const sortOrder = button.getAttribute('data-sort-order');
       const partnerId = button.getAttribute('data-partner-id');
+      const imgUrl = button.getAttribute('data-img-url');
       
       document.getElementById('editImageId').value = imageId;
       document.getElementById('editImageName').value = imageName;
       document.getElementById('editSortOrder').value = sortOrder || 0;
       document.getElementById('editPartnerId').value = partnerId || '';
+      
+      // Reset preview
+      document.getElementById('editNewImagePreview').classList.add('d-none');
+      document.getElementById('editNewImageFile').value = '';
+    });
+  }
+  
+  // Preview รูปใหม่ในหน้าแก้ไข
+  const editNewImageFile = document.getElementById('editNewImageFile');
+  const editNewImagePreview = document.getElementById('editNewImagePreview');
+  const editNewPreviewImg = document.getElementById('editNewPreviewImg');
+  
+  if (editNewImageFile) {
+    editNewImageFile.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        // ตรวจสอบขนาดไฟล์ (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert('ไฟล์มีขนาดใหญ่เกิน 5MB กรุณาเลือกไฟล์ใหม่');
+          this.value = '';
+          editNewImagePreview.classList.add('d-none');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          editNewPreviewImg.src = e.target.result;
+          editNewImagePreview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        editNewImagePreview.classList.add('d-none');
+      }
     });
   }
   
@@ -428,19 +496,19 @@ function showCouponModal(data, displayCoupon) {
             <div class="modal-body p-4">
               <!-- รูปคูปอง QR Code -->
               <div class="text-center mb-4" id="modalCouponImageContainer">
-                <img id="modalCouponImage" src="" alt="Coupon QR" class="img-fluid rounded-3 shadow-sm" style="max-height: 300px; display: none;">
+                <img id="modalCouponImage" src="" alt="Coupon QR" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px; max-width: 200px; display: none; margin: 0 auto;">
               </div>
               
               <!-- รายละเอียดคูปอง -->
               <div class="card mb-3 border-0 bg-light">
                 <div class="card-body">
-                  <h6 class="fw-semibold mb-3 text-primary"><i class="fa fa-info-circle me-2"></i>รายละเอียดคูปอง</h6>
+                  <h6 class="fw-semibold mb-3" style="color: #ff008b;"><i class="fa fa-info-circle me-2"></i>รายละเอียดคูปอง</h6>
                   <div class="row g-2">
                     <div class="col-12">
-                      <p class="mb-2"><strong>ชื่อคูปอง:</strong> <span id="modalCouponName" class="text-success"></span></p>
+                      <p class="mb-2"><strong>ชื่อคูปอง:</strong> <span id="modalCouponName" style="color: #ff008b;"></span></p>
                     </div>
                     <div class="col-6">
-                      <p class="mb-2"><strong>รหัส:</strong> <span id="modalCouponCode" class="badge bg-primary"></span></p>
+                      <p class="mb-2"><strong>รหัส:</strong> <span id="modalCouponCode" class="badge" style="background-color: #ff008b; color: white;"></span></p>
                     </div>
                     <div class="col-6">
                       <p class="mb-2"><strong>แต้มที่ใช้:</strong> <span id="modalCouponPoints" class="text-danger fw-bold"></span> คะแนน</p>
@@ -458,10 +526,10 @@ function showCouponModal(data, displayCoupon) {
               <!-- สถานะคูปอง -->
               <div class="card mb-3 border-0" style="background-color: #f0f9ff;">
                 <div class="card-body">
-                  <h6 class="fw-semibold mb-3 text-info"><i class="fa fa-chart-bar me-2"></i>สถานะคูปอง</h6>
+                  <h6 class="fw-semibold mb-3" style="color: #ff008b;"><i class="fa fa-chart-bar me-2"></i>สถานะคูปอง</h6>
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="text-muted">คูปองที่เหลือ</span>
-                    <span id="modalCouponCountText" class="fw-bold text-success">0 คูปอง</span>
+                    <span id="modalCouponCountText" class="fw-bold" style="color: #ff008b;">0 คูปอง</span>
                   </div>
                   <div class="progress" style="height: 25px;">
                     <div class="progress-bar bg-success" id="modalCouponProgress" style="width: 0%;" role="progressbar">
@@ -471,30 +539,11 @@ function showCouponModal(data, displayCoupon) {
                 </div>
               </div>
               
-              <!-- ข้อมูลแต้มผู้ใช้ -->
-              <div class="alert alert-warning d-flex align-items-center mb-3" role="alert" id="modalUserPointsAlert">
-                <i class="fa fa-wallet me-2"></i>
-                <div>
-                  <strong>แต้มของคุณ:</strong> <span id="modalUserPoints">{{ profile.points|default:0 }}</span> คะแนน
-                  <br>
-                  <small id="modalPointsStatus" class="text-muted"></small>
-                </div>
-              </div>
-              
-              <!-- ปุ่มแลกคูปอง -->
-              <div id="modalRedeemSection">
-                <form method="post" id="modalRedeemForm">
-                  {% csrf_token %}
-                  <input type="hidden" name="action" value="redeem">
-                  <input type="hidden" name="coupon_id" id="modalRedeemCouponId">
-                  
-                  <button type="submit" class="btn btn-success btn-lg w-100 fw-bold py-3 rounded-3 mb-2" id="modalRedeemBtn">
-                    <i class="fa fa-gift me-2"></i>แลกคูปองเลย!
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary w-100 fw-semibold py-2 rounded-3" data-bs-dismiss="modal">
-                    ปิด
-                  </button>
-                </form>
+              <!-- ปุ่มปิด -->
+              <div class="text-center">
+                <button type="button" class="btn btn-outline-secondary w-100 fw-semibold py-2 rounded-3" data-bs-dismiss="modal">
+                  ปิด
+                </button>
               </div>
             </div>
           </div>
@@ -512,7 +561,6 @@ function showCouponModal(data, displayCoupon) {
   document.getElementById('modalCouponPoints').textContent = displayCoupon.required_points || '0';
   document.getElementById('modalCouponNote').textContent = displayCoupon.note || 'ไม่มีหมายเหตุ';
   document.getElementById('modalCouponBranches').textContent = displayCoupon.available_branches || 'ใช้ได้ทุกสาขา';
-  document.getElementById('modalRedeemCouponId').value = displayCoupon.id;
   
   // แสดงรูป QR Code ถ้ามี
   const imgElement = document.getElementById('modalCouponImage');
@@ -531,41 +579,6 @@ function showCouponModal(data, displayCoupon) {
   document.getElementById('modalCouponProgress').style.width = percent + '%';
   document.getElementById('modalCouponProgressText').textContent = percent + '%';
   document.getElementById('modalCouponCountText').textContent = activeCount + ' จาก ' + totalCount + ' คูปอง';
-  
-  // ตรวจสอบแต้มผู้ใช้
-  const userPoints = {{ profile.points|default:0 }};
-  const requiredPoints = displayCoupon.required_points || 0;
-  const enoughPoints = userPoints >= requiredPoints;
-  const isActive = displayCoupon.active;
-  
-  document.getElementById('modalUserPoints').textContent = userPoints;
-  
-  const redeemBtn = document.getElementById('modalRedeemBtn');
-  const pointsStatus = document.getElementById('modalPointsStatus');
-  
-  if (!isActive) {
-    redeemBtn.disabled = true;
-    redeemBtn.innerHTML = '<i class="fa fa-ban me-2"></i>คูปองหมดแล้ว';
-    redeemBtn.classList.remove('btn-success');
-    redeemBtn.classList.add('btn-secondary');
-    pointsStatus.textContent = 'คูปองนี้ไม่สามารถแลกได้แล้ว';
-    pointsStatus.classList.add('text-danger');
-  } else if (!enoughPoints) {
-    redeemBtn.disabled = true;
-    redeemBtn.innerHTML = '<i class="fa fa-times me-2"></i>แต้มไม่พอ';
-    redeemBtn.classList.remove('btn-success');
-    redeemBtn.classList.add('btn-secondary');
-    pointsStatus.textContent = 'ต้องการอีก ' + (requiredPoints - userPoints) + ' คะแนน';
-    pointsStatus.classList.add('text-danger');
-  } else {
-    redeemBtn.disabled = false;
-    redeemBtn.innerHTML = '<i class="fa fa-gift me-2"></i>แลกคูปองเลย!';
-    redeemBtn.classList.remove('btn-secondary');
-    redeemBtn.classList.add('btn-success');
-    pointsStatus.textContent = 'คุณมีแต้มเพียงพอที่จะแลก';
-    pointsStatus.classList.remove('text-danger');
-    pointsStatus.classList.add('text-success');
-  }
   
   // แสดง modal
   const bsModal = new bootstrap.Modal(modal);

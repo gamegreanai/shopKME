@@ -9,9 +9,9 @@
     {% if meter.level == "Silver" %}
       <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'img/gardDM.png' %}') center/cover no-repeat;"></div>
     {% elif meter.level == "Gold" %}
-      <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'img/bg_gold.jpg' %}') center/cover no-repeat;"></div>
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'img/gardDM.png' %}') center/cover no-repeat;"></div>
     {% else %}
-      <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'img/bg_premium.jpg' %}') center/cover no-repeat;"></div>
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: url('{% static 'img/gardDM.pngg' %}') center/cover no-repeat;"></div>
     {% endif %}
     <div class="card-body d-flex flex-column flex-md-row align-items-start justify-content-between position-relative member-content" >
 
@@ -63,6 +63,7 @@
 </div>
   <div class="row g-3 mb-4">
     {% for r in my_coupons %} {% with c=r.coupon %}
+    {% if c.ends_at|date:"Y-m-d" >= now|date:"Y-m-d" %}
     <div class="col-6 col-md-4 col-lg-3">
       <div class="card coupon-card border-0 shadow-sm h-100 rounded-4 overflow-hidden" 
            style="cursor:pointer;"
@@ -76,9 +77,9 @@
            data-coupon-branches="{{ c.partner.available_branches|default:'ใช้ได้ทุกสาขา' }}"
            data-coupon-ends="{{ c.ends_at|date:'c' }}"
            data-redemption-created="{{ r.created_at|date:'c' }}"
-           data-image-code="{% if c.image_code %}{{ c.image_code.url }}{% endif %}">
+           data-image-code="{% if c.image_code %}{{ c.image_code.url }}?t={{ c.updated_at|date:'U' }}{% endif %}">
         {% if c.image_code and c.image_code.name %}
-        <img src="{{ c.image_code.url }}" class="card-img-top" alt="{{ c.code }}" />
+        <img src="{{ c.image_code.url }}?t={{ c.updated_at|date:'U' }}" class="card-img-top" alt="{{ c.code }}" />
         {% else %} {% include "account/coupon_fall.html" with c=c theme="cpn--light" %} {% endif %}
         
         <div class="card-body d-flex flex-column p-2">
@@ -91,6 +92,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
     {% endwith %} {% empty %}
     <div class="col-12 text-muted text-center">ยังไม่มีคูปองที่แลกไว้</div>
     {% endfor %}
@@ -284,13 +286,13 @@
                data-partner-id="{{ p.id }}"
                data-partner-name="{{ p.name }}"
                data-partner-title="{{ p.title }}"
-               data-partner-logo="{% if p.logo %}{{ p.logo.url }}{% endif %}"
+               data-partner-logo="{% if p.logo %}{{ p.logo.url }}?t={{ p.updated_at|date:'U' }}{% endif %}"
                data-partner-branches="{{ p.available_branches }}"
                data-partner-expires="">
             <div class="row g-0">
               <div class="col-4 col-md-3">
                 {% if p.logo %}
-                <img src="{{ p.logo.url }}" class="w-100 h-100" alt="{{ p.name }}" style="object-fit:cover;">
+                <img src="{{ p.logo.url }}?t={{ p.updated_at|date:'U' }}" class="w-100 h-100" alt="{{ p.name }}" style="object-fit:cover;">
                 {% else %}
                 <div class="bg-light d-flex align-items-center justify-content-center h-100">
                   <i class="fa fa-image fa-3x text-muted"></i>
@@ -300,13 +302,13 @@
               <div class="col-8 col-md-9">
                 <div class="card-body d-flex flex-column justify-content-between h-100 p-3">
                   <div>
-                    <span class="badge bg-secondary mb-2 px-3 py-2">ใช้แล้ว/หมดอายุ</span>
+                    <span class="badge bg-secondary mb-2 px-3 py-2">หมดอายุ</span>
                     <p class="text-dark mb-2 fw-bold">{{ p.title|default:p.name }}</p>
-                    <p class="text-muted mb-2 small">คูปองใช้กับทางร้าน</p>
-                    <p class="text-success mb-0 fw-bold"><span class="partner-coupon-count-{{ p.id }}">-</span></p>
+                    <p class="text-muted mb-2 small">คูปองหมดอายุแล้ว</p>
+                    <p class="text-danger mb-0 fw-bold"><i class="fa fa-times-circle me-1"></i>ไม่สามารถใช้งานได้</p>
                   </div>
                   <div class="d-flex justify-content-end align-items-center mt-2">
-                    <button class="btn btn-pink rounded-pill px-4" disabled>ใช้คูปอง</button>
+                    <button class="btn btn-secondary rounded-pill px-4" disabled>หมดอายุ</button>
                   </div>
                 </div>
               </div>
@@ -316,7 +318,7 @@
         {% endfor %}
       </div>
       {% else %}
-      <div class="text-center text-muted my-4">ยังไม่มีพาร์ทเนอร์ในหมวดนี้</div>
+      <div class="text-center text-muted my-4">ไม่มีคูปองที่หมดอายุ</div>
       {% endif %}
     </div>
   </div>
@@ -442,68 +444,68 @@
         <div class="modal-body p-0">
           {# รูปพาร์ทเนอร์ #}
           <div class="position-relative">
-            <img id="modalPartnerLogo" src="" alt="Partner Logo" class="w-100" style="max-height:180px;object-fit:contain;background-color:#f8f9fa;">
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-3 bg-white rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            <img id="modalPartnerLogo" src="" alt="Partner Logo" class="w-100" style="max-height:160px;object-fit:contain;background-color:#f8f9fa;">
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2 bg-white rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.8rem;"></button>
           </div>
           
-          <div class="p-2">
+          <div class="p-3 partner-modal-content">
             {# แสดงคะแนนที่ใช้แลก #}
-            <h5 class="text-center mb-3">
+            <h5 class="text-center mb-2">
               ใช้พอยท์แลก <span id="modalCouponPointsDisplay" style="color: #ff008b; font-weight: bold;">0</span> คะแนน
             </h5>
             <span id="modalPartnerName" style="display:none;"></span>
             <span id="modalPartnerTitle" style="display:none;"></span>
             
             {# วันที่สิ้นสุด #}
-            <div class="bg-light rounded-3 p-1 mb-1">
-              <h6 class="text-muted mb-2"><i class="fa fa-clock me-2"></i>วันที่สิ้นสุด</h6>
-              <div id="modalCouponExpiry" class="d-flex justify-content-center gap-3">
+            <div class="bg-light rounded-3 p-2 mb-2">
+              <h6 class="text-muted mb-1"><i class="fa fa-clock me-2"></i>วันที่สิ้นสุด</h6>
+              <div id="modalCouponExpiry" class="d-flex justify-content-center gap-2">
                 <div class="text-center">
-                  <div class="fw-bold fs-4" id="expiryDays">--</div>
+                  <div class="fw-bold fs-5" id="expiryDays">--</div>
                   <small class="text-muted">วัน</small>
                 </div>
                 <div class="text-center">
-                  <div class="fw-bold fs-4" id="expiryHours">--</div>
+                  <div class="fw-bold fs-5" id="expiryHours">--</div>
                   <small class="text-muted">ชั่วโมง</small>
                 </div>
                 <div class="text-center">
-                  <div class="fw-bold fs-4" id="expiryMinutes">--</div>
+                  <div class="fw-bold fs-5" id="expiryMinutes">--</div>
                   <small class="text-muted">นาที</small>
                 </div>
                 <div class="text-center">
-                  <div class="fw-bold fs-4" id="expirySeconds">--</div>
+                  <div class="fw-bold fs-5" id="expirySeconds">--</div>
                   <small class="text-muted">วินาที</small>
                 </div>
               </div>
             </div>
             
             {# คูปองคงเหลือ #}
-            <div class="border rounded-3 p-1 mb-3">
+            <div class="border rounded-3 p-2 mb-2">
               <div class="text-center mb-1">
                 <small class="text-muted">แจกทั้งหมด <strong id="modalTotalCoupons">5</strong> สิทธิ์ตลอดแคมเปน</small>
               </div>
-              <div class="progress position-relative" style="height:35px; border-radius:20px; background-color:#d3d3d3;">
+              <div class="progress position-relative" style="height:32px; border-radius:18px; background-color:#d3d3d3;">
                 <div class="progress-bar d-flex align-items-center justify-content-center fw-bold" 
-                     id="modalCouponProgress" 
-                     style="width:80%; background-color:#ff008b; border-radius:20px;">
-                  <span class="text-white">จำนวนคูปองคงเหลือ</span>
+                     id="modalCouponProgress"
+                     style="width:80%; background-color:#ff008b; border-radius:18px;">
+                  <span class="text-white" style="font-size: 0.85rem;">จำนวนคูปองคงเหลือ</span>
                 </div>
-                <div class="position-absolute top-50 end-0 translate-middle-y me-3">
-                  <small class="text-white fw-bold"><span id="modalCouponPercent">80</span>%</small>
+                <div class="position-absolute top-50 end-0 translate-middle-y me-2">
+                  <small class="text-white fw-bold" style="text-shadow: -1px -1px 0 #ff008b, 1px -1px 0 #ff008b, -1px 1px 0 #ff008b, 1px 1px 0 #ff008b; font-size: 0.85rem;"><span id="modalCouponPercent">0</span> คูปอง</small>
                 </div>
               </div>
             </div>
             
             {# เงื่อนไขส่วนลด #}
-            <div class="mb-4">
-              <h6 class="fw-semibold mb-2"><i class="fa fa-info-circle me-2"></i>เงื่อนไขส่วนลด</h6>
+            <div class="mb-3">
+              <h6 class="fw-semibold mb-1"><i class="fa fa-info-circle me-2"></i>เงื่อนไขส่วนลด</h6>
               <div class="small text-muted" id="modalCouponDetails">
                 <div id="modalBranches"></div>
               </div>
             </div>
             
             {# ปุ่มแลกของรางวัล #}
-            <button class="btn w-100 fw-semibold py-3 rounded-3" id="btnUseCoupon" data-coupon-id="" data-coupon-points="" style="background-color: #ff008b; color: white; border: none;">
+            <button class="btn w-100 fw-semibold py-2 rounded-3" id="btnUseCoupon" data-coupon-id="" data-coupon-points="" style="background-color: #ff008b; color: white; border: none; font-size: 1rem;">
               แลกของรางวัล
             </button>
           </div>
@@ -758,11 +760,149 @@
     
     /* รูปพาร์ทเนอร์ใน Modal - ปรับให้พอดีกับการ์ดบนมือถือ */
     #partnerModal #modalPartnerLogo {
-      max-height: 320px !important;
+      max-height: 120px !important;
       width: 100% !important;
       object-fit: contain !important;
       border-radius: 0.5rem !important;
       background-color: #f8f9fa !important;
+    }
+    
+    /* ลดขนาด Modal Body Padding */
+    #partnerModal .modal-body {
+      padding: 0 !important;
+    }
+    
+    #partnerModal .partner-modal-content {
+      padding: 0.5rem !important;
+    }
+    
+    /* ลดขนาดหัวข้อและข้อความใน Modal */
+    #partnerModal h5 {
+      font-size: 0.85rem !important;
+      margin-bottom: 0.4rem !important;
+    }
+    
+    #partnerModal h6 {
+      font-size: 0.7rem !important;
+      margin-bottom: 0.3rem !important;
+    }
+    
+    #partnerModal .small, #partnerModal small {
+      font-size: 0.65rem !important;
+    }
+    
+    /* ลดขนาด Countdown Timer */
+    #partnerModal .fs-5 {
+      font-size: 1rem !important;
+    }
+    
+    #partnerModal .gap-2 {
+      gap: 0.3rem !important;
+    }
+    
+    /* ลดความสูง Progress Bar */
+    #partnerModal .progress {
+      height: 24px !important;
+    }
+    
+    #partnerModal .progress span {
+      font-size: 0.65rem !important;
+    }
+    
+    /* ลดขนาดปุ่ม */
+    #partnerModal #btnUseCoupon {
+      padding: 0.5rem 0.8rem !important;
+      font-size: 0.8rem !important;
+    }
+    
+    /* ลดขนาด padding ของ sections */
+    #partnerModal .p-2 {
+      padding: 0.4rem !important;
+    }
+    
+    #partnerModal .mb-2 {
+      margin-bottom: 0.3rem !important;
+    }
+    
+    #partnerModal .mb-3 {
+      margin-bottom: 0.5rem !important;
+    }
+    
+    /* Modal ของฉัน - ปรับขนาด */
+    #myCouponModal .modal-header {
+      padding: 0.5rem 0.75rem !important;
+    }
+    
+    #myCouponModal .modal-body {
+      padding: 0.6rem 0.8rem !important;
+    }
+    
+    #myCouponModal h5 {
+      font-size: 0.85rem !important;
+    }
+    
+    #myCouponModal h6 {
+      font-size: 0.8rem !important;
+    }
+    
+    #myCouponModal h4 {
+      font-size: 1rem !important;
+    }
+    
+    #myCouponModal .small, #myCouponModal small {
+      font-size: 0.65rem !important;
+    }
+    
+    #myCouponModal p {
+      font-size: 0.75rem !important;
+      margin-bottom: 0.3rem !important;
+    }
+    
+    #myCouponModal .badge {
+      font-size: 0.65rem !important;
+      padding: 0.3rem 0.6rem !important;
+    }
+    
+    #myCouponModal .p-2 {
+      padding: 0.4rem !important;
+    }
+    
+    #myCouponModal .p-3 {
+      padding: 0.6rem !important;
+    }
+    
+    #myCouponModal .mb-3 {
+      margin-bottom: 0.4rem !important;
+    }
+    
+    #myCouponModal .btn {
+      font-size: 0.7rem !important;
+      padding: 0.3rem 0.5rem !important;
+    }
+    
+    /* ลดขนาด QR Code */
+    #myCouponModal #myCouponQR {
+      max-width: 120px !important;
+    }
+    
+    /* Modal ยืนยันการแลก */
+    #confirmRedeemModal .modal-body {
+      padding: 0.75rem 1rem !important;
+    }
+    
+    #confirmRedeemModal h5 {
+      font-size: 0.9rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    
+    #confirmRedeemModal p {
+      font-size: 0.75rem !important;
+      margin-bottom: 0.75rem !important;
+    }
+    
+    #confirmRedeemModal .btn {
+      font-size: 0.8rem !important;
+      padding: 0.4rem 0.6rem !important;
     }
     
     /* Header และ Title */
@@ -936,6 +1076,87 @@
   
   /* Responsive สำหรับแท็บเล็ต (iPad) */
   @media (min-width: 769px) and (max-width: 1024px) {
+    /* Modal Size for iPad */
+    .modal-dialog.modal-lg {
+      max-width: 650px !important;
+    }
+    
+    .modal-dialog {
+      max-width: 500px !important;
+    }
+    
+    /* Partner Modal */
+    #partnerModal #modalPartnerLogo {
+      max-height: 180px !important;
+    }
+    
+    #partnerModal .partner-modal-content {
+      padding: 0.9rem !important;
+    }
+    
+    #partnerModal h5 {
+      font-size: 1rem !important;
+    }
+    
+    #partnerModal h6 {
+      font-size: 0.85rem !important;
+    }
+    
+    #partnerModal .fs-5 {
+      font-size: 1.3rem !important;
+    }
+    
+    #partnerModal .progress {
+      height: 30px !important;
+    }
+    
+    #partnerModal .progress span {
+      font-size: 0.8rem !important;
+    }
+    
+    #partnerModal #btnUseCoupon {
+      padding: 0.65rem 1.2rem !important;
+      font-size: 0.95rem !important;
+    }
+    
+    /* My Coupon Modal */
+    #myCouponModal .modal-body {
+      padding: 1.2rem 1.5rem !important;
+    }
+    
+    #myCouponModal h5 {
+      font-size: 1rem !important;
+    }
+    
+    #myCouponModal h6 {
+      font-size: 0.95rem !important;
+    }
+    
+    #myCouponModal h4 {
+      font-size: 1.2rem !important;
+    }
+    
+    #myCouponModal p {
+      font-size: 0.9rem !important;
+    }
+    
+    #myCouponModal #myCouponQR {
+      max-width: 150px !important;
+    }
+    
+    /* Confirm Modal */
+    #confirmRedeemModal h5 {
+      font-size: 1.05rem !important;
+    }
+    
+    #confirmRedeemModal p {
+      font-size: 0.9rem !important;
+    }
+    
+    #confirmRedeemModal .btn {
+      font-size: 0.9rem !important;
+    }
+    
     h6, .h6 {
       font-size: 0.95rem !important;
     }
@@ -1096,7 +1317,7 @@
               // คำนวณ progress (คูปองที่ยังใช้ได้)
               const activeCount = data.coupons.filter(c => c.active).length;
               const percent = data.coupons.length > 0 ? Math.round((activeCount / data.coupons.length) * 100) : 0;
-              document.getElementById('modalCouponPercent').textContent = percent;
+              document.getElementById('modalCouponPercent').textContent = activeCount;
               document.getElementById('modalCouponProgress').style.width = percent + '%';
               
               // เปลี่ยนสีตัวหนังสือเมื่อคูปองหมด
@@ -1388,7 +1609,12 @@
         // แสดง QR Code
         const qrImg = document.getElementById('myCouponQR');
         if (imageCodeUrl) {
-          qrImg.src = imageCodeUrl;
+          // เพิ่ม cache busting ถ้ายังไม่มี
+          let finalUrl = imageCodeUrl;
+          if (imageCodeUrl.indexOf('?') === -1) {
+            finalUrl += '?t=' + new Date().getTime();
+          }
+          qrImg.src = finalUrl;
           qrImg.style.display = 'block';
         } else {
           qrImg.style.display = 'none';
@@ -1494,7 +1720,7 @@
                         <span class="text-white">จำนวนคูปองคงเหลือ</span>
                       </div>
                       <div class="position-absolute top-50 end-0 translate-middle-y me-3">
-                        <small class="text-white fw-bold"><span id="modalCouponPercentRedeem">0</span>%</small>
+                        <small class="text-white fw-bold" style="text-shadow: -1px -1px 0 #ff008b, 1px -1px 0 #ff008b, -1px 1px 0 #ff008b, 1px 1px 0 #ff008b;"><span id="modalCouponPercentRedeem">0</span> คูปอง</small>
                       </div>
                     </div>
                   </div>
@@ -1556,7 +1782,7 @@
     
     document.getElementById('modalTotalCouponsRedeem').textContent = totalCount;
     document.getElementById('modalCouponProgressRedeem').style.width = percent + '%';
-    document.getElementById('modalCouponPercentRedeem').textContent = percent;
+    document.getElementById('modalCouponPercentRedeem').textContent = activeCount;
     
     // จับเวลาถอยหลัง
     if (displayCoupon.expires_at) {

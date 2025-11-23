@@ -29,8 +29,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-ms)6li4o92&#le1=@q)d#q8hja
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Can be overridden via environment (DEBUG=True/False)
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-
+# DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = True
 # Comma-separated list in env, fallback to local + render domain
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,registor.onrender.com').split(',')
 

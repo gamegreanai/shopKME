@@ -603,15 +603,32 @@ def redeem_view(request):
         'ddream_used': []
     }
     
+    # เวลาปัจจุบัน (ใช้ timezone ที่ import ไว้แล้วตอนต้นไฟล์)
+    now = timezone.now()
+    
     for p in partners:
         if p.category == 'partner':
             partners_by_category['partner'].append(p)
         elif p.category == 'ddream':
-            if p.subcategory == 'special':
+            # ตรวจสอบว่าพาร์ทเนอร์มีคูปองที่หมดอายุหรือไม่
+            has_expired_coupons = p.coupons.filter(
+                is_deleted=False,
+                ends_at__lt=now
+            ).exists()
+            
+            # ตรวจสอบว่ามีคูปองที่ยังไม่หมดอายุหรือไม่
+            has_active_coupons = p.coupons.filter(
+                is_deleted=False,
+                ends_at__gte=now
+            ).exists()
+            
+            if p.subcategory == 'special' and has_active_coupons:
                 partners_by_category['ddream_special'].append(p)
-            elif p.subcategory == 'used':
+            elif has_expired_coupons and not has_active_coupons:
+                # แสดงในแท็บ "ใช้แล้ว/หมดอายุ" เฉพาะพาร์ทเนอร์ที่คูปองหมดอายุทั้งหมด
                 partners_by_category['ddream_used'].append(p)
-            else:  # 'all' or default
+            elif has_active_coupons:
+                # แสดงในแท็บ "ทั้งหมด" เฉพาะพาร์ทเนอร์ที่มีคูปองยังใช้ได้
                 partners_by_category['ddream_all'].append(p)
     
     # เรียงคูปองดีดรีม/ทั้งหมด ตามคะแนนน้อยไปมาก
@@ -647,6 +664,7 @@ def redeem_view(request):
         "partners_by_category": partners_by_category,
         "slide_images": slide_image_list,
         "image_pairs": image_pairs,
+        "now": timezone.now()
     }
     return render(request, "account/redeem.html", context)
 
@@ -655,11 +673,17 @@ def redeem_view(request):
 def partner_coupons_api(request, partner_id):
     """API สำหรับดึงคูปองของพาร์ทเนอร์"""
     from .models import Partner
+    from django.utils import timezone
     import json
     
     try:
         partner = Partner.objects.get(pk=partner_id, is_active=True)
-        coupons = partner.coupons.filter(is_deleted=False).order_by('-created_at')
+        # กรองเฉพาะคูปองที่ยังไม่หมดอายุ
+        now = timezone.now()
+        coupons = partner.coupons.filter(
+            is_deleted=False,
+            ends_at__gte=now
+        ).order_by('-created_at')
         
         profile = request.user.profile if hasattr(request.user, 'profile') else None
         user_points = profile.points if profile else 0
@@ -803,6 +827,7 @@ def coupon_slide_view(request):
             image_name = request.POST.get('image_name', '').strip()
             sort_order = request.POST.get('sort_order', 0)
             partner_id = request.POST.get('partner_id', '').strip()
+            new_image_file = request.FILES.get('new_image_file')  # รูปใหม่ (optional)
             
             if image_id and image_name:
                 try:
@@ -819,8 +844,24 @@ def coupon_slide_view(request):
                     else:
                         img.partner = None
                     
+                    # ถ้ามีการอัพโหลดรูปใหม่
+                    if new_image_file:
+                        # ลบรูปเก่า
+                        if img.image:
+                            import os
+                            try:
+                                if os.path.isfile(img.image.path):
+                                    os.remove(img.image.path)
+                            except Exception as e:
+                                print(f"Warning: Could not delete old image file: {e}")
+                        
+                        # บันทึกรูปใหม่
+                        img.image = new_image_file
+                        messages.success(request, f'แก้ไขข้อมูลและเปลี่ยนรูปภาพ "{image_name}" เรียบร้อยแล้ว')
+                    else:
+                        messages.success(request, f'แก้ไขข้อมูลรูปภาพ "{image_name}" เรียบร้อยแล้ว')
+                    
                     img.save()
-                    messages.success(request, 'แก้ไขข้อมูลรูปภาพเรียบร้อยแล้ว')
                 except CouponSlideImage.DoesNotExist:
                     messages.error(request, 'ไม่พบรูปภาพนี้')
                 except Exception as e:
@@ -835,12 +876,50 @@ def coupon_slide_view(request):
                 try:
                     img = CouponSlideImage.objects.get(id=image_id)
                     img_name = img.name
+                    
+                    # ลบไฟล์รูปภาพจากระบบ
+                    if img.image:
+                        import os
+                        if os.path.isfile(img.image.path):
+                            os.remove(img.image.path)
+                    
                     img.delete()
                     messages.success(request, f'ลบรูปภาพ "{img_name}" เรียบร้อยแล้ว')
                 except CouponSlideImage.DoesNotExist:
                     messages.error(request, 'ไม่พบรูปภาพนี้')
                 except Exception as e:
                     messages.error(request, f'เกิดข้อผิดพลาด: {str(e)}')
+            
+            return redirect('account:coupon_slide')
+        
+        elif action == 'change_image':
+            image_id = request.POST.get('image_id')
+            new_image_file = request.FILES.get('new_image_file')
+            
+            if image_id and new_image_file:
+                try:
+                    img = CouponSlideImage.objects.get(id=image_id)
+                    
+                    # ลบรูปเก่า
+                    if img.image:
+                        import os
+                        try:
+                            if os.path.isfile(img.image.path):
+                                os.remove(img.image.path)
+                        except Exception as e:
+                            print(f"Warning: Could not delete old image file: {e}")
+                    
+                    # บันทึกรูปใหม่
+                    img.image = new_image_file
+                    img.save()
+                    
+                    messages.success(request, f'เปลี่ยนรูปภาพ "{img.name}" เรียบร้อยแล้ว')
+                except CouponSlideImage.DoesNotExist:
+                    messages.error(request, 'ไม่พบรูปภาพนี้')
+                except Exception as e:
+                    messages.error(request, f'เกิดข้อผิดพลาด: {str(e)}')
+            else:
+                messages.error(request, 'กรุณาเลือกไฟล์รูปภาพใหม่')
             
             return redirect('account:coupon_slide')
     
